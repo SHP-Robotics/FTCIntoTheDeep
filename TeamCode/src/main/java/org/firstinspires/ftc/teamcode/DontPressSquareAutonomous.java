@@ -95,12 +95,26 @@ tracker.reset();
 
                 )
                 .build();
+        PathContainer Park = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(
 
+                        new BezierCurve(
+                                new Vector2D[]{
+                                        new Vector2D(0, 0),
+                                        new Vector2D(30, 0),
+                                        new Vector2D(30, 38),
+                                }
+
+                        )
+
+                )
+                .build();
         waitForStart();
         tracker.reset();
 //        wormGearSubsystem.setToZero(touchSensor, telemetry);
 
-        followPath(Outtake1, 2, 0.4);
+        followPath(Park, 2, 0.4);
         cycle();
         elapsedTime.reset();
 
