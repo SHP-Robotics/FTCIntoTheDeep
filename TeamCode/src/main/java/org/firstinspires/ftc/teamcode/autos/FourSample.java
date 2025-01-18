@@ -337,7 +337,7 @@ public class FourSample extends LinearOpMode {
         updateCommands(0.5);
 
         pivot.setState(PivotSubsystem.State.OUTTAKEBUCKET);
-        rotate.setState(RotateSubsystem.State.DROPOFF);
+        rotate.setState(RotateSubsystem.State.DROPOFFBUCKET);
         vertical.setDepositState(VerticalSubsystem.State.HIGHBUCKET);
         vertical.setState(VerticalSubsystem.State.DEPOSITING);
         updateCommands(1.0); //removed wait

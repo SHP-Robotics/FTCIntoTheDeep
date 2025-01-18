@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
+import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.GREEN;
+import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.OFF;
+import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.PINK;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.devices.GamepadInterface;
 import com.shprobotics.pestocore.devices.GamepadKey;
@@ -15,9 +19,11 @@ import org.firstinspires.ftc.teamcode.commands.SpecimentoDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.SubtoDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.WalltoDriveCommand;
 import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
+import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.commands.RunCommand;
 import org.firstinspires.ftc.teamcode.shplib.commands.Trigger;
 import org.firstinspires.ftc.teamcode.shplib.commands.WaitCommand;
+import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
@@ -26,9 +32,16 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 @TeleOp
 public class AOfficialTeleOp extends BaseRobot {
     private double driveBias;
-    private boolean holdingRightBumper, LBTrigger, LTTrigger, crossTrigger;
+    private boolean LBTrigger, LTTrigger, crossTrigger;
 
     GamepadInterface gamepadInterface1, gamepadInterface2;
+
+    public enum State {
+        EXTENDED,
+        COMPLETE
+
+    }
+    private State cageState;
 
     @Override
     public void init(){
@@ -38,10 +51,11 @@ public class AOfficialTeleOp extends BaseRobot {
                         () -> drive.mecanum(-driveBias*gamepad1.left_stick_y, driveBias*gamepad1.left_stick_x, driveBias*gamepad1.right_stick_x)
                 )
         );
-        holdingRightBumper = false;
         LBTrigger = true;
         LTTrigger = true;
         crossTrigger = true;
+
+        cageState = State.COMPLETE;
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
         gamepadInterface2 = new GamepadInterface(gamepad2);
@@ -68,24 +82,78 @@ public class AOfficialTeleOp extends BaseRobot {
         // use gamepad2.right_bumper as speed boost
 
         //Intake from submersible
-        new Trigger(gamepad1.right_bumper,
-            new DrivetoSubCommand(rotate, claw, pivot, horizontal, gamepad1.right_trigger)
+//        new Trigger(gamepad1.right_bumper,
+//            new DrivetoSubCommand(rotate, claw, pivot, horizontal, gamepad1.right_trigger)
+//                    .then(new RunCommand(()->{
+//                        holdingRightBumper = true;
+//                    }))
+//        );
+//        new Trigger((holdingRightBumper && !gamepad1.right_bumper),
+//            new SubtoDriveCommand(rotate, claw, pivot, horizontal)
+//                    .then(new RunCommand(()->{
+//                        holdingRightBumper = false;
+//                    }))
+//                    .then(new WaitCommand(0.25))
+//                    .then(new RunCommand(()->{
+//                        rotate.setState(RotateSubsystem.State.NEUTRAL);
+//                        pivot.setState(PivotSubsystem.State.DRIVING);
+//                        horizontal.setState(HorizSubsystem.State.DRIVING);
+//                    }))
+//        );
+
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER), new RunCommand(() -> {
+            if (cageState == State.COMPLETE) {
+                CommandScheduler.getInstance().scheduleCommand(
+                    new DrivetoSubCommand(rotate, claw, pivot, horizontal)
+                );
+                cageState = State.EXTENDED;
+                claw.setColor(PINK);
+            }
+           else if (cageState == State.EXTENDED) {
+                CommandScheduler.getInstance().scheduleCommand(
+                    new SubtoDriveCommand(rotate, claw, pivot, horizontal)
+                    .then(new WaitCommand(0.25))
                     .then(new RunCommand(()->{
-                        holdingRightBumper = true;
+                        if (!claw.isBlockInClaw()) {
+                            CommandScheduler.getInstance().scheduleCommand(
+                                    new DrivetoSubCommand(rotate, claw, pivot, horizontal)
+                            );
+                            andrewWompWomp++;
+                        }
+                        else {
+                            claw.setColor(GREEN);
+                            CommandScheduler.getInstance().scheduleCommand(
+                                new RunCommand(()->{
+                                    rotate.setState(RotateSubsystem.State.NEUTRAL);
+                                    pivot.setState(PivotSubsystem.State.DRIVING);
+                                    cageState = State.COMPLETE;
+                                })
+                                .then(new WaitCommand(0.25))
+                                .then(new RunCommand(() -> {
+                                    horizontal.setState(HorizSubsystem.State.DRIVING);
+                                }))
+                                .then(new WaitCommand(0.75))
+                                .then(new RunCommand(() -> {
+                                    claw.setColor(OFF);
+                                }))
+                            );
+                        }
                     }))
-        );
-        new Trigger((holdingRightBumper && !gamepad1.right_bumper),
-            new SubtoDriveCommand(rotate, claw, pivot, horizontal)
-                    .then(new RunCommand(()->{
-                        holdingRightBumper = false;
-                    }))
-                    .then(new WaitCommand(1))
-                    .then(new RunCommand(()->{
-                        rotate.setState(RotateSubsystem.State.NEUTRAL);
-                        pivot.setState(PivotSubsystem.State.DRIVING);
-                        horizontal.setState(HorizSubsystem.State.DRIVING);
-                    }))
-        );
+                );
+            }
+
+        }));
+        new Trigger(gamepad1.right_trigger > 0.0 && cageState == State.EXTENDED, new RunCommand(() -> {
+            horizontal.setTriggerPos(gamepad1.right_trigger);
+        }));
+
+        new Trigger(gamepad1.dpad_up, new RunCommand(() -> {
+            rotate.setState(RotateSubsystem.State.NEUTRAL);
+            pivot.setState(PivotSubsystem.State.DRIVING);
+            horizontal.setState(HorizSubsystem.State.DRIVING);
+            cageState = State.COMPLETE;
+            claw.setColor(OFF);
+        }));
 
         //intake specimen
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && LBTrigger,
@@ -187,6 +255,18 @@ public class AOfficialTeleOp extends BaseRobot {
         new Trigger(gamepadInterface2.isKeyDown(GamepadKey.DPAD_LEFT), new RunCommand(()->{
             vertical.endReset();
         }));
+
+        //EMERGENCY BLOCK IN BOT
+        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.A), new RunCommand(()->{
+            horizontal.setState(HorizSubsystem.State.BLOCKINBOT);
+            })
+                .then(new WaitCommand(0.5))
+                .then(new RunCommand(()-> {
+                    horizontal.setState(HorizSubsystem.State.DRIVING);
+                })
+        ));
+
+
 
 
         //toggle high or low bars

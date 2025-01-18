@@ -34,6 +34,7 @@ public class BaseRobot extends OpMode {
     public ClawSubsystem claw;
 
     public double previousTime = 0;
+    public double andrewWompWomp = 0;
 
     // Called when you press the init button
     @Override
@@ -68,6 +69,8 @@ public class BaseRobot extends OpMode {
 
         telemetry.addData("Loop Time (ms): ", Clock.elapsed(previousTime) * 1000);
         previousTime = Clock.now();
+        telemetry.addData("ANDREW WOMP WOMP", andrewWompWomp);
+
         // Handles all subsystem and command execution - DO NOT DELETE!
         try {
             CommandScheduler.getInstance().run();

@@ -12,16 +12,15 @@ public class DrivetoSubCommand extends Command {
     ClawSubsystem claw;
     PivotSubsystem pivot;
     HorizSubsystem horiz;
-    double trigger, startTime, endTime;
+    double startTime, endTime;
 
-    public DrivetoSubCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz, double trigger) {
+    public DrivetoSubCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz) {
         // You MUST call the parent class constructor and pass through any subsystems you use
         super(rotate, claw, pivot, horiz);
         this.rotate = rotate;
         this.claw = claw;
         this.pivot = pivot;
         this.horiz = horiz;
-        this.trigger = trigger;
         endTime = 0.25;
     }
 
@@ -35,9 +34,9 @@ public class DrivetoSubCommand extends Command {
 
     // Called repeatedly until isFinished() returns true
     @Override
-    public void execute() {
-        horiz.setTriggerPos(trigger);
+    public void execute() {horiz.setTriggerPos(0.0);
     }
+
 
     // Called once after isFinished() returns true
     @Override

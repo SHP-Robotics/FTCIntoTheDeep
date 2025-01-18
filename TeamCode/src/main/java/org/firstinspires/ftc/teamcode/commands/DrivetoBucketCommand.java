@@ -47,7 +47,7 @@ public class DrivetoBucketCommand extends Command {
     // Called once after isFinished() returns true
     @Override
     public void end() {
-        rotate.setState(RotateSubsystem.State.DROPOFF);
+        rotate.setState(RotateSubsystem.State.DROPOFFBUCKET);
     }
 
     // Specifies whether or not the command has finished

@@ -377,7 +377,7 @@ public class ThreeSpecimen extends LinearOpMode {
         updateCommands(0.5);
 
         pivot.setState(PivotSubsystem.State.OUTTAKE2);
-        rotate.setState(RotateSubsystem.State.DROPOFF);
+        rotate.setState(RotateSubsystem.State.AUTO);
         updateCommands();
     }
     /** Raises the Vertical */
