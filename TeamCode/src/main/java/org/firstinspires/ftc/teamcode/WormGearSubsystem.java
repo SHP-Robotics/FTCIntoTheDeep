@@ -22,11 +22,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class WormGearSubsystem {
-    private static final int OFFSET =-1550;
+    private static final int OFFSET =0;
     boolean  zeroed=true;
     public enum WormMode {
         DRIVING (OFFSET),
-        INTAKE (-3850),
+        INTAKE (-2300),
         DRIVING2 (OFFSET),
 
         OUTTAKE (OFFSET);
@@ -46,8 +46,8 @@ public class WormGearSubsystem {
     public enum HangMode {
 
         NONE (0),
-        SETUP (1100),
-        VIPERDOWN (OFFSET+100),
+        SETUP (-100),
+        VIPERDOWN (OFFSET),
         WORMGEARBACK (-100),
         WORMGEARFOWARD (0),
         VIPERUP (0),
