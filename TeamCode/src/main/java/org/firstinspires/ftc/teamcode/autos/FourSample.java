@@ -242,7 +242,7 @@ public class FourSample extends LinearOpMode {
 
         //Get Block 4
         prepIntake();
-        rotateIntake();
+//        rotateIntake();
         followPath(getBlock4, 1.5, 0.6);
         finishIntake();
 
@@ -322,7 +322,7 @@ public class FourSample extends LinearOpMode {
         updateCommands(0.5);
 
         claw.close();
-        updateCommands(0.5);
+        updateCommands(0.25);
 
         rotate.setState(RotateSubsystem.State.NEUTRAL);
         pivot.setState(PivotSubsystem.State.DRIVING);
@@ -333,14 +333,17 @@ public class FourSample extends LinearOpMode {
     /** Raises the Vertical */
     public void raiseArm(){
         horizontal.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.OUTTAKE1);
+//        pivot.setState(PivotSubsystem.State.OUTTAKE1);
         updateCommands(0.5);
 
         pivot.setState(PivotSubsystem.State.OUTTAKEBUCKET);
-        rotate.setState(RotateSubsystem.State.DROPOFFBUCKET);
         vertical.setDepositState(VerticalSubsystem.State.HIGHBUCKET);
         vertical.setState(VerticalSubsystem.State.DEPOSITING);
-        updateCommands(1.0); //removed wait
+        updateCommands(0.5); //removed wait
+        rotate.setState(RotateSubsystem.State.DROPOFFBUCKET);
+        updateCommands(0.5); //removed wait
+
+
     }
 
     /** Deposits, and lowers arm */
@@ -350,6 +353,8 @@ public class FourSample extends LinearOpMode {
         claw.open();
         updateCommands(0.5);
 
+        rotate.setState(RotateSubsystem.State.DROPOFF);
+        updateCommands(0.25);
         pivot.setState(PivotSubsystem.State.DRIVING);
         claw.close();
         vertical.setState(VerticalSubsystem.State.BOTTOM);
