@@ -3,12 +3,12 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.shprobotics.pestocore.drivebases.DeterministicTracker;
-import com.shprobotics.pestocore.drivebases.MecanumController;
+import com.shprobotics.pestocore.drivebases.DriveController;
 import com.shprobotics.pestocore.drivebases.ThreeWheelOdometryTracker;
-import com.shprobotics.pestocore.tuners.DecelerationTuner;
+import com.shprobotics.pestocore.tuners.ForwardOffsetTuner;
 
 @TeleOp
-public class DecelerationOpMode extends DecelerationTuner {
+public class ForwardOffsetOpMode extends ForwardOffsetTuner {
     @Override
     public void setMecanumController(HardwareMap hardwareMap) {
         mecanumController = PestoFTCConfig.getMecanumController(hardwareMap);
@@ -20,9 +20,7 @@ public class DecelerationOpMode extends DecelerationTuner {
     }
 
     @Override
-    public void setTeleOpController(MecanumController mecanumController, DeterministicTracker deterministicTracker, HardwareMap hardwareMap) {
+    public void setTeleOpController(DriveController driveController, DeterministicTracker deterministicTracker, HardwareMap hardwareMap) {
         teleOpController = PestoFTCConfig.getTeleOpController(mecanumController,deterministicTracker,hardwareMap);
-
     }
-
 }
