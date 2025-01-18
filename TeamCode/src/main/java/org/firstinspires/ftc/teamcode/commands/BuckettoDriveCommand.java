@@ -45,6 +45,7 @@ public class BuckettoDriveCommand extends Command {
     // Called once after isFinished() returns true
     @Override
     public void end() {
+        rotate.setState(RotateSubsystem.State.NEUTRAL);
         pivot.setState(PivotSubsystem.State.PREPAREDRIVING);
         claw.close();
 

@@ -43,7 +43,7 @@ public class ThreeSpecimen extends LinearOpMode {
         return new PathFollower.PathFollowerBuilder(mecanumController, tracker, pathContainer)
                 .setEndpointPID(new PID(kp,0, 0)) //make 0.02
                 .setHeadingPID(new PID(0.3, 0, 0))
-                .setDeceleration(PestoFTCConfig.DECELERATION)
+                .setDeceleration(2.0)
                 .setSpeed(speed)
 //                .setDecelerationFunction(PathFollower.SQUID_DECELERATION)
                 //^^^ combats static friction

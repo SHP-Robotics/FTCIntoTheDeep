@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
 @Config
-@Autonomous(name = "Test Auto - 0+4")
+@Autonomous(name = "Test Auto - square")
 public class TestAuto extends LinearOpMode {
     private MecanumController mecanumController;
     private DeterministicTracker tracker;
@@ -31,7 +31,7 @@ public class TestAuto extends LinearOpMode {
     RotateSubsystem rotate;
     HorizSubsystem horizontal;
     ClawSubsystem claw;
-    PathContainer depositBlock1, getBlock2, depositBlock2, getBlock3, depositBlock3, getBlock4, depositBlock4;
+    PathContainer square1, square2;
 
     PathFollower pathFollower;
 
@@ -48,7 +48,7 @@ public class TestAuto extends LinearOpMode {
                 // takes the square root of PID. PID controls drive speed
                 // call this "SQUID"
                 //.setCheckFinishedFunction()
-                .setEndTolerance(0.4, Math.toRadians(0))
+                .setEndTolerance(0.4, Math.toRadians(1))
                 .setEndVelocityTolerance(4)
                 .setTimeAfterDeceleration(deceleration)
                 .build();
@@ -59,132 +59,58 @@ public class TestAuto extends LinearOpMode {
         CommandScheduler.resetInstance();
         PestoFTCConfig.configure();
 
-        depositBlock1 = new PathContainer.PathContainerBuilder()
+        square1 = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(new BezierCurve(
+                                new Vector2D[]{
+                                        new Vector2D(0, 0),
+                                        new Vector2D(15, 0)
+                                }
+                        ),
+                        new ParametricHeading(new double[]{
+                                0, Math.toRadians(90) //90
+                        })
+                )
+                .addCurve(new BezierCurve(
+                                new Vector2D[]{
+                                        new Vector2D(15, 0),
+                                        new Vector2D(15, 15)
+                                }
+                        ),
+                        new ParametricHeading(new double[]{
+                                Math.toRadians(90), Math.toRadians(180) //90
+                        })
+                )
+                .addCurve(new BezierCurve(
+                                new Vector2D[]{
+                                        new Vector2D(15, 15),
+                                        new Vector2D(0, 15)
+                                }
+                        ),
+                        new ParametricHeading(new double[]{
+                                Math.toRadians(180), Math.toRadians(270) //90
+                        })
+                )
+                .build();
+
+        square2 = new PathContainer.PathContainerBuilder()
                 .setIncrement(0.03)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(0, 0),
-                                        new Vector2D(-9, -29)
+                                        new Vector2D(15, 15)
                                 }
                         ),
                         new ParametricHeading(new double[]{
-                                0, Math.toRadians(45) //90
+                                Math.toRadians(0),
+                                Math.toRadians(180),
+                                Math.toRadians(180),
+                                Math.toRadians(180),
+                                Math.toRadians(180),
+                                Math.toRadians(180),
+                                Math.toRadians(180)//90
                         })
                 )
-                .build();
-
-        getBlock2 = new PathContainer.PathContainerBuilder()
-                .setIncrement(0.02)
-                .addCurve(
-                        new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(-9, -29),
-                                        new Vector2D(-14.5, -20)
-                                }
-                        ),
-                        new ParametricHeading(new double[]{
-                                Math.toRadians(45),
-                                Math.toRadians(90),
-                                Math.toRadians(90),
-                                Math.toRadians(90) //150
-                        })
-                )
-
-                .build();
-
-        depositBlock2 = new PathContainer.PathContainerBuilder()
-                .setIncrement(0.02)
-                .addCurve(
-                        new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(-14.5, -20),
-                                        new Vector2D(-9, -29)
-                                }
-                        ),
-                        new ParametricHeading(new double[]{
-                                Math.toRadians(90),
-                                Math.toRadians(45),
-                                Math.toRadians(45),
-                                Math.toRadians(45)
-                        })
-                )
-
-                .build();
-
-        getBlock3 = new PathContainer.PathContainerBuilder()
-                .setIncrement(0.02)
-                .addCurve(
-                        new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(-9, -29),
-                                        new Vector2D(-14, -29)
-                                }
-                        ),
-                        new ParametricHeading(new double[]{
-                                Math.toRadians(45),
-                                Math.toRadians(90),
-                                Math.toRadians(90),
-                                Math.toRadians(90)
-                        })
-                )
-
-                .build();
-
-        depositBlock3 = new PathContainer.PathContainerBuilder()
-                .setIncrement(0.02)
-                .addCurve(
-                        new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(-14, -29),
-                                        new Vector2D(-9, -29.5)
-                                }
-                        ),
-                        new ParametricHeading(new double[]{
-                                Math.toRadians(90),
-                                Math.toRadians(45),
-                                Math.toRadians(45),
-                                Math.toRadians(45)
-                        })
-                )
-
-                .build();
-
-        getBlock4 = new PathContainer.PathContainerBuilder()
-                .setIncrement(0.02)
-                .addCurve(
-                        new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(-9, -29.5),
-                                        new Vector2D(-15, -29)
-                                }
-                        ),
-                        new ParametricHeading(new double[]{
-                                Math.toRadians(45),
-                                Math.toRadians(120),
-                                Math.toRadians(120),
-                                Math.toRadians(120)
-                        })
-                )
-
-                .build();
-
-        depositBlock4 = new PathContainer.PathContainerBuilder()
-                .setIncrement(0.02)
-                .addCurve(
-                        new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(-19, -29),
-                                        new Vector2D(-9, -29)
-                                }
-                        ),
-                        new ParametricHeading(new double[]{
-                                Math.toRadians(120),
-                                Math.toRadians(45),
-                                Math.toRadians(45),
-                                Math.toRadians(45)
-                        })
-                )
-
                 .build();
 
         Clock.start();
@@ -209,48 +135,10 @@ public class TestAuto extends LinearOpMode {
         waitForStart();
 
         //Prepare to deposit preload
-        raiseArm();
 
         //Deposit Block 1
-        followPath(depositBlock1, 1, 0.6);
-        lowerArm();
-
-        //Get Block 2
-        prepIntake();
-        followPath(getBlock2, 1, 0.6);
-        finishIntake();
-
-        //Deposit Block 2
-        raiseArm();
-        followPath(depositBlock2, 1.5, 0.6); //Deceleration 2
-        lowerArm();
-
-        //Get Block 3
-        prepIntake();
-        followPath(getBlock3, 1, 0.6);
-        finishIntake();
-
-        //Deposit Block 3
-        raiseArm();
-        updateCommands(0.5);
-        followPath(depositBlock3, 1, 0.6);
-        lowerArm();
-
-        //Get Block 4
-        prepIntake();
-        rotateIntake();
-        followPath(getBlock4, 1, 0.6);
-        finishIntake();
-
-        //Deposit Block 4
-        raiseArm();
-        followPath(depositBlock4, 1, 0.6);
-        lowerArm();
-
-        //just for good measure
-        vertical.setState(VerticalSubsystem.State.BOTTOM);
-        updateCommands(1);
-
+        followPath(square2, 2, 0.8);
+//        followPath(square2, 1, 0.8);
 
     }
 

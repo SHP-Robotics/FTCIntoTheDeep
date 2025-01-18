@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.shprobotics.pestocore.algorithms.PID;
 import com.shprobotics.pestocore.drivebases.DeterministicTracker;
 import com.shprobotics.pestocore.drivebases.MecanumController;
 import com.shprobotics.pestocore.geometries.BezierCurve;
@@ -39,9 +40,9 @@ public class FourSample extends LinearOpMode {
 
     public PathFollower generatePathFollower(PathContainer pathContainer, double deceleration, double speed) {
         return new PathFollower.PathFollowerBuilder(mecanumController, tracker, pathContainer)
-                .setEndpointPID(PestoFTCConfig.endpointPID)
-                .setHeadingPID(PestoFTCConfig.headingPID)
-                .setDeceleration(PestoFTCConfig.DECELERATION)
+                .setEndpointPID(new PID(0.03, 0, 0))
+                .setHeadingPID(new PID(3.0, 0, 0))
+                .setDeceleration(2.0)
                 .setSpeed(speed)
 //                .setDecelerationFunction(PathFollower.SQUID_DECELERATION)
                 //^^^ combats static friction
