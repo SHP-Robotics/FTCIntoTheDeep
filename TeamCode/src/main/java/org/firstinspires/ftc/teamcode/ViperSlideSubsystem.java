@@ -71,7 +71,7 @@ public class ViperSlideSubsystem {
         viperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viperSlide.setTargetPosition(0);
         viperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        viperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+//        viperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
     public void cycle() {
@@ -120,9 +120,8 @@ public class ViperSlideSubsystem {
         }
 
     }
-
-    public void  switchPower(){
-        if (mode.getPosition()==0 && hangMode !=VIPERDOWN &&  hangMode !=WORMGEARBACK ) {
+    public void switchPower(){
+        if (mode.getPosition()==0 && hangMode != VIPERDOWN &&  hangMode !=WORMGEARBACK ) {
             if (viperSlide.getCurrentPosition() < 50) {
                 viperSlide.setPower(0);
 

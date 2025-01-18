@@ -10,6 +10,7 @@ import static org.firstinspires.ftc.teamcode.WormGearSubsystem.HangMode.WORMGEAR
 import static org.firstinspires.ftc.teamcode.WormGearSubsystem.HangMode.WORMGEARFOWARD;
 import static org.firstinspires.ftc.teamcode.WormGearSubsystem.WormMode.DRIVING;
 import static org.firstinspires.ftc.teamcode.WormGearSubsystem.WormMode.DRIVING2;
+
 import static org.firstinspires.ftc.teamcode.WormGearSubsystem.WormMode.INTAKE;
 import static org.firstinspires.ftc.teamcode.WormGearSubsystem.WormMode.OUTTAKE;
 
@@ -22,14 +23,15 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class WormGearSubsystem {
-    private static final int OFFSET =0;
-    boolean  zeroed=true;
+    private static final int OFFSET =-1550;
+    boolean  zeroed=false;
     public enum WormMode {
         DRIVING (OFFSET),
-        INTAKE (-2300),
+
+        INTAKE (OFFSET-2380),
         DRIVING2 (OFFSET),
 
-        OUTTAKE (OFFSET);
+        OUTTAKE (OFFSET-120);
 
 
 
@@ -45,12 +47,12 @@ public class WormGearSubsystem {
     }
     public enum HangMode {
 
-        NONE (0),
-        SETUP (-100),
-        VIPERDOWN (OFFSET),
-        WORMGEARBACK (-100),
-        WORMGEARFOWARD (0),
-        VIPERUP (0),
+        NONE (OFFSET),
+        SETUP (OFFSET-100),
+        VIPERDOWN (OFFSET-100),
+        WORMGEARBACK (-150),
+        WORMGEARFOWARD (OFFSET),
+        VIPERUP (OFFSET),
         FINISH (OFFSET);
         HangMode(int position) {
             this.position = position;
@@ -69,7 +71,8 @@ public class WormGearSubsystem {
 
     public WormGearSubsystem(HardwareMap hardwareMap) {
         wormGear = hardwareMap.get(DcMotorEx.class, "WormGear");
-
+        wormGear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        wormGear.setTargetPosition(wormGear.getCurrentPosition());
     }
 
     public void cycle() {
@@ -77,9 +80,11 @@ public class WormGearSubsystem {
             case DRIVING:
                 mode = INTAKE;
                 break;
+
             case INTAKE:
                 mode = DRIVING2;
                 break;
+
             case DRIVING2:
                 mode = OUTTAKE;
                 break;

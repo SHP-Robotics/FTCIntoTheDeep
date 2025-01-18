@@ -8,6 +8,7 @@ import com.shprobotics.pestocore.algorithms.PID;
 import com.shprobotics.pestocore.drivebases.DeterministicTracker;
 import com.shprobotics.pestocore.drivebases.MecanumController;
 import com.shprobotics.pestocore.geometries.BezierCurve;
+import com.shprobotics.pestocore.geometries.ParametricHeading;
 import com.shprobotics.pestocore.geometries.PathContainer;
 import com.shprobotics.pestocore.geometries.PathFollower;
 import com.shprobotics.pestocore.geometries.Vector2D;
@@ -63,50 +64,53 @@ tracker.reset();
 //                )
 //                .build();
 
-        PathContainer Outtake1 = new PathContainer.PathContainerBuilder()
-                .setIncrement(0.01)
-                .addCurve(
-
-                        new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(0, 0),
-                                        new Vector2D(30, 0),
-                                        new Vector2D(30, 38),
-                                }
-
-                        )
-
-                )
-                .build();
-        PathContainer Intake2 = new PathContainer.PathContainerBuilder()
-                .setIncrement(0.01)
-                .addCurve(
-
-                        new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(0, 0),
-                                        new Vector2D(30, 0),
-
-                                        new Vector2D(40, 100),
-                                }
-
-                        )
-//                        new ParametricHeading([new double a[0.1]])
-
-                )
-                .build();
+//        PathContainer Outtake1 = new PathContainer.PathContainerBuilder()
+//                .setIncrement(0.01)
+//                .addCurve(
+//
+//                        new BezierCurve(
+//                                new Vector2D[]{
+//                                        new Vector2D(0, 0),
+//                                        new Vector2D(30, 0),
+//                                        new Vector2D(30, 38),
+//                                }
+//
+//                        )
+//
+//                )
+//                .build();
+//        PathContainer Intake2 = new PathContainer.PathContainerBuilder()
+//                .setIncrement(0.01)
+//                .addCurve(
+//
+//                        new BezierCurve(
+//                                new Vector2D[]{
+//                                        new Vector2D(0, 0),
+//                                        new Vector2D(30, 0),
+//
+//                                        new Vector2D(40, 100),
+//                                }
+//
+//                        )
+////                        new ParametricHeading([new double a[0.1]])
+//
+//                )
+//                .build();
         PathContainer Park = new PathContainer.PathContainerBuilder()
                 .setIncrement(0.01)
                 .addCurve(
 
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(40, 0),
+                                        new Vector2D(20, 0),
 
 
                                 }
 
-                        )
+                        ),
+                        new ParametricHeading(new double[]{
+                                0,0
+                        })
 
                 )
                 .build();

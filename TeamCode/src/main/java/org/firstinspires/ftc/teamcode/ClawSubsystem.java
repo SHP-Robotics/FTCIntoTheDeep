@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class ClawSubsystem {
+
+
     public enum ClawMode {
         OPEN (0.5),
         CLOSE (1.0);
@@ -27,6 +29,7 @@ public class ClawSubsystem {
 
     private Servo claw;
     private ClawMode mode= CLOSE;
+
     //    private  final int offset=-1540;
     public ClawSubsystem(HardwareMap hardwareMap) {
         claw = hardwareMap.get(Servo.class, "claw");
@@ -49,4 +52,5 @@ public class ClawSubsystem {
         telemetry.addData("Claw Position",claw.getPosition());
 
     }
+
 }

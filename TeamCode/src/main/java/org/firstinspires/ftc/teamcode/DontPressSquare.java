@@ -51,7 +51,6 @@ public class DontPressSquare extends LinearOpMode {
             telemetry.addData("X", tracker.getCurrentPosition().getX());
             telemetry.addData("Y", tracker.getCurrentPosition().getY());
             telemetry.addData("HeadingRadians", tracker.getCurrentPosition().getHeadingRadians());
-
             telemetry.update();
             tracker.update();
             gamepadInterface.update();
@@ -63,51 +62,51 @@ public class DontPressSquare extends LinearOpMode {
             } else {
                 teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
-//            }
-                if (gamepad1.x) {
-                    wormGearSubsystem.setToZero(touchSensor, telemetry);
-                }
+            }
+            if (gamepad1.x) {
+                clawSubsystem.update();
+                wormGearSubsystem.setToZero(touchSensor, telemetry);
+            }
 
-                if (gamepad1.b) {
-                    teleOpController.resetIMU();
-                    tracker.reset();
-                }
+            if (gamepad1.b) {
+                teleOpController.resetIMU();
+                tracker.reset();
+            }
 
-                if (gamepadInterface.isKeyUp(GamepadKey.LEFT_BUMPER)) {
-                    wormGearSubsystem.cycle();
-                    viperSlideSubsystem.cycle();
-                }
-                if (gamepadInterface.isKeyDown(GamepadKey.RIGHT_BUMPER)) {
-                    wormGearSubsystem.cycleHanging();
-                    viperSlideSubsystem.cycleHanging();
+            if (gamepadInterface.isKeyUp(GamepadKey.LEFT_BUMPER)) {
+                wormGearSubsystem.cycle();
+                viperSlideSubsystem.cycle();
+            }
+            if (gamepadInterface.isKeyDown(GamepadKey.RIGHT_BUMPER)) {
+                wormGearSubsystem.cycleHanging();
+                viperSlideSubsystem.cycleHanging();
+
+            }
+            if (gamepad1.dpad_right) {
+                clawSubsystem.setOpen();
+//                clawSubsystem.update();
+            }
+            if (gamepad1.dpad_left) {
+                clawSubsystem.setClose();
+//              clawSubsystem.update();
+            }
+          
+                wristSubsystem.setClose();
+
+            if (wormGearSubsystem.zeroed) {
+                if (wormGearSubsystem.hangMode == WormGearSubsystem.HangMode.NONE) {
+                    wormGearSubsystem.update();
+                    viperSlideSubsystem.update();
+                } else {
                     wormGearSubsystem.updateHanging();
                     viperSlideSubsystem.updateHanging();
-                }
-                if (gamepad1.dpad_right) {
-                    clawSubsystem.setOpen();
-//                clawSubsystem.update();
-
-                }
-                if (gamepad1.dpad_left) {
-                    clawSubsystem.setClose();
-//              clawSubsystem.update();
-
-                }
-
-                    wristSubsystem.setClose();
 
 
-//                wristSubsystem.update();
-                }
-                if (wormGearSubsystem.zeroed) {
-//
-//            wristSubsystem.update();
-//            wormGearSubsystem.update();
-//            viperSlideSubsystem.update();
                 }
             }
         }
 
+    }
 }
 
 
