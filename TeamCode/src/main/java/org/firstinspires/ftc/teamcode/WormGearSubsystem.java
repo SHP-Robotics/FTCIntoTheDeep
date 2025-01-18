@@ -23,7 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class WormGearSubsystem {
     private static final int OFFSET =-1550;
-    boolean  zeroed=false;
+    boolean  zeroed=true;
     public enum WormMode {
         DRIVING (OFFSET),
         INTAKE (-3850),

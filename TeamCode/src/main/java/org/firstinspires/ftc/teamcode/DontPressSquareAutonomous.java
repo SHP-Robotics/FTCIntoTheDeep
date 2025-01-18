@@ -102,7 +102,7 @@ tracker.reset();
                         new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(40, 0),
-                                      
+
 
                                 }
 
