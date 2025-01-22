@@ -28,7 +28,7 @@ public class WormGearSubsystem {
     public enum WormMode {
         DRIVING (OFFSET),
 
-        INTAKE (OFFSET-2380),
+        INTAKE (OFFSET-2310),
         DRIVING2 (OFFSET),
 
         OUTTAKE (OFFSET-120);
@@ -163,7 +163,10 @@ public class WormGearSubsystem {
         wormGear.setPower(0.6);
     }
 
-
+    public void resetCycles(){
+        hangMode=NONE;
+        mode=WormMode.DRIVING;
+    }
     public void updateTelemetry(Telemetry telemetry) {
         telemetry.addData("mode", mode);
         telemetry.addData("WormGear Position", wormGear.getCurrentPosition());

@@ -9,8 +9,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class WristSubsystem {
     public enum WristMode {
-        OPEN (0.15),
-        CLOSE (0.15);
+        OPEN (0),
+        CLOSE (1);
 
 
         WristMode(double position) {
@@ -26,28 +26,36 @@ public class WristSubsystem {
 
     private Servo wrist;
     private WristMode mode= OPEN;
+    double position=0.8;
     //    private  final int offset=-1540;
     public WristSubsystem(HardwareMap hardwareMap) {
         wrist = hardwareMap.get(Servo.class, "wrist");
 
     }
-    public void setOpen() {
-        mode= OPEN;
+    public void incrementAdd() {
+        if (position<0.8){
+            position+=0.1;
+        }
         update();
 
     }
-    public void setClose() {
-        mode=WristMode.CLOSE;
+
+    public void incrementSubtract() {
+        if (position>=0.47){
+            position-=0.1;
+        }
+
         update();
     }
     public void update() {
-        wrist.setPosition(mode.getPosition());
+        wrist.setPosition(position);
     }
 
 
     public void updateTelemetry(Telemetry telemetry) {
         telemetry.addData("Wrist Mode",mode);
         telemetry.addData("Wrist Position",wrist.getPosition());
+        telemetry.addData("PSOTION",position);
 
     }
 }

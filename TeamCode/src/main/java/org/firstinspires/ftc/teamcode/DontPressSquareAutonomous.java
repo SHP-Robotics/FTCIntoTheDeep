@@ -48,21 +48,24 @@ tracker.reset();
 
         viperSlideSubsystem = new ViperSlideSubsystem(hardwareMap);
         clawSubsystem = new ClawSubsystem(hardwareMap);
-//
-//        PathContainer Intake1 = new PathContainer.PathContainerBuilder()
-//                .setIncrement(0.01)
-//                .addCurve(
-//
-//                        new BezierCurve(
-//                                new Vector2D[]{
-//                                        new Vector2D(0, 0),
-//                                        new Vector2D(40, 0),
-//                                        new Vector2D(40, 47),
-//
-//                                }
-//                        )
-//                )
-//                .build();
+
+        PathContainer Intake1 = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.01)
+                .addCurve(
+
+                        new BezierCurve(
+                                new Vector2D[]{
+                                        new Vector2D(0, 0),
+                                        new Vector2D(40, 0),
+                                        new Vector2D(40, 40),
+
+                                }
+                        ),     new ParametricHeading(new double[]{
+                                0,0
+                        })
+
+                )
+                .build();
 
 //        PathContainer Outtake1 = new PathContainer.PathContainerBuilder()
 //                .setIncrement(0.01)
@@ -79,60 +82,36 @@ tracker.reset();
 //
 //                )
 //                .build();
-//        PathContainer Intake2 = new PathContainer.PathContainerBuilder()
-//                .setIncrement(0.01)
-//                .addCurve(
-//
-//                        new BezierCurve(
-//                                new Vector2D[]{
-//                                        new Vector2D(0, 0),
-//                                        new Vector2D(30, 0),
-//
-//                                        new Vector2D(40, 100),
-//                                }
-//
-//                        )
-////                        new ParametricHeading([new double a[0.1]])
-//
-//                )
-//                .build();
+
         PathContainer Park = new PathContainer.PathContainerBuilder()
                 .setIncrement(0.01)
                 .addCurve(
-
                         new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(20, 0),
-
-
                                 }
-
                         ),
                         new ParametricHeading(new double[]{
                                 0,0
                         })
-
                 )
                 .build();
         waitForStart();
         tracker.reset();
-//        wormGearSubsystem.setToZero(touchSensor, telemetry);
+        wormGearSubsystem.setToZero(touchSensor, telemetry);
 
-        followPath(Park, 2, 0.4);
+//        followPath(Park, 2, 0.4);
+        followPath(Intake1, 2, 0.4);
+        elapsedTime.reset();
         cycle();
-        elapsedTime.reset();
+        cycle();
+        cycle();
 
-//        while (elapsedTime.seconds()<1){
-//            update();
-//        }
-//        followPath(Intake2, 2, 0.6);
-//
-//        cycle();
-        elapsedTime.reset();
-//
-//        while (elapsedTime.seconds()<1){
-//            update();
-//        }
+        while (elapsedTime.seconds()<1){
+            update();
+        }
+
+
 
     }
 
@@ -163,10 +142,8 @@ tracker.reset();
     public void cycle(){
         wormGearSubsystem.cycle();
         viperSlideSubsystem.cycle();
-
-
-
     }
+
 public  void update(){
     wormGearSubsystem.update();
     viperSlideSubsystem.update();

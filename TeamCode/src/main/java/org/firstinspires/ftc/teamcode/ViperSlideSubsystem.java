@@ -26,7 +26,7 @@ public class ViperSlideSubsystem {
         INTAKE (0),
         DRIVING2 (0),
 
-        OUTTAKE (2650);
+        OUTTAKE (2450);
 
 
         ViperMode(int position) {
@@ -42,7 +42,7 @@ public class ViperSlideSubsystem {
     public enum HangMode {
         NONE (0),
 
-        SETUP (900),
+        SETUP (1000),
         VIPERDOWN (0),
         WORMGEARBACK (0),
         WORMGEARFOWARD (0),
@@ -154,7 +154,10 @@ public class ViperSlideSubsystem {
         }
 
     }
-
+    public void resetCycles() {
+       hangMode= NONE;
+       mode=DRIVING;
+    }
     public void updateTelemetry(Telemetry telemetry) {
 
         telemetry.addData("Viper Mode", mode);

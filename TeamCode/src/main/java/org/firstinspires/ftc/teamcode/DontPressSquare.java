@@ -87,12 +87,26 @@ public class DontPressSquare extends LinearOpMode {
 //                clawSubsystem.update();
             }
             if (gamepad1.dpad_left) {
+
                 clawSubsystem.setClose();
 //              clawSubsystem.update();
             }
-          
-                wristSubsystem.setClose();
+            if (gamepad1.left_trigger>0.9) {
+                gamepad1.rumble(500);
+                wormGearSubsystem.resetCycles();
+                viperSlideSubsystem.resetCycles();
+            }
+            if (gamepad1.dpad_down) {
+                while (gamepad1.dpad_down){}
+                wristSubsystem.incrementAdd();
 
+            }
+            if (gamepad1.dpad_up) {
+                while (gamepad1.dpad_up){}
+                wristSubsystem.incrementSubtract();
+
+            }
+            wristSubsystem.update();
             if (wormGearSubsystem.zeroed) {
                 if (wormGearSubsystem.hangMode == WormGearSubsystem.HangMode.NONE) {
                     wormGearSubsystem.update();
