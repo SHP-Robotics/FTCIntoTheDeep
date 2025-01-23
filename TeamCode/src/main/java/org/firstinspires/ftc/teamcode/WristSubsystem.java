@@ -50,6 +50,9 @@ public class WristSubsystem {
     public void update() {
         wrist.setPosition(position);
     }
+    public void reset() {
+        wrist.setPosition(0.8);
+    }
 
 
     public void updateTelemetry(Telemetry telemetry) {

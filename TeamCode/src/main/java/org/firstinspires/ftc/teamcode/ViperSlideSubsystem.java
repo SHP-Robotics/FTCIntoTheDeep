@@ -26,7 +26,7 @@ public class ViperSlideSubsystem {
         INTAKE (0),
         DRIVING2 (0),
 
-        OUTTAKE (2450);
+        OUTTAKE (2500);
 
 
         ViperMode(int position) {
@@ -61,7 +61,7 @@ public class ViperSlideSubsystem {
         private final int position;
     }
     private DcMotor viperSlide;
-    private ViperMode mode = DRIVING2;
+    public static ViperMode mode = DRIVING2;
     public static HangMode hangMode = NONE;
     ElapsedTime elapsedTime=new ElapsedTime();
     //    private  final int offset=-1540;

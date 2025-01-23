@@ -24,6 +24,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class WormGearSubsystem {
     private static final int OFFSET =-1550;
+    public static boolean intakeUp = true;
     boolean  zeroed=false;
     public enum WormMode {
         DRIVING (OFFSET),
@@ -66,7 +67,7 @@ public class WormGearSubsystem {
     }
 
     private DcMotorEx wormGear;
-    private WormMode mode= DRIVING2;
+    public WormMode mode= DRIVING2;
     public HangMode hangMode = NONE;
 
     public WormGearSubsystem(HardwareMap hardwareMap) {
@@ -151,13 +152,15 @@ public class WormGearSubsystem {
     public void update() {
         if( hangMode== NONE){
 
+            if (intakeUp && mode==INTAKE) {
+                wormGear.setTargetPosition(mode.getPosition()+150);
+            }else{
+                wormGear.setTargetPosition(mode.getPosition()-50);
+            }
+            wormGear.setPower(1);
 
-        wormGear.setTargetPosition(mode.getPosition());
-        wormGear.setPower(1);
         }
     }
-
-
     public void updateHanging() {
         wormGear.setTargetPosition(hangMode.getPosition());
         wormGear.setPower(0.6);
