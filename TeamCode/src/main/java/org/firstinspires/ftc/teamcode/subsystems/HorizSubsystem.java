@@ -23,6 +23,8 @@ public class HorizSubsystem extends Subsystem {
         DRIVING(0, 0), //1, 0.725 is all in
         BLOCKINBOT(0,0.5),
         INTAKINGEXTENDED(1,1), // 0.55 rail max out, 0 slide max out
+        PREPAUTOINTAKE(1,0),
+        PARK(0.725,0),
         MANUAL(0.7,0);
 
         final double railPos;

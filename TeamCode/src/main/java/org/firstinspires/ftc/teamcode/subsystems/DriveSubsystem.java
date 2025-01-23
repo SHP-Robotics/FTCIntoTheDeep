@@ -14,11 +14,24 @@ public class DriveSubsystem extends Subsystem {
     public final MecanumController drive;
     public final DeterministicTracker tracker;
     public final TeleOpController teleOpController;
+    private boolean IMU;
 
     public DriveSubsystem(HardwareMap hardwareMap) {
+        IMU = false;
         drive = PestoFTCConfig.getMecanumController(hardwareMap);
         tracker = PestoFTCConfig.getTracker(hardwareMap);
         teleOpController = PestoFTCConfig.getTeleOpController(drive, tracker, hardwareMap);
+    }
+
+    public void toggleIMU(){ //TODO CHECK THIS WORKS
+        if(!IMU) {
+            teleOpController.useIMU();
+            IMU = true;
+        }
+        else {
+            teleOpController.useTrackerIMU(tracker);
+            IMU = false;
+        }
     }
 
     public void update(Gamepad gamepad) {

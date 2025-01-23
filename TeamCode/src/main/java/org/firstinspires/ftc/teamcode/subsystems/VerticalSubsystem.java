@@ -68,8 +68,10 @@ public class VerticalSubsystem extends Subsystem {
         return state;
     }
 
-    public double getDriveBias() {
-        return 0.6;
+    public double getDriveBias(Boolean slow) {
+        if(slow)
+            return 0.4;
+        return 0.7;
     }
 
     public double getSlidePosition() {

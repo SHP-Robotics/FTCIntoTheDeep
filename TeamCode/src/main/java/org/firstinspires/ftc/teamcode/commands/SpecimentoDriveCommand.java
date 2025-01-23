@@ -24,7 +24,7 @@ public class SpecimentoDriveCommand extends Command {
         this.pivot = pivot;
         this.horiz = horiz;
         this.vertical = vertical;
-        endTime = 0.5;
+        endTime = 0.6;
     }
 
 

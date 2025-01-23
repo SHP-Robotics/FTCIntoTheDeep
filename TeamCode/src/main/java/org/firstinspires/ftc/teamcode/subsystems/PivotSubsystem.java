@@ -32,6 +32,7 @@ public class PivotSubsystem extends Subsystem {
         OUTTAKE3(0.2, 0.55),
         OUTTAKEBUCKET(0.2,0.55),
         HUMAN(0.4,0.6),
+        PARK(0, 0.355),
         MANUAL(0,0);
 
         final double wristPos;

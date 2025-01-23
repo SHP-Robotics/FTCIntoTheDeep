@@ -20,7 +20,8 @@ public class RotateSubsystem extends Subsystem {
         DROPOFF,
         INTAKE,
         PICKUP,
-        AUTO,
+        SAMPLE,
+        SPECIMEN,
         DROPOFFBUCKET,
         NEUTRAL;
     }
@@ -56,7 +57,7 @@ public class RotateSubsystem extends Subsystem {
         rotatePos -= 0.1;
        // }
     }
-    private void processState(State state) {
+    public void processState(State state) {
         if(this.state == State.INTAKE){
         }
         else if (this.state == State.NEUTRAL || this.state == State.DROPOFF) {
@@ -68,8 +69,11 @@ public class RotateSubsystem extends Subsystem {
         else if (this.state == State.DROPOFFBUCKET){
             rotatePos = 0.625;
         }
-        else if (this.state == State.AUTO){
+        else if (this.state == State.SAMPLE){
             rotatePos = 1;
+        }
+        else if (this.state == State.SPECIMEN){
+            rotatePos = 0.75;
         }
         rotate.setPosition(rotatePos);
 

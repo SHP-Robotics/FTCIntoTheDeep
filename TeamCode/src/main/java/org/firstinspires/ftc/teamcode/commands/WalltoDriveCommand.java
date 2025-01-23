@@ -41,8 +41,8 @@ public class WalltoDriveCommand extends Command {
     // Called once after isFinished() returns true
     @Override
     public void end() {
-        pivot.setState(PivotSubsystem.State.PICKUP2);
-        rotate.setState(RotateSubsystem.State.NEUTRAL);
+//        pivot.setState(PivotSubsystem.State.PICKUP2);
+//        rotate.setState(RotateSubsystem.State.NEUTRAL);
 
     }
 

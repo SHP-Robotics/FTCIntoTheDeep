@@ -42,6 +42,7 @@ public class AOfficialTeleOp extends BaseRobot {
 
     }
     private State cageState;
+    private State intakeState;
 
     @Override
     public void init(){
@@ -56,6 +57,7 @@ public class AOfficialTeleOp extends BaseRobot {
         crossTrigger = true;
 
         cageState = State.COMPLETE;
+        intakeState = State.COMPLETE;
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
         gamepadInterface2 = new GamepadInterface(gamepad2);
@@ -64,42 +66,19 @@ public class AOfficialTeleOp extends BaseRobot {
     @Override
     public void start(){
         super.start();
-        driveBias = vertical.getDriveBias();
-
-        //pivot.setState(PivotSubsystem.State.DRIVING);
+        driveBias = vertical.getDriveBias(gamepad1.right_stick_button);
     }
 
     @Override
     public void loop(){
         super.loop();
-        driveBias = vertical.getDriveBias();
+        driveBias = vertical.getDriveBias(gamepad1.right_stick_button);
         gamepadInterface1.update();
         drive.update(gamepad1);
 
         gamepadInterface2.update();
         drive.update(gamepad2);
-//        drive.drive.setZeroPowerBehavior(gamepad2.cross ? BRAKE : FLOAT);
-        // use gamepad2.right_bumper as speed boost
 
-        //Intake from submersible
-//        new Trigger(gamepad1.right_bumper,
-//            new DrivetoSubCommand(rotate, claw, pivot, horizontal, gamepad1.right_trigger)
-//                    .then(new RunCommand(()->{
-//                        holdingRightBumper = true;
-//                    }))
-//        );
-//        new Trigger((holdingRightBumper && !gamepad1.right_bumper),
-//            new SubtoDriveCommand(rotate, claw, pivot, horizontal)
-//                    .then(new RunCommand(()->{
-//                        holdingRightBumper = false;
-//                    }))
-//                    .then(new WaitCommand(0.25))
-//                    .then(new RunCommand(()->{
-//                        rotate.setState(RotateSubsystem.State.NEUTRAL);
-//                        pivot.setState(PivotSubsystem.State.DRIVING);
-//                        horizontal.setState(HorizSubsystem.State.DRIVING);
-//                    }))
-//        );
 
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER), new RunCommand(() -> {
             if (cageState == State.COMPLETE) {
@@ -120,7 +99,7 @@ public class AOfficialTeleOp extends BaseRobot {
                             );
                             andrewWompWomp++;
                         }
-                        else {
+                        else { //TODO add fake controller rumble
                             claw.setColor(GREEN);
                             CommandScheduler.getInstance().scheduleCommand(
                                 new RunCommand(()->{
@@ -148,31 +127,73 @@ public class AOfficialTeleOp extends BaseRobot {
         }));
 
         new Trigger(gamepad1.dpad_up, new RunCommand(() -> {
+            claw.close();
             rotate.setState(RotateSubsystem.State.NEUTRAL);
             pivot.setState(PivotSubsystem.State.DRIVING);
             horizontal.setState(HorizSubsystem.State.DRIVING);
             cageState = State.COMPLETE;
+            intakeState = State.COMPLETE;
             claw.setColor(OFF);
         }));
 
         //intake specimen
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && LBTrigger,
-                new DrivetoWallCommand(rotate, claw, pivot, horizontal)
-                        .then(new RunCommand(()->{
-                            LBTrigger = false;
-                        }))
-        );
+        //old
+//        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && LBTrigger,
+//                new DrivetoWallCommand(rotate, claw, pivot, horizontal)
+//                        .then(new RunCommand(()->{
+//                            LBTrigger = false;
+//                        }))
+//        );
+//
+//        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && !LBTrigger,
+//                new WalltoDriveCommand(rotate, claw, pivot, horizontal)
+//                        .then(new RunCommand(()->{
+//                            LBTrigger = true;
+//                        }))
+//                        .then(new WaitCommand(0.5))
+//                        .then(new RunCommand(()->{
+//                            pivot.setState(PivotSubsystem.State.DRIVING);
+//                        }))
+//        );
+        //new
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER), new RunCommand(() -> {
+            if (intakeState == State.COMPLETE) {
+                CommandScheduler.getInstance().scheduleCommand(
+                        new DrivetoWallCommand(rotate, claw, pivot, horizontal)
+                );
+                intakeState = State.EXTENDED;
+                claw.setColor(PINK);
+            }
+            else if (intakeState == State.EXTENDED) {
+                CommandScheduler.getInstance().scheduleCommand(
+                    new WalltoDriveCommand(rotate, claw, pivot, horizontal)
+                    .then(new WaitCommand(0.25))
+                    .then(new RunCommand(()->{
+                    if (!claw.isBlockInClaw()) {
+                        CommandScheduler.getInstance().scheduleCommand(
+                                new DrivetoWallCommand(rotate, claw, pivot, horizontal)
+                        );
+                        andrewWompWomp++;
+                    }
+                    else {
+                        claw.setColor(GREEN);
+                        CommandScheduler.getInstance().scheduleCommand(
+                            new RunCommand(()->{
+                                pivot.setState(PivotSubsystem.State.PICKUP2);
+                                rotate.setState(RotateSubsystem.State.NEUTRAL);
+                                intakeState = State.COMPLETE;
+                            })
+                            .then(new WaitCommand(0.5))
+                            .then(new RunCommand(() -> {
+                                pivot.setState(PivotSubsystem.State.DRIVING);
+                                claw.setColor(OFF);
+                            }))
+                        );
+                    }
+                })));
+            }
+        }));
 
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && !LBTrigger,
-                new WalltoDriveCommand(rotate, claw, pivot, horizontal)
-                        .then(new RunCommand(()->{
-                            LBTrigger = true;
-                        }))
-                        .then(new WaitCommand(0.5))
-                        .then(new RunCommand(()->{
-                            pivot.setState(PivotSubsystem.State.DRIVING);
-                        }))
-        );
 
         //deposit specimen
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && LTTrigger,
@@ -188,10 +209,10 @@ public class AOfficialTeleOp extends BaseRobot {
                 }))
                 .then(new WaitCommand(0.5))
                 .then(new RunCommand(()->{
-                    pivot.setState(PivotSubsystem.State.PREPAREDRIVING);
                     claw.close();
+                    pivot.setState(PivotSubsystem.State.PREPAREDRIVING);
                 }))
-                .then(new WaitCommand(0.5))
+                .then(new WaitCommand(0.25))
                 .then(new RunCommand(()->{
                     pivot.setState(PivotSubsystem.State.DRIVING);
                     vertical.setState(VerticalSubsystem.State.BOTTOM);
@@ -266,16 +287,11 @@ public class AOfficialTeleOp extends BaseRobot {
                 })
         ));
 
-
-
-
-        //toggle high or low bars
-        new Trigger(gamepad2.triangle, new RunCommand(()->{
-            vertical.cycleStates(true); //FOR BAR
+        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.Y), new RunCommand(()->{
+            drive.toggleIMU();
         }));
-        new Trigger(gamepad2.circle, new RunCommand(()->{
-            vertical.cycleStates(false); //FOR BUCKET
-        }));
+
+        //TODO add something to turn IR beam off
 
     }
 }

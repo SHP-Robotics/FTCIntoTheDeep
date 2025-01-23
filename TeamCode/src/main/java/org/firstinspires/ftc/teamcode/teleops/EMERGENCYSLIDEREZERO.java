@@ -33,7 +33,7 @@ public class EMERGENCYSLIDEREZERO extends BaseRobot {
     @Override
     public void start(){
         super.start();
-        driveBias = vertical.getDriveBias();
+        driveBias = vertical.getDriveBias(gamepad1.right_stick_button);
 
         //pivot.setState(PivotSubsystem.State.DRIVING);
     }
@@ -41,7 +41,7 @@ public class EMERGENCYSLIDEREZERO extends BaseRobot {
     @Override
     public void loop(){
         super.loop();
-        driveBias = vertical.getDriveBias();
+        driveBias = vertical.getDriveBias(gamepad1.right_stick_button);
         gamepadInterface2.update();
         drive.update(gamepad2);
 //        drive.drive.setZeroPowerBehavior(gamepad2.cross ? BRAKE : FLOAT);
