@@ -26,7 +26,6 @@ public class PivotSubsystem extends Subsystem {
         INTAKE(0.63,0), //  0.63 wrist is level with floor
         PICKUP(0.925,0.2),
         PICKUP2(0.925,0.35),
-
         OUTTAKE1(0.2,0.3),
         OUTTAKE2(0.2, 0.55),
         OUTTAKE3(0.2, 0.55),

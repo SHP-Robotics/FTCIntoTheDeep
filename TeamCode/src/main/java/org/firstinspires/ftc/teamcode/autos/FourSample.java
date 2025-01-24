@@ -192,7 +192,7 @@ public class FourSample extends LinearOpMode {
                         new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(-14.5, -30),
-                                        new Vector2D(-9, -27.5)
+                                        new Vector2D(-8, -27.5)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -212,7 +212,7 @@ public class FourSample extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-9, -27.5),
+                                        new Vector2D(-8, -27.5),
                                         new Vector2D(-60, -25),
                                         new Vector2D(-60, -25),
                                         new Vector2D(-60, -25)
@@ -273,6 +273,7 @@ public class FourSample extends LinearOpMode {
         //Get Block 2
         prepIntake();
         followPath(getBlock2, 1, 0.6);
+        startIntake();
         finishIntake();
 
         //Deposit Block 2
@@ -284,6 +285,7 @@ public class FourSample extends LinearOpMode {
         //Get Block 3
         prepIntake();
         followPath(getBlock3, 1, 0.6);
+        startIntake();
         finishIntake();
 
         //Deposit Block 3
@@ -295,6 +297,7 @@ public class FourSample extends LinearOpMode {
         prepIntake();
         rotateIntake();
         followPath(getBlock4, 1, 0.6); //Deceleration 1.5 to 1
+        startIntake();
         finishIntake();
 
         //Deposit Block 4
@@ -372,21 +375,41 @@ public class FourSample extends LinearOpMode {
         rotate.setState(RotateSubsystem.State.SAMPLE);
         updateCommands();
     }
-    /** Grabs sample and returns to driving mode */
-    public void finishIntake(){
+    /** Grabs sample */
+    public void startIntake(){
         pivot.setState(PivotSubsystem.State.INTAKE);
         updateCommands(0.25);
-
         claw.close();
         updateCommands(0.25);
-        if(claw.isBlockInClaw()){
-            claw.setColor(ClawSubsystem.ColorState.GREEN);
+
+        //reattempt if fail
+        if(!claw.isBlockInClaw()){
+            claw.setColor(ClawSubsystem.ColorState.RED);
+
+            pivot.setState(PivotSubsystem.State.PREPAREINTAKE);
+            claw.open();
+            updateCommands(0.25);
+
+            pivot.setState(PivotSubsystem.State.INTAKE);
+            updateCommands(0.25);
+            claw.close();
+            updateCommands(0.25);
+
+            if(claw.isBlockInClaw()) {
+                claw.setColor(ClawSubsystem.ColorState.GREEN);
+                updateCommands();
+            }
         }
 
+    }
+    /** Returns to driving mode */
+    public void finishIntake(){
         rotate.setState(RotateSubsystem.State.NEUTRAL);
         pivot.setState(PivotSubsystem.State.DRIVING);
         horizontal.setState(HorizSubsystem.State.DRIVING);
         updateCommands(0.25); //removed wait
+        claw.setColor(ClawSubsystem.ColorState.OFF);
+        updateCommands();
     }
 
     /** Raises the Vertical */

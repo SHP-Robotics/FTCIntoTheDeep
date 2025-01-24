@@ -25,7 +25,7 @@ public class Constants {
         public static final double kMaxHeight = 3200;
         public static final double kSlideTolerance = 5;
         public static final double kIncrement = 25;
-        public static final double kRunPower = 0.75;
+        public static final double kRunPower = 0.8;
     }
 
     public static final class Horiz {

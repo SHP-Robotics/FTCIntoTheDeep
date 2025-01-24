@@ -22,6 +22,7 @@ public class ClawSubsystem extends Subsystem {
     boolean blockInClaw;
     public enum ColorState {
         OFF(0.0),
+        RED(0.279),
         PINK(0.7),
         GREEN(0.5);
         final double color;
@@ -96,6 +97,9 @@ public class ClawSubsystem extends Subsystem {
 
         if(colorState == ColorState.OFF){
             ledLight.setPosition(ColorState.OFF.color);
+        }
+        else if(colorState == ColorState.RED){
+            ledLight.setPosition(colorState.color);
         }
         else if(colorState == ColorState.PINK){
             ledLight.setPosition(ColorState.PINK.color);
