@@ -19,6 +19,7 @@ public class DriveSubsystem extends Subsystem {
         drive = PestoFTCConfig.getMecanumController(hardwareMap);
         tracker = PestoFTCConfig.getTracker(hardwareMap);
         teleOpController = PestoFTCConfig.getTeleOpController(drive, tracker, hardwareMap);
+        teleOpController.useIMU();
     }
 
     public void update(Gamepad gamepad) {
@@ -30,8 +31,8 @@ public class DriveSubsystem extends Subsystem {
         teleOpController.driveFieldCentric(forward, strafe, rotate);
     }
     public void resetIMUAngle() {
-//        teleOpController.resetIMU();
-        tracker.reset();
+        teleOpController.resetIMU();
+//        tracker.reset();
     }
 
     @Override

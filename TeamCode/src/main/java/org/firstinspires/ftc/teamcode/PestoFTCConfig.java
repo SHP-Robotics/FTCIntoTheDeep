@@ -52,10 +52,10 @@ public class PestoFTCConfig {
         });
 
         mecanumController.configureMotorDirections(new DcMotorSimple.Direction[]{
-                REVERSE,
                 FORWARD,
                 REVERSE,
-                FORWARD
+                FORWARD,
+                REVERSE
         });
 
 //        double magnitude = new Vector2D(70, 60).getMagnitude();
@@ -77,8 +77,8 @@ public class PestoFTCConfig {
         teleOpController.useTrackerIMU(tracker);
 
         teleOpController.configureIMU(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
         );
 
         teleOpController.setSpeedController((gamepad) -> {

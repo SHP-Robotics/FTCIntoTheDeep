@@ -14,54 +14,63 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.shplib.Constants;
 import org.firstinspires.ftc.teamcode.shplib.commands.Subsystem;
 
+import dev.frozenmilk.dairy.cachinghardware.CachingCRServo;
 import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
 
 public class VerticalSubsystem extends Subsystem {
-    private final CachingDcMotorEx leftSlide;
-    private final CachingDcMotorEx rightSlide;
+    public final CachingDcMotorEx wormGear;
+    private final CachingDcMotorEx linearSlide;
+    private final CachingCRServo intake;
     private int slidePos;
+    private int wormGearPos;
     private int offset;
 
     public enum State {
-        BOTTOM(0),
-        DEPOSITING(1000),
-        DOWN(50),
-        LOWBAR(0),
-        HIGHBAR(850),
-        LOWBUCKET(800), //TODO TUNE
-        HIGHBUCKET(3100), //TODO TUNE
-        MANUAL(0),
-        NOPOWER(0);
+        BOTTOM(0, 0),
+        DEPOSITING(1000, 1000),
+        INTAKE(50, 50),
+        LOWBUCKET(800, 800), // TODO: Tune
+        HIGHBUCKET(3100, 3100), // TODO: Tune
+        MANUAL(0, 0);
 
-        final double position;
+        final double slidePosition;
+        final double wormGearPosition;
 
-        State(double position) {
-            this.position = position;
+        State(double slidePosition, double wormGearPosition) {
+            this.slidePosition = slidePosition;
+            this.wormGearPosition = wormGearPosition;
         }
     }
 
-    private State state, depositState;
+    private State state;
+    private State depositState;
 
     public VerticalSubsystem(HardwareMap hardwareMap) {
         slidePos = 0;
+        wormGearPos = 0;
         offset = 0;
 
-        leftSlide = new CachingDcMotorEx((DcMotorEx) hardwareMap.get(kLeftSlideName));
-        leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        wormGear = new CachingDcMotorEx((DcMotorEx) hardwareMap.get("wormGear"));
+        wormGear.setDirection(DcMotorSimple.Direction.FORWARD);
+        wormGear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        rightSlide = new CachingDcMotorEx((DcMotorEx) hardwareMap.get(kRightSlideName));
-        rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        linearSlide = new CachingDcMotorEx((DcMotorEx) hardwareMap.get("linearSlide"));
+        linearSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        linearSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        intake = new CachingCRServo(hardwareMap.crservo.get("intake"));
+        intake.setPower(0);
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         resetZeroPosition();
 
         setState(State.MANUAL);
-        depositState = State.HIGHBAR;
+        depositState = State.HIGHBUCKET;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setState(State slideState) {
+        this.state = slideState;
     }
 
     public State getState() {
@@ -73,87 +82,104 @@ public class VerticalSubsystem extends Subsystem {
     }
 
     public double getSlidePosition() {
-        return ((float)leftSlide.getCurrentPosition() + (float)rightSlide.getCurrentPosition()) / 2;
+        return linearSlide.getCurrentPosition();
     }
 
-    public void incrementSlide(){
-        if(slidePos <= kMaxHeight - kIncrement) {
+    public double getWormGearPosition() {
+        return wormGear.getCurrentPosition();
+    }
+
+    public void setSlidePosition(int position) {
+        linearSlide.setTargetPosition(position);
+//        linearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        linearSlide.setPower(Constants.Vertical.kRunPower);
+    }
+
+    public void setWormGearPosition(int position) {
+        wormGear.setTargetPosition(position);
+//        wormGear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        wormGear.setPower(Constants.Vertical.kRunPower);
+    }
+
+    public void runIntake(double power) {
+        intake.setPower(power);
+    }
+
+    public void stopIntake() {
+        intake.setPower(0);
+    }
+
+    public void returnToIntake() {
+        setState(State.INTAKE);
+        setSlidePosition((int) State.INTAKE.slidePosition);
+        setWormGearPosition((int) State.INTAKE.wormGearPosition);
+    }
+
+    public void incrementSlide() {
+        if (slidePos <= kMaxHeight - kIncrement) {
             state = State.MANUAL;
             slidePos += kIncrement;
+            setSlidePosition(slidePos);
         }
     }
 
-    public void decrementSlide(){
-        if(slidePos >= kIncrement ) {
+    public void decrementSlide() {
+        if (slidePos >= kIncrement) {
             state = State.MANUAL;
             slidePos -= kIncrement;
+            setSlidePosition(slidePos);
         }
     }
-    public void emergencyDecrementSlide(){
-        state = State.MANUAL;
-        slidePos -= kIncrement;
+
+//    public void incrementWormGear() {
+//        wormGearPos += kIncrement;
+//        setWormGearPosition(wormGearPos);
+//    }
+//
+//    public void decrementWormGear() {
+//        wormGearPos -= kIncrement;
+//        setWormGearPosition(wormGearPos);
+//    }
+
+    public void cycleStates(boolean forward) {
+        if (forward) {
+            switch (depositState) {
+                case HIGHBUCKET:
+                    depositState = State.LOWBUCKET;
+                    break;
+                case LOWBUCKET:
+                    depositState = State.HIGHBUCKET;
+                    break;
+            }
+            setSlidePosition((int) depositState.slidePosition);
+            setWormGearPosition((int) depositState.wormGearPosition);
+        }
     }
-    public void endReset(){
-        offset = (leftSlide.getCurrentPosition()+rightSlide.getCurrentPosition())/2;
+
+    public void resetZeroPosition() {
+        wormGear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        linearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+//        wormGear.setTargetPosition(0);
+        linearSlide.setTargetPosition(0);
+
+        linearSlide.setPower(Constants.Vertical.kRunPower);
+//        wormGear.setPower(Constants.Vertical.kRunPower);
+
+        linearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        wormGear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         slidePos = 0;
-    }
-    public void resetZeroPosition() { //TODO Switch to William's stalling detection
-        leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftSlide.setTargetPosition(0);
-        rightSlide.setTargetPosition(0);
-
-        rightSlide.setPower(Constants.Vertical.kRunPower);
-        leftSlide.setPower(Constants.Vertical.kRunPower);
-
-        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-
-    public void setDepositState(State state){
-        this.depositState = state;
-    }
-    public void cycleStates(boolean bar){
-        if(bar) {
-            if (depositState == State.HIGHBAR) {
-                depositState = State.LOWBAR;
-            } else {
-                depositState = State.HIGHBAR;
-            }
-        }
-        else{
-            if (depositState == State.HIGHBUCKET) {
-                depositState = State.LOWBUCKET;
-            } else {
-                depositState = State.HIGHBUCKET;
-            }
-        }
-    }
-    private void setPosition(double position){
-        rightSlide.setTargetPosition((int) position);
-        leftSlide.setTargetPosition((int) position);
-    }
-
-    private void processState() {
-        if (this.state == State.MANUAL) {
-            this.setPosition(slidePos+offset);
-            return;
-        }
-        if (this.state == State.DEPOSITING){
-            this.setPosition(this.depositState.position+offset);
-            return;
-        }
-        this.setPosition(this.state.position+offset);
-
+        wormGearPos = 0;
+        offset = 0;
     }
 
     @Override
     public void periodic(Telemetry telemetry) {
-        processState();
-        telemetry.addData("DEPOSIT STATE:", depositState);
-        telemetry.addData("Slide State: ", state);
-        telemetry.addData("Left Slide Position: ", leftSlide.getCurrentPosition());
-        telemetry.addData("Right Slide Position: ", rightSlide.getCurrentPosition());
+        telemetry.addData("State", state);
+        telemetry.addData("Deposit State", depositState);
+        telemetry.addData("Slide Position", getSlidePosition());
+        telemetry.addData("Worm Gear Position", getWormGearPosition());
+        telemetry.update();
     }
 }
