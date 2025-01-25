@@ -104,15 +104,16 @@ public class AOfficialTeleOp extends BaseRobot {
                             CommandScheduler.getInstance().scheduleCommand(
                                 new RunCommand(()->{
                                     rotate.setState(RotateSubsystem.State.NEUTRAL);
-                                    pivot.setState(PivotSubsystem.State.DRIVING);
+                                    pivot.setState(PivotSubsystem.State.PICKUP3); //TODO DRIVING to PICKUP
                                     cageState = State.COMPLETE;
                                 })
-                                .then(new WaitCommand(0.25))
+                                .then(new WaitCommand(0.05))
                                 .then(new RunCommand(() -> {
                                     horizontal.setState(HorizSubsystem.State.DRIVING);
                                 }))
-                                .then(new WaitCommand(0.75))
+                                .then(new WaitCommand(0.5))
                                 .then(new RunCommand(() -> {
+                                    pivot.setState(PivotSubsystem.State.DRIVING); // TODO ADDED
                                     claw.setColor(OFF);
                                 }))
                             );
