@@ -4,7 +4,6 @@ import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WAL
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.shprobotics.pestocore.algorithms.PID;
@@ -26,9 +25,8 @@ import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
 @Config
-@Disabled
-@Autonomous(name = "Testing 3 + 0")
-public class TestAuto extends LinearOpMode {
+@Autonomous(name = "4 + 0 SPECIMEN")
+public class FourSpecimen extends LinearOpMode {
     private MecanumController mecanumController;
     private DeterministicTracker tracker;
     VerticalSubsystem vertical;
@@ -37,10 +35,10 @@ public class TestAuto extends LinearOpMode {
     HorizSubsystem horizontal;
     ClawSubsystem claw;
     PathContainer startToSub,
-//            sweepBlock1a, sweepBlock1b,
+    //            sweepBlock1a, sweepBlock1b,
 //            sweepBlock2a, sweepBlock2b,
 //            sweepBlock3a, sweepBlock3b,
-            pushBlock1, pushBlock2a, pushBlock2b, pushBlock2c,
+    pushBlock1, pushBlock2a, pushBlock2b, pushBlock2c,
             grabBlock1a, grabBlock1b, depositBlock1,
             grabBlock2a, grabBlock2b, depositBlock2,
             grabBlock3a, grabBlock3b, depositBlock3,
@@ -249,11 +247,11 @@ public class TestAuto extends LinearOpMode {
                         new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(12, -30.5),
-                                        new Vector2D(-24, -25),
-                                        new Vector2D(-24, -25),
-                                        new Vector2D(-24, -25),
-                                        new Vector2D(-24, -25),
-                                        new Vector2D(-24, -25)
+                                        new Vector2D(-23, -25),
+                                        new Vector2D(-23, -25),
+                                        new Vector2D(-23, -25),
+                                        new Vector2D(-23, -25),
+                                        new Vector2D(-23, -25)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -263,7 +261,7 @@ public class TestAuto extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-24, -25),
+                                        new Vector2D(-23, -25),
                                         new Vector2D(-22, -50),
                                         new Vector2D(-22, -50),
                                         new Vector2D(-22, -50)
@@ -455,9 +453,9 @@ public class TestAuto extends LinearOpMode {
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(-27.8, -15),
-                                        new Vector2D(-27.8, -7.5),
-                                        new Vector2D(-27.8, -7.5),
-                                        new Vector2D(-27.8, -7.5)
+                                        new Vector2D(-27.8, -7),
+                                        new Vector2D(-27.8, -7),
+                                        new Vector2D(-27.8, -7)
 
                                 }
                         ),
@@ -471,7 +469,7 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-27.8, -7.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(-27.8, -7), //with 2 blocks (-47, 10)
                                         new Vector2D(5, -20),
                                         new Vector2D(5, -20),
                                         new Vector2D(5, -20),
@@ -486,10 +484,10 @@ public class TestAuto extends LinearOpMode {
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(5, -20), //with 2 blocks (-47, 10)
-                                        new Vector2D(5, -30.5),
-                                        new Vector2D(5, -30.5),
-                                        new Vector2D(5, -30.5),
-                                        new Vector2D(5, -30.5)
+                                        new Vector2D(5, -31),
+                                        new Vector2D(5, -31),
+                                        new Vector2D(5, -31),
+                                        new Vector2D(5, -31)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -502,7 +500,7 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(5, -30.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(5, -31), //with 2 blocks (-47, 10)
                                         new Vector2D(5, -27)
                                 }
                         ),
@@ -605,7 +603,7 @@ public class TestAuto extends LinearOpMode {
         rotate.processState(RotateSubsystem.State.NEUTRAL);
 
         //TODO THIS IS THE START
-        //TODO add 1/10 back 
+        //TODO add 1/10 back
 
         waitForStart();
 
@@ -859,7 +857,7 @@ public class TestAuto extends LinearOpMode {
         updateCommands(0.525);
 
         claw.open();
-        updateCommands(0.25);
+        updateCommands(0.2); //TODO .25 -> .2
 
         claw.close();
         vertical.setState(VerticalSubsystem.State.BOTTOM);

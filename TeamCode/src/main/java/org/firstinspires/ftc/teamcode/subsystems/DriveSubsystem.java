@@ -26,6 +26,7 @@ public class DriveSubsystem extends Subsystem {
     public void toggleIMU(){ //TODO CHECK THIS WORKS
         if(!IMU) {
             teleOpController.useIMU();
+            teleOpController.resetIMU();
             IMU = true;
         }
         else {

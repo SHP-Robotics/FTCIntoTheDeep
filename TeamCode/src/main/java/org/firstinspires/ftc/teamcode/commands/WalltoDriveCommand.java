@@ -22,7 +22,7 @@ public class WalltoDriveCommand extends Command {
         this.claw = claw;
         this.pivot = pivot;
         this.horiz = horiz;
-        endTime = 0.5;
+        endTime = 0.25;
     }
 
 
