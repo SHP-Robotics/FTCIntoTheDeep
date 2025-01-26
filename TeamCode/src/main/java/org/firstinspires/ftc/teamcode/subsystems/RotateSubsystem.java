@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.shplib.Constants.Rotate.kBrokenPickup;
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Rotate.kNeutral;
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Rotate.kPickup;
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Rotate.kRotateName;
@@ -20,6 +21,7 @@ public class RotateSubsystem extends Subsystem {
         DROPOFF,
         INTAKE,
         PICKUP,
+        BROKENPICKUP,
         SAMPLE,
         SPECIMEN,
         DROPOFFBUCKET,
@@ -65,6 +67,9 @@ public class RotateSubsystem extends Subsystem {
         }
         else if (this.state == State.PICKUP){
             rotatePos = kPickup;
+        }
+        else if (this.state == State.BROKENPICKUP){
+            rotatePos = kBrokenPickup;
         }
         else if (this.state == State.DROPOFFBUCKET){
             rotatePos = 0.625;

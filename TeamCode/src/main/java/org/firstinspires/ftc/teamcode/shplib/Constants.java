@@ -36,6 +36,8 @@ public class Constants {
     public static final class Rotate{
         public static final String kRotateName = "rotateServo";
         public static final double kPickup = 0.35;
+        public static final double kBrokenPickup = 0;
+
         public static final double kNeutral = 0.925;
     }
 

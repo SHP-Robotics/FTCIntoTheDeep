@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autos;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.shprobotics.pestocore.algorithms.PID;
@@ -23,6 +24,7 @@ import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
 @Config
+@Disabled
 @Autonomous(name = "3 + 0 SPECIMEN")
 public class ThreeSpecimen extends LinearOpMode {
     private MecanumController mecanumController;

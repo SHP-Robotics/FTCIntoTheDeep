@@ -25,8 +25,8 @@ import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
 @Config
-@Autonomous(name = "4 + 0 SPECIMEN")
-public class FourSpecimen extends LinearOpMode {
+@Autonomous(name = "BROKEN 4 + 0 SPECIMEN")
+public class BrokenFourSpeicmen extends LinearOpMode {
     private MecanumController mecanumController;
     private DeterministicTracker tracker;
     VerticalSubsystem vertical;
@@ -542,10 +542,10 @@ public class FourSpecimen extends LinearOpMode {
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(-27.8, -7.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(2, -11),
-                                        new Vector2D(2, -11),
-                                        new Vector2D(2, -11),
-                                        new Vector2D(2, -11)
+                                        new Vector2D(3, -11),
+                                        new Vector2D(3, -11),
+                                        new Vector2D(3, -11),
+                                        new Vector2D(3, -11)
 
                                 }
                         ),
@@ -555,11 +555,11 @@ public class FourSpecimen extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(2, -11), //with 2 blocks (-47, 10)
-                                        new Vector2D(2, -30.5),
-                                        new Vector2D(2, -30.5),
-                                        new Vector2D(2, -30.5),
-                                        new Vector2D(2, -30.5)
+                                        new Vector2D(3, -11), //with 2 blocks (-47, 10)
+                                        new Vector2D(3, -30.5),
+                                        new Vector2D(3, -30.5),
+                                        new Vector2D(3, -30.5),
+                                        new Vector2D(3, -30.5)
 
                                 }
                         ),
@@ -574,7 +574,7 @@ public class FourSpecimen extends LinearOpMode {
                 .setIncrement(0.03)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(2, -30.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(3, -30.5), //with 2 blocks (-47, 10)
                                         new Vector2D(-30, -6)
                                 }
                         ),
@@ -633,7 +633,7 @@ public class FourSpecimen extends LinearOpMode {
         raiseArm();
 
         //Deposit Block 1
-        followPath(depositBlock1, 0.25, 0.8);
+        followPath(depositBlock1, 0.15, 0.8);
         lowerArm();
 
         //Grab Block 2
@@ -645,7 +645,7 @@ public class FourSpecimen extends LinearOpMode {
         raiseArm();
 
         //Deposit Block 2
-        followPath(depositBlock2, 0.25, 0.8);
+        followPath(depositBlock2, 0.15, 0.8);
         lowerArm();
 
         //Grab Block 3
@@ -657,7 +657,7 @@ public class FourSpecimen extends LinearOpMode {
         raiseArm();
 
         //Deposit Block 2
-        followPath(depositBlock3, 0.25, 0.8);
+        followPath(depositBlock3, 0.15, 0.8);
         lowerArm();
 
         followPath(park, 0.25, 0.8);
@@ -816,7 +816,7 @@ public class FourSpecimen extends LinearOpMode {
         pivot.setState(PivotSubsystem.State.PICKUP);
         horizontal.setState(HorizSubsystem.State.AUTOINTAKE);
         updateCommands(0.25);
-        rotate.setState(RotateSubsystem.State.PICKUP);
+        rotate.setState(RotateSubsystem.State.BROKENPICKUP);
         claw.open();
         updateCommands();
     }
