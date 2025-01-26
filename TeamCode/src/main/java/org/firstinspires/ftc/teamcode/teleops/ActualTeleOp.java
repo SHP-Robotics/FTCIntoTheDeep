@@ -1,16 +1,15 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.devices.GamepadInterface;
-import com.shprobotics.pestocore.devices.GamepadKey;
 
 import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
 import org.firstinspires.ftc.teamcode.shplib.commands.RunCommand;
-import org.firstinspires.ftc.teamcode.shplib.commands.Trigger;
-import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
-@TeleOp(name = "RoshanTeleOp", group = "TeleOp")
-public class RoshanTeleOp extends BaseRobot {
+@TeleOp(name = "USETHISTELEOP", group = "TeleOp")
+public class ActualTeleOp extends BaseRobot {
+
     private double driveBias; // Adjust driving sensitivity
     private GamepadInterface gamepadInterface1; // Wrapper for custom input handling
 
@@ -69,33 +68,25 @@ public class RoshanTeleOp extends BaseRobot {
             vertical.returnToIntake();
         }
 
-        // Manual slide adjustments with D-Pad
-        if (gamepad1.dpad_up) {
-            vertical.incrementSlide(); // Increment slide position
-        }
-        if (gamepad1.dpad_down) {
-            vertical.decrementSlide(); // Decrement slide position
-        }
-//        if (gamepad1.dpad_left) {
-//            vertical.incrementWormGear(); // Increment worm gear position
+//        // Manual slide adjustments with D-Pad
+//        if (gamepad1.dpad_up) {
+//            vertical.incrementSlide(); // Increment slide position
 //        }
-//
-//        if (gamepad1.dpad_right) {
-//            vertical.decrementWormGear(); // Decrement worm gear position
-//        }
+//        if (gamepad1.dpad_down) {
+//            vertical.decrementSlide(); // Decrement slide position
 
 //        gamepad1.dpad_right ? vertical.runIntake(1) : vertical.stopIntake();
 
         if (gamepad1.right_bumper){
             vertical.runIntake(1);
+        } else {
+            vertical.stopIntake();
         }
 
         if (gamepad1.left_bumper){
             vertical.runIntake(-1);
-        }
-
-        if (!gamepad1.right_bumper && !gamepad1.left_bumper){
-            vertical.runIntake(0);
+        } else {
+            vertical.stopIntake();
         }
 
 //        vertical.intake.setPower((gamepad1.dpad_left ? 1 : 0) - (gamepad1.dpad_right ? 1 : 0));
@@ -113,4 +104,5 @@ public class RoshanTeleOp extends BaseRobot {
         telemetry.addData("Slide Position:", vertical.getSlidePosition());
         telemetry.update();
     }
+
 }

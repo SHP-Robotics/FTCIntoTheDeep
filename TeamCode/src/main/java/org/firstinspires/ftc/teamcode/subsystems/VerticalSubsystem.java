@@ -119,6 +119,10 @@ public class VerticalSubsystem extends Subsystem {
         if (slidePos <= kMaxHeight - kIncrement) {
             state = State.MANUAL;
             slidePos += kIncrement;
+            if (getSlidePosition() > 2200){
+                slidePos = 2200;
+            }
+
             setSlidePosition(slidePos);
         }
     }

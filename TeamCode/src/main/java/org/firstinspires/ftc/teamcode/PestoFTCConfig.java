@@ -56,6 +56,7 @@ public class PestoFTCConfig {
                 REVERSE,
                 FORWARD,
                 REVERSE
+
         });
 
 //        double magnitude = new Vector2D(70, 60).getMagnitude();
