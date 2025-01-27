@@ -50,8 +50,9 @@ public class WristSubsystem {
     public void update() {
         wrist.setPosition(position);
     }
-    public void reset() {
-        wrist.setPosition(0.8);
+    public void reset(double goTo) {
+        position=goTo;
+        update();
     }
 
 

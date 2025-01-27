@@ -28,7 +28,7 @@ public class ClawSubsystem {
     }
 
     private Servo claw;
-    private ClawMode mode= CLOSE;
+    public ClawMode mode= CLOSE;
 
     //    private  final int offset=-1540;
     public ClawSubsystem(HardwareMap hardwareMap) {

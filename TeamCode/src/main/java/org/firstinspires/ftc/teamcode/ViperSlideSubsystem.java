@@ -23,7 +23,7 @@ public class ViperSlideSubsystem {
 
     public enum ViperMode {
         DRIVING (0),
-        INTAKE (0),
+        INTAKE (300),
         DRIVING2 (0),
 
         OUTTAKE (2500);
@@ -147,7 +147,7 @@ public class ViperSlideSubsystem {
         viperSlide.setPower(1);
 
         if (hangMode==VIPERDOWN) {
-            viperSlide.setPower(0.5);
+            viperSlide.setPower(1);
         }else if (hangMode==VIPERUP) {
             viperSlide.setPower(0.1);
 

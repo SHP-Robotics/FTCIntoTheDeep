@@ -56,8 +56,8 @@ tracker.reset();
                         new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(0, 0),
-                                        new Vector2D(40, 0),
-                                        new Vector2D(40, 40),
+                                        new Vector2D(0,48),
+//                                        new Vector2D(100, 40),
 
                                 }
                         ),     new ParametricHeading(new double[]{
@@ -97,28 +97,21 @@ tracker.reset();
                 )
                 .build();
         waitForStart();
+        clawSubsystem.setClose();
+        clawSubsystem.update();
         tracker.reset();
         wormGearSubsystem.setToZero(touchSensor, telemetry);
-
-//        followPath(Park, 2, 0.4);
         followPath(Intake1, 2, 0.4);
-        elapsedTime.reset();
-        cycle();
-        cycle();
-        cycle();
-
-        while (elapsedTime.seconds()<1){
-            update();
-        }
-
-
-
+        cycleAndUpdateHang();
+        waitSec(1.0);
+        cycleAndUpdateHang();
+        waitSec(0.5);
+        clawSubsystem.setOpen();
+        clawSubsystem.update();
     }
 
     public void loopOpMode () {
-
         telemetry.addData("position", tracker.getCurrentPosition());
-
         telemetry.addData("velocity", tracker.getRobotVelocity());
         telemetry.addData("Path Progress", pathFollower.isCompleted() ? "Completed" : "In Progress");
         tracker.update();
@@ -130,24 +123,39 @@ tracker.reset();
     public void followPath (PathContainer path,double deceleration, double speed){
         if (isStopRequested()) return;
         pathFollower = generatePathFollower(path, deceleration, speed);
-
         while (opModeIsActive() && !isStopRequested() && !pathFollower.isCompleted()) {
             loopOpMode();
         }
     }
-    /**
-     * make functions out here
-     */
 
     public void cycle(){
         wormGearSubsystem.cycle();
         viperSlideSubsystem.cycle();
     }
-
-public  void update(){
-    wormGearSubsystem.update();
-    viperSlideSubsystem.update();
-}
+    public void cycleHang(){
+        wormGearSubsystem.cycleHanging();
+        viperSlideSubsystem.cycleHanging();
+    }
+    public void updateHang(){
+        wormGearSubsystem.updateHanging();
+        viperSlideSubsystem.updateHanging();
+    }
+    public void cycleAndUpdateHang(){
+        cycleHang();
+        elapsedTime.reset();
+        while (elapsedTime.seconds()<1){
+            updateHang();
+        }
+    }
+    public void waitSec(double second){
+        elapsedTime.reset();
+        while (elapsedTime.seconds()<second){
+        }
+    }
+    public void update(){
+        wormGearSubsystem.update();
+        viperSlideSubsystem.update();
+    }
 
 }
 

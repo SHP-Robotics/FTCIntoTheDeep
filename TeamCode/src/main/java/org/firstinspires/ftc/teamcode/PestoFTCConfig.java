@@ -27,8 +27,8 @@ public class PestoFTCConfig {
     public static final DcMotorSimple.Direction rightEncoderDirection = REVERSE;
 
     public static String leftName = "frontLeft";
-    public static String centerName = "backLeft";
-    public static String rightName = "frontRight";
+    public static String centerName = "frontRight";
+    public static String rightName = "backRight";
 
     public static final DcMotorSimple.Direction frontLeftDirection = REVERSE;
     public static final DcMotorSimple.Direction frontRightDirection = FORWARD;

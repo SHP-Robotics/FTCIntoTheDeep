@@ -29,7 +29,7 @@ public class WormGearSubsystem {
     public enum WormMode {
         DRIVING (OFFSET),
 
-        INTAKE (OFFSET-2310),
+        INTAKE (OFFSET-2380),
         DRIVING2 (OFFSET),
 
         OUTTAKE (OFFSET-120);

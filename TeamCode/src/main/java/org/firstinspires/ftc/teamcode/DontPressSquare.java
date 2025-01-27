@@ -78,41 +78,46 @@ public class DontPressSquare extends LinearOpMode {
             if (gamepadInterface.isKeyUp(GamepadKey.LEFT_BUMPER)) {
                 wormGearSubsystem.cycle();
                 viperSlideSubsystem.cycle();
-
+                if (wormGearSubsystem.mode == WormGearSubsystem.WormMode.INTAKE) {
+                    WormGearSubsystem.intakeUp = true;
+                }
             }
             if (gamepadInterface.isKeyDown(GamepadKey.RIGHT_BUMPER)) {
                 wormGearSubsystem.cycleHanging();
                 viperSlideSubsystem.cycleHanging();
 
             }
-            if (gamepad1.dpad_right) {
-                WormGearSubsystem.intakeUp = false;
-                elapsedTime.reset();
-                wormGearSubsystem.update();
-                if (wormGearSubsystem.mode== WormGearSubsystem.WormMode.INTAKE){
 
-
-                while (elapsedTime.milliseconds()<400){
-
-                    }
-                }
-                clawSubsystem.setClose();
-
-            }
             if (gamepad1.dpad_left) {
-                WormGearSubsystem.intakeUp = true;
-                wormGearSubsystem.update();
-                clawSubsystem.setOpen();
+                while(gamepad1.dpad_left){
+
+                }
+                if(clawSubsystem.mode==ClawSubsystem.ClawMode.OPEN) {
+                    WormGearSubsystem.intakeUp = false;
+                    elapsedTime.reset();
+                    wormGearSubsystem.update();
+                    if (wormGearSubsystem.mode == WormGearSubsystem.WormMode.INTAKE) {
+                        while (elapsedTime.milliseconds() < 300) {
+                        }
+                    }
+                    clawSubsystem.setClose();
+                }else{
+                    WormGearSubsystem.intakeUp = true;
+                    wormGearSubsystem.update();
+                    clawSubsystem.setOpen();
+
+                }
+
 
             }
             if (gamepad1.left_trigger>0.9) {
-                gamepad1.rumble(500);
                 wormGearSubsystem.resetCycles();
                 viperSlideSubsystem.resetCycles();
             }
             if (gamepad1.dpad_down) {
                 while (gamepad1.dpad_down){}
                 wristSubsystem.incrementAdd();
+
 
             }
             if (gamepad1.dpad_up) {
@@ -126,7 +131,10 @@ public class DontPressSquare extends LinearOpMode {
                     wormGearSubsystem.update();
                     viperSlideSubsystem.update();
                     if (ViperSlideSubsystem.mode == ViperSlideSubsystem.ViperMode.DRIVING2){
-                        wristSubsystem.reset();
+                        wristSubsystem.reset(0.45);
+                    }
+                    if (ViperSlideSubsystem.mode == ViperSlideSubsystem.ViperMode.DRIVING){
+                        wristSubsystem.reset(0.8);
                     }
                 } else {
                     wormGearSubsystem.updateHanging();
