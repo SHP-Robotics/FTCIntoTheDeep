@@ -25,11 +25,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 public class WormGearSubsystem {
     private static final int OFFSET =-1550;
     public static boolean intakeUp = true;
+    public static boolean downExtra = false;
+
     boolean  zeroed=false;
     public enum WormMode {
         DRIVING (OFFSET),
 
-        INTAKE (OFFSET-2380),
+        INTAKE (OFFSET-2270),
         DRIVING2 (OFFSET),
 
         OUTTAKE (OFFSET-120);
@@ -150,20 +152,32 @@ public class WormGearSubsystem {
 
     }
     public void update() {
-        if( hangMode== NONE){
+        if( hangMode== NONE && zeroed){
 
             if (intakeUp && mode==INTAKE) {
-                wormGear.setTargetPosition(mode.getPosition()+150);
+                if (downExtra) {
+                    wormGear.setTargetPosition(mode.getPosition() + 50);
+
+                }else {
+                    wormGear.setTargetPosition(mode.getPosition() + 150);
+                }
             }else{
-                wormGear.setTargetPosition(mode.getPosition()-50);
+                if (downExtra) {
+                    wormGear.setTargetPosition(mode.getPosition() - 100);
+
+                }else {
+                    wormGear.setTargetPosition(mode.getPosition() - 50);
+                }
             }
             wormGear.setPower(1);
 
         }
     }
     public void updateHanging() {
-        wormGear.setTargetPosition(hangMode.getPosition());
-        wormGear.setPower(0.6);
+
+            wormGear.setTargetPosition(hangMode.getPosition());
+            wormGear.setPower(0.6);
+
     }
 
     public void resetCycles(){
@@ -171,11 +185,10 @@ public class WormGearSubsystem {
         mode=WormMode.DRIVING;
     }
     public void updateTelemetry(Telemetry telemetry) {
-        telemetry.addData("mode", mode);
-        telemetry.addData("WormGear Position", wormGear.getCurrentPosition());
-        telemetry.addData("current", wormGear.getCurrent(CurrentUnit.AMPS));
-        telemetry.addData("hangmode", hangMode);
+        telemetry.addData("WormGear Mode", mode);
+        telemetry.addData("WORM HANG Mode", hangMode);
 
+        telemetry.addData("WormGear Position", wormGear.getCurrentPosition());
     }
 
 }

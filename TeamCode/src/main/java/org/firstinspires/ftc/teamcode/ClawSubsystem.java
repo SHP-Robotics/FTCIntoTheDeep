@@ -48,7 +48,6 @@ public class ClawSubsystem {
 
 
     public void updateTelemetry(Telemetry telemetry) {
-        telemetry.addData("Claw Mode",mode);
         telemetry.addData("Claw Position",claw.getPosition());
 
     }

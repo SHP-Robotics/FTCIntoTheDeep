@@ -1,6 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import static org.firstinspires.ftc.teamcode.ViperSlideSubsystem.*;
+import static org.firstinspires.ftc.teamcode.ViperSlideSubsystem.ViperMode.*;
+import static org.firstinspires.ftc.teamcode.WormGearSubsystem.*;
+import static org.firstinspires.ftc.teamcode.WormGearSubsystem.HangMode.*;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -23,6 +28,8 @@ public class DontPressSquare extends LinearOpMode {
 
     WormGearSubsystem wormGearSubsystem;
     GamepadInterface gamepadInterface;
+    GamepadInterface gamepad2Interface;
+
     TouchSensor touchSensor;
     ElapsedTime elapsedTime;
 
@@ -39,6 +46,7 @@ public class DontPressSquare extends LinearOpMode {
         wormGearSubsystem.reset();
         elapsedTime=new ElapsedTime();
         gamepadInterface = new GamepadInterface(gamepad1);
+        gamepad2Interface = new GamepadInterface(gamepad2);
 
         touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
 
@@ -56,7 +64,6 @@ public class DontPressSquare extends LinearOpMode {
             telemetry.update();
             tracker.update();
             gamepadInterface.update();
-
             teleOpController.updateSpeed(gamepad1);
             if (gamepad1.right_trigger > 0.9) {
 
@@ -66,8 +73,12 @@ public class DontPressSquare extends LinearOpMode {
 
             }
             if (gamepad1.x) {
-                clawSubsystem.update();
+
+                wormGearSubsystem.mode= WormMode.DRIVING2;
+                viperSlideSubsystem.mode= ViperSlideSubsystem.ViperMode.DRIVING2;
                 wormGearSubsystem.setToZero(touchSensor, telemetry);
+                clawSubsystem.setClose();
+                clawSubsystem.update();
             }
 
             if (gamepad1.b) {
@@ -78,14 +89,37 @@ public class DontPressSquare extends LinearOpMode {
             if (gamepadInterface.isKeyUp(GamepadKey.LEFT_BUMPER)) {
                 wormGearSubsystem.cycle();
                 viperSlideSubsystem.cycle();
-                if (wormGearSubsystem.mode == WormGearSubsystem.WormMode.INTAKE) {
-                    WormGearSubsystem.intakeUp = true;
+                if (wormGearSubsystem.mode == WormMode.INTAKE) {
+                    intakeUp = true;
+                    intakeSlideExtend = false;
+
                 }
             }
             if (gamepadInterface.isKeyDown(GamepadKey.RIGHT_BUMPER)) {
+
+                    viperSlideSubsystem.cycleHanging();
+                    wormGearSubsystem.cycleHanging();
+                    wormGearSubsystem.updateHanging();
+                    viperSlideSubsystem.updateHanging();
+                    if (wormGearSubsystem.hangMode==VIPERDOWN){
+                        viperSlideSubsystem.updateHanging();
+                        viperSlideSubsystem.resetCycles();
+                        wormGearSubsystem.resetCycles();
+                        elapsedTime.reset();
+                        while (elapsedTime.seconds()<0.3){
+
+                        }
+                        clawSubsystem.setOpen();
+                    }
+                    if (wormGearSubsystem.hangMode==SETUP){
+                        wristSubsystem.reset(0.8);
+                        clawSubsystem.setClose();
+
+                    }
+            }
+            if (gamepadInterface.isKeyUp(GamepadKey.Y)) {
                 wormGearSubsystem.cycleHanging();
                 viperSlideSubsystem.cycleHanging();
-
             }
 
             if (gamepad1.dpad_left) {
@@ -93,16 +127,24 @@ public class DontPressSquare extends LinearOpMode {
 
                 }
                 if(clawSubsystem.mode==ClawSubsystem.ClawMode.OPEN) {
-                    WormGearSubsystem.intakeUp = false;
+                    intakeUp = false;
                     elapsedTime.reset();
+                    if(intakeSlideExtend) {
+                        downExtra = true;
+                    }else{
+                        downExtra = false;
+
+                    }
                     wormGearSubsystem.update();
-                    if (wormGearSubsystem.mode == WormGearSubsystem.WormMode.INTAKE) {
+
+                    if (wormGearSubsystem.mode == WormMode.INTAKE) {
                         while (elapsedTime.milliseconds() < 300) {
                         }
                     }
                     clawSubsystem.setClose();
                 }else{
-                    WormGearSubsystem.intakeUp = true;
+
+                    intakeUp = true;
                     wormGearSubsystem.update();
                     clawSubsystem.setOpen();
 
@@ -110,7 +152,21 @@ public class DontPressSquare extends LinearOpMode {
 
 
             }
+            if (gamepad1.dpad_right) {
+                while(gamepad1.dpad_right){
+                }
+                if(intakeSlideExtend) {
+                    intakeSlideExtend = false;
+                }else{
+                    intakeSlideExtend = true;
+                }
+                viperSlideSubsystem.update();
+                viperSlideSubsystem.switchPower();
+            }
+
+
             if (gamepad1.left_trigger>0.9) {
+                gamepad1.rumble(500);
                 wormGearSubsystem.resetCycles();
                 viperSlideSubsystem.resetCycles();
             }
@@ -127,13 +183,13 @@ public class DontPressSquare extends LinearOpMode {
             }
             wristSubsystem.update();
             if (wormGearSubsystem.zeroed) {
-                if (wormGearSubsystem.hangMode == WormGearSubsystem.HangMode.NONE) {
+                if (wormGearSubsystem.hangMode == NONE) {
                     wormGearSubsystem.update();
                     viperSlideSubsystem.update();
-                    if (ViperSlideSubsystem.mode == ViperSlideSubsystem.ViperMode.DRIVING2){
+                    if (mode == DRIVING2){
                         wristSubsystem.reset(0.45);
                     }
-                    if (ViperSlideSubsystem.mode == ViperSlideSubsystem.ViperMode.DRIVING){
+                    if (mode == DRIVING){
                         wristSubsystem.reset(0.8);
                     }
                 } else {

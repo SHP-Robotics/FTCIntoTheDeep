@@ -18,8 +18,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 public class ViperSlideSubsystem {
+    WormGearSubsystem wormGearSubsystem;
 
     public enum ViperMode {
         DRIVING (0),
@@ -42,7 +42,7 @@ public class ViperSlideSubsystem {
     public enum HangMode {
         NONE (0),
 
-        SETUP (1000),
+        SETUP (870),
         VIPERDOWN (0),
         WORMGEARBACK (0),
         WORMGEARFOWARD (0),
@@ -63,6 +63,7 @@ public class ViperSlideSubsystem {
     private DcMotor viperSlide;
     public static ViperMode mode = DRIVING2;
     public static HangMode hangMode = NONE;
+    public static boolean intakeSlideExtend=false;
     ElapsedTime elapsedTime=new ElapsedTime();
     //    private  final int offset=-1540;
     public ViperSlideSubsystem(HardwareMap hardwareMap) {
@@ -71,6 +72,7 @@ public class ViperSlideSubsystem {
         viperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viperSlide.setTargetPosition(0);
         viperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wormGearSubsystem=new WormGearSubsystem(hardwareMap);
 //        viperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
@@ -121,47 +123,66 @@ public class ViperSlideSubsystem {
 
     }
     public void switchPower(){
-        if (mode.getPosition()==0 && hangMode != VIPERDOWN &&  hangMode !=WORMGEARBACK ) {
-            if (viperSlide.getCurrentPosition() < 50) {
-                viperSlide.setPower(0);
+        if (hangMode==NONE) {
+            if (mode == INTAKE) {
+                if (!intakeSlideExtend && viperSlide.getCurrentPosition() < 50) {
+                    viperSlide.setPower(0);
+                } else {
+                    viperSlide.setPower(1);
+                }
+            } else {
 
-            }else{
-                viperSlide.setPower(-0.5);
 
+                if (mode.getPosition() == 0 && hangMode != VIPERDOWN && hangMode != WORMGEARBACK) {
+                    if (viperSlide.getCurrentPosition() < 50) {
+                        viperSlide.setPower(0);
+                    } else {
+                        viperSlide.setPower(-0.5);
+                    }
+                } else {
+                    viperSlide.setPower(1);
+                }
             }
-
-        }else{
-            viperSlide.setPower(1);
-
         }
     }
     public void update() {
-        viperSlide.setTargetPosition(mode.getPosition());
+        if (mode== INTAKE) {
+            if (intakeSlideExtend) {
+                viperSlide.setTargetPosition(600);
+            } else {
+                viperSlide.setTargetPosition(0);
+
+            }
+        }else{
+            viperSlide.setTargetPosition(mode.getPosition());
+        }
         switchPower();
 
 
     }
 
     public void updateHanging() {
-        viperSlide.setTargetPosition(hangMode.getPosition());
-        viperSlide.setPower(1);
-
-        if (hangMode==VIPERDOWN) {
+//        if (wormGearSubsystem.zeroed) {
+            viperSlide.setTargetPosition(hangMode.getPosition());
             viperSlide.setPower(1);
-        }else if (hangMode==VIPERUP) {
-            viperSlide.setPower(0.1);
 
-        }
+            if (hangMode == VIPERDOWN) {
+                viperSlide.setPower(1);
+            } else if (hangMode == VIPERUP) {
+                viperSlide.setPower(0.1);
 
+            }
+//        }
     }
     public void resetCycles() {
        hangMode= NONE;
        mode=DRIVING;
     }
     public void updateTelemetry(Telemetry telemetry) {
+        telemetry.addData("VIPER SLIDE Mode", hangMode);
 
-        telemetry.addData("Viper Mode", mode);
-        telemetry.addData("Viper Position", viperSlide.getCurrentPosition());
+        telemetry.addData("ViperSlide Mode", mode);
+        telemetry.addData("ViperSlide Position", viperSlide.getCurrentPosition());
 
     }
 }

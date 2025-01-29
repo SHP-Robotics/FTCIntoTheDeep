@@ -57,9 +57,6 @@ public class WristSubsystem {
 
 
     public void updateTelemetry(Telemetry telemetry) {
-        telemetry.addData("Wrist Mode",mode);
         telemetry.addData("Wrist Position",wrist.getPosition());
-        telemetry.addData("PSOTION",position);
-
     }
 }
