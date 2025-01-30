@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.VisionSubsystem;
 
 /**
  * Template created by Ayaan Govil on 8/21/2021.
@@ -30,7 +31,7 @@ public class BaseRobot extends OpMode {
     public VerticalSubsystem vertical;
     public PivotSubsystem pivot;
     public RotateSubsystem rotate;
-
+    public VisionSubsystem vision;
     public ClawSubsystem claw;
 
     public double previousTime = 0;
@@ -51,6 +52,7 @@ public class BaseRobot extends OpMode {
         pivot.setState(PivotSubsystem.State.DRIVING);
         pivot.periodic(telemetry);
 
+        vision = new VisionSubsystem(hardwareMap);
         claw = new ClawSubsystem(hardwareMap);
         horizontal = new HorizSubsystem(hardwareMap);
     }

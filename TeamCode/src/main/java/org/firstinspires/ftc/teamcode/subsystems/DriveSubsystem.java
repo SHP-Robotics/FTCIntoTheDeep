@@ -23,7 +23,7 @@ public class DriveSubsystem extends Subsystem {
         teleOpController = PestoFTCConfig.getTeleOpController(drive, tracker, hardwareMap);
     }
 
-    public void toggleIMU(){ //TODO CHECK THIS WORKS
+    public void toggleIMU(){
         if(!IMU) {
             teleOpController.useIMU();
             teleOpController.resetIMU();

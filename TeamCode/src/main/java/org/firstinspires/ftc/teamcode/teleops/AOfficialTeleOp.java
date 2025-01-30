@@ -61,6 +61,8 @@ public class AOfficialTeleOp extends BaseRobot {
         gamepadInterface1 = new GamepadInterface(gamepad1);
         gamepadInterface2 = new GamepadInterface(gamepad2);
 
+        vision.limelight.start();
+
     }
     @Override
     public void start(){
