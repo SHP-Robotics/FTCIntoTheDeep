@@ -145,7 +145,7 @@ public class WormGearSubsystem {
         wormGear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wormGear.setTargetPosition(OFFSET);
         wormGear.setPower(1);
-        while(wormGear.getCurrentPosition()>-1560){
+        while(wormGear.getCurrentPosition()>OFFSET+10){
         }
         zeroed=true;
 

@@ -65,14 +65,16 @@ public class DontPressSquareAutonomous extends LinearOpMode {
                         new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(0, 0),
-                                        new Vector2D(0,27),
+                                        new Vector2D(40, 0),
+
+                                        new Vector2D(40,25),
 
                                 }
                         )
                         ,     new ParametricHeading(new double[]{
                                 0,Math.toRadians(-0)
                         }
-                        )
+                        ),this::Step1
 
 
                 )
@@ -83,9 +85,9 @@ public class DontPressSquareAutonomous extends LinearOpMode {
 
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(0, 0),
-                                        new Vector2D(0,-20),
-                                        new Vector2D(30,-20),
+                                        new Vector2D(0, 25),
+                                        new Vector2D(0,20),
+                                        new Vector2D(-29,18),
 
 
                                 }
@@ -93,7 +95,7 @@ public class DontPressSquareAutonomous extends LinearOpMode {
                         ,     new ParametricHeading(new double[]{
                                 0,Math.toRadians(-0)
                         }
-                        )
+                        ), this::Step2
 
 
                 )
@@ -149,34 +151,7 @@ public class DontPressSquareAutonomous extends LinearOpMode {
             update();
         }
 
-        if(pathFollower.isDecelerating() && step==0){
-        step++;
-            waitSec(0.5);
-            cycleHang();
-            updateHang();
-            waitSec(0.2);
-            clawSubsystem.setOpen();
-            clawSubsystem.update();
-            waitSec(1);
-            resetCycles();
-            step++;
-            waitSec(0.1);
-            followPath(Intake1, 0.5, 1);
-            cycle();
-            clawSubsystem.setClose();
-            clawSubsystem.update();
-            waitSec(0.1);
-            cycle();
-            followPath(Outtake2, 0.5, 1);
-
-
-
-
-
-        }
-
     }
-
     public void followPath (PathContainer path,double deceleration, double speed){
         if (isStopRequested()) return;
         pathFollower = generatePathFollower(path, deceleration, speed);
@@ -212,7 +187,33 @@ public class DontPressSquareAutonomous extends LinearOpMode {
         wormGearSubsystem.update();
         viperSlideSubsystem.update();
     }
+    public void Step1(){
+        step=1;
+        waitSec(0.5);
+        cycleHang();
+        updateHang();
+        waitSec(0.2);
+        clawSubsystem.setOpen();
+        clawSubsystem.update();
+        waitSec(1);
+        resetCycles();
+//        step++;
+        waitSec(0.1);
+        followPath(Intake1, 0.5, 1);
+//        step++;
 
+    }
+    public void Step2(){
+        step=2;
+        waitSec(1);
+
+        cycle();
+        clawSubsystem.setClose();
+        clawSubsystem.update();
+        waitSec(0.1);
+        cycle();
+//            followPath(Outtake2
+    }
 }
 
 
