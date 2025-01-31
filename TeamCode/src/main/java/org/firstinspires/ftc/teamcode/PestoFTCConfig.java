@@ -23,7 +23,7 @@ public class PestoFTCConfig {
 
 
     public static final DcMotorSimple.Direction leftEncoderDirection = REVERSE;
-    public static final DcMotorSimple.Direction centerEncoderDirection = REVERSE;
+    public static final DcMotorSimple.Direction centerEncoderDirection = FORWARD;
     public static final DcMotorSimple.Direction rightEncoderDirection = REVERSE;
 
     public static String leftName = "frontLeft";
@@ -70,9 +70,10 @@ public class PestoFTCConfig {
 
     public static TeleOpController getTeleOpController(MecanumController mecanumController, DeterministicTracker tracker, HardwareMap hardwareMap) {
         TeleOpController teleOpController = new TeleOpController(mecanumController, hardwareMap);
+        teleOpController.useTrackerIMU(tracker); //added
 
         teleOpController.configureIMU(
-                RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP
         );
 

@@ -33,7 +33,7 @@ public class WristSubsystem {
 
     }
     public void incrementAdd() {
-        if (position<0.8){
+        if (position<0.9){
             position+=0.1;
         }
         update();

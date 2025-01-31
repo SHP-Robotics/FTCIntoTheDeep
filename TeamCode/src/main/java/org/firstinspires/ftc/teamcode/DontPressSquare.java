@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 import static org.firstinspires.ftc.teamcode.ViperSlideSubsystem.*;
+import static org.firstinspires.ftc.teamcode.ViperSlideSubsystem.HangMode;
 import static org.firstinspires.ftc.teamcode.ViperSlideSubsystem.ViperMode.*;
 import static org.firstinspires.ftc.teamcode.WormGearSubsystem.*;
 import static org.firstinspires.ftc.teamcode.WormGearSubsystem.HangMode.*;
@@ -38,7 +39,6 @@ public class DontPressSquare extends LinearOpMode {
         mecanumController = PestoFTCConfig.getMecanumController(hardwareMap);
         tracker = PestoFTCConfig.getTracker(hardwareMap);
         teleOpController = PestoFTCConfig.getTeleOpController(mecanumController, tracker, hardwareMap);
-
         viperSlideSubsystem = new ViperSlideSubsystem(hardwareMap);
         clawSubsystem = new ClawSubsystem(hardwareMap);
         wristSubsystem = new WristSubsystem(hardwareMap);
@@ -46,18 +46,19 @@ public class DontPressSquare extends LinearOpMode {
         wormGearSubsystem.reset();
         elapsedTime=new ElapsedTime();
         gamepadInterface = new GamepadInterface(gamepad1);
-        gamepad2Interface = new GamepadInterface(gamepad2);
-
         touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
-
+        boolean IMU=true;
         waitForStart();
+
         teleOpController.resetIMU();
         tracker.reset();
+
         while (opModeIsActive()) {
             wormGearSubsystem.updateTelemetry(telemetry);
             viperSlideSubsystem.updateTelemetry(telemetry);
             clawSubsystem.updateTelemetry(telemetry);
             wristSubsystem.updateTelemetry(telemetry);
+
             telemetry.addData("X", tracker.getCurrentPosition().getX());
             telemetry.addData("Y", tracker.getCurrentPosition().getY());
             telemetry.addData("HeadingRadians", tracker.getCurrentPosition().getHeadingRadians());
@@ -65,17 +66,18 @@ public class DontPressSquare extends LinearOpMode {
             tracker.update();
             gamepadInterface.update();
             teleOpController.updateSpeed(gamepad1);
-            if (gamepad1.right_trigger > 0.9) {
 
+            if (gamepad1.right_trigger > 0.9) {
                 teleOpController.driveFieldCentric(-gamepad1.left_stick_y * 0.35, gamepad1.left_stick_x * 0.35, gamepad1.right_stick_x * 0.35);
             } else {
                 teleOpController.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-
             }
-            if (gamepad1.x) {
 
+            if (gamepad1.x) {
                 wormGearSubsystem.mode= WormMode.DRIVING2;
-                viperSlideSubsystem.mode= ViperSlideSubsystem.ViperMode.DRIVING2;
+                ViperSlideSubsystem.mode= ViperSlideSubsystem.ViperMode.DRIVING2;
+                wormGearSubsystem.hangMode= NONE;
+                hangMode= HangMode.NONE;
                 wormGearSubsystem.setToZero(touchSensor, telemetry);
                 clawSubsystem.setClose();
                 clawSubsystem.update();
@@ -96,7 +98,6 @@ public class DontPressSquare extends LinearOpMode {
                 }
             }
             if (gamepadInterface.isKeyDown(GamepadKey.RIGHT_BUMPER)) {
-
                     viperSlideSubsystem.cycleHanging();
                     wormGearSubsystem.cycleHanging();
                     wormGearSubsystem.updateHanging();
@@ -107,14 +108,12 @@ public class DontPressSquare extends LinearOpMode {
                         wormGearSubsystem.resetCycles();
                         elapsedTime.reset();
                         while (elapsedTime.seconds()<0.3){
-
                         }
                         clawSubsystem.setOpen();
                     }
                     if (wormGearSubsystem.hangMode==SETUP){
                         wristSubsystem.reset(0.8);
                         clawSubsystem.setClose();
-
                     }
             }
             if (gamepadInterface.isKeyUp(GamepadKey.Y)) {
@@ -124,48 +123,31 @@ public class DontPressSquare extends LinearOpMode {
 
             if (gamepad1.dpad_left) {
                 while(gamepad1.dpad_left){
-
                 }
                 if(clawSubsystem.mode==ClawSubsystem.ClawMode.OPEN) {
                     intakeUp = false;
                     elapsedTime.reset();
-                    if(intakeSlideExtend) {
-                        downExtra = true;
-                    }else{
-                        downExtra = false;
-
-                    }
+                    downExtra = intakeSlideExtend;
                     wormGearSubsystem.update();
-
                     if (wormGearSubsystem.mode == WormMode.INTAKE) {
                         while (elapsedTime.milliseconds() < 300) {
                         }
                     }
                     clawSubsystem.setClose();
-                }else{
-
+                }else {
                     intakeUp = true;
                     wormGearSubsystem.update();
                     clawSubsystem.setOpen();
-
                 }
-
-
             }
             if (gamepad1.dpad_right) {
                 while(gamepad1.dpad_right){
                 }
-                if(intakeSlideExtend) {
-                    intakeSlideExtend = false;
-                }else{
-                    intakeSlideExtend = true;
-                }
+                intakeSlideExtend = !intakeSlideExtend;
                 viperSlideSubsystem.update();
                 viperSlideSubsystem.switchPower();
             }
-
-
-            if (gamepad1.left_trigger>0.9) {
+            if (gamepad1.left_trigger>0.8) {
                 gamepad1.rumble(500);
                 wormGearSubsystem.resetCycles();
                 viperSlideSubsystem.resetCycles();
@@ -173,13 +155,30 @@ public class DontPressSquare extends LinearOpMode {
             if (gamepad1.dpad_down) {
                 while (gamepad1.dpad_down){}
                 wristSubsystem.incrementAdd();
-
-
             }
             if (gamepad1.dpad_up) {
                 while (gamepad1.dpad_up){}
                 wristSubsystem.incrementSubtract();
+            }
+            if (gamepad1.a) {
+//                viperSlideSubsystem.zero();
 
+            }
+
+                if (gamepad2.a){
+                while(gamepad2.a){
+
+                }
+
+                    if(!IMU) {
+                        teleOpController.useIMU();
+                        teleOpController.resetIMU();
+                        IMU = true;
+                    }
+                    else {
+                        teleOpController.useTrackerIMU(tracker);
+                        IMU = false;
+                    }
             }
             wristSubsystem.update();
             if (wormGearSubsystem.zeroed) {
@@ -195,13 +194,11 @@ public class DontPressSquare extends LinearOpMode {
                 } else {
                     wormGearSubsystem.updateHanging();
                     viperSlideSubsystem.updateHanging();
-
-
                 }
             }
         }
-
     }
+
 }
 
 

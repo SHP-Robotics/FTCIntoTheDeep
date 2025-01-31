@@ -51,8 +51,8 @@ public class WormGearSubsystem {
     public enum HangMode {
 
         NONE (OFFSET),
-        SETUP (OFFSET-100),
-        VIPERDOWN (OFFSET-100),
+        SETUP (OFFSET-400),
+        VIPERDOWN (OFFSET-400),
         WORMGEARBACK (-150),
         WORMGEARFOWARD (OFFSET),
         VIPERUP (OFFSET),

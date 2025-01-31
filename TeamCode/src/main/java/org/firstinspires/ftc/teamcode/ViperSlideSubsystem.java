@@ -26,7 +26,7 @@ public class ViperSlideSubsystem {
         INTAKE (300),
         DRIVING2 (0),
 
-        OUTTAKE (2500);
+        OUTTAKE (2550);
 
 
         ViperMode(int position) {
@@ -178,6 +178,11 @@ public class ViperSlideSubsystem {
        hangMode= NONE;
        mode=DRIVING;
     }
+//    public void zero() {
+//      viperSlide.setPower(0);
+//        viperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        viperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//    }
     public void updateTelemetry(Telemetry telemetry) {
         telemetry.addData("VIPER SLIDE Mode", hangMode);
 
