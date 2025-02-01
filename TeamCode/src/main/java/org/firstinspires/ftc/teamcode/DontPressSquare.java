@@ -188,9 +188,11 @@ public class DontPressSquare extends LinearOpMode {
             wristSubsystem.update();
             if (wormGearSubsystem.zeroed) {
                 if (wormGearSubsystem.hangMode == NONE) {
+
                     wormGearSubsystem.update();
                     viperSlideSubsystem.update();
                     if (mode == DRIVING2){
+                        intakeUp = true;
                         wristSubsystem.reset(0.45);
                     }
                     if (mode == DRIVING){

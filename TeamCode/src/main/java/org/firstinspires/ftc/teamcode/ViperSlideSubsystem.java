@@ -20,6 +20,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class ViperSlideSubsystem {
     WormGearSubsystem wormGearSubsystem;
+    public boolean isZeroing= false;
+
 
     public enum ViperMode {
         DRIVING (0),
@@ -123,6 +125,8 @@ public class ViperSlideSubsystem {
 
     }
     public void switchPower(){
+
+
         if (hangMode==NONE) {
             if (mode == INTAKE) {
                 if (!intakeSlideExtend && viperSlide.getCurrentPosition() < 50) {
@@ -143,22 +147,25 @@ public class ViperSlideSubsystem {
                     viperSlide.setPower(1);
                 }
             }
-        }
+
+    }
     }
     public void update() {
-        if (mode== INTAKE) {
-            if (intakeSlideExtend) {
-                viperSlide.setTargetPosition(600);
+        if (!isZeroing) {
+
+            if (mode == INTAKE) {
+                if (intakeSlideExtend) {
+                    viperSlide.setTargetPosition(600);
+                } else {
+                    viperSlide.setTargetPosition(0);
+
+                }
             } else {
-                viperSlide.setTargetPosition(0);
-
+                viperSlide.setTargetPosition(mode.getPosition());
             }
-        }else{
-            viperSlide.setTargetPosition(mode.getPosition());
+            switchPower();
+
         }
-        switchPower();
-
-
     }
 
     public void updateHanging() {
@@ -183,12 +190,14 @@ public class ViperSlideSubsystem {
         viperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viperSlide.setTargetPosition(0);
         viperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        isZeroing=false;
+
     }
     public void downAndZero() {
-//
-//        viperSlide.setTargetPosition(-1000);
-//        viperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        viperSlide.setPower(0.2);
+        isZeroing=true;
+        viperSlide.setTargetPosition(-1000);
+        viperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        viperSlide.setPower(0.2);
     }
     public void updateTelemetry(Telemetry telemetry) {
         telemetry.addData("VIPER SLIDE Mode", hangMode);

@@ -152,32 +152,25 @@ public class WormGearSubsystem {
 
     }
     public void update() {
-        if( hangMode== NONE && zeroed){
+        if (hangMode!=NONE && !zeroed)
+            return;
 
-            if (intakeUp && mode==INTAKE) {
-                if (downExtra) {
-                    wormGear.setTargetPosition(mode.getPosition() + 50);
-
-                }else {
-                    wormGear.setTargetPosition(mode.getPosition() + 150);
-                }
-            }else{
-                if (downExtra) {
-                    wormGear.setTargetPosition(mode.getPosition() - 100);
-
-                }else {
-                    wormGear.setTargetPosition(mode.getPosition() - 50);
-                }
-            }
-            wormGear.setPower(1);
-
+        if (intakeUp && mode==INTAKE) {
+            if (downExtra)
+                wormGear.setTargetPosition(mode.getPosition());
+            else
+                wormGear.setTargetPosition(mode.getPosition() + 150);
+        } else {
+            if (downExtra)
+                wormGear.setTargetPosition(mode.getPosition() - 100);
+            else
+                wormGear.setTargetPosition(mode.getPosition() - 50);
         }
+        wormGear.setPower(1);
     }
     public void updateHanging() {
-
-            wormGear.setTargetPosition(hangMode.getPosition());
-            wormGear.setPower(0.6);
-
+        wormGear.setTargetPosition(hangMode.getPosition());
+        wormGear.setPower(0.6);
     }
 
     public void resetCycles(){
@@ -187,7 +180,6 @@ public class WormGearSubsystem {
     public void updateTelemetry(Telemetry telemetry) {
         telemetry.addData("WormGear Mode", mode);
         telemetry.addData("WORM HANG Mode", hangMode);
-
         telemetry.addData("WormGear Position", wormGear.getCurrentPosition());
     }
 
