@@ -121,6 +121,11 @@ public class DontPressSquare extends LinearOpMode {
                 viperSlideSubsystem.cycleHanging();
             }
 
+            if (gamepad2.x) {
+
+                viperSlideSubsystem.downAndZero();
+            }
+
             if (gamepad1.dpad_left) {
                 while(gamepad1.dpad_left){
                 }

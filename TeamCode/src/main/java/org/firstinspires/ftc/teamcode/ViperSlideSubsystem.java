@@ -42,7 +42,7 @@ public class ViperSlideSubsystem {
     public enum HangMode {
         NONE (0),
 
-        SETUP (870),
+        SETUP (950),
         VIPERDOWN (0),
         WORMGEARBACK (0),
         WORMGEARFOWARD (0),
@@ -179,9 +179,16 @@ public class ViperSlideSubsystem {
        mode=DRIVING;
     }
     public void zero() {
+        viperSlide.setPower(0);
         viperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viperSlide.setTargetPosition(0);
         viperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public void downAndZero() {
+//
+//        viperSlide.setTargetPosition(-1000);
+//        viperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        viperSlide.setPower(0.2);
     }
     public void updateTelemetry(Telemetry telemetry) {
         telemetry.addData("VIPER SLIDE Mode", hangMode);

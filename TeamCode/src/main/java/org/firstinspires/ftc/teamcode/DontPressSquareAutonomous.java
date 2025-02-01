@@ -131,6 +131,7 @@ public class DontPressSquareAutonomous extends LinearOpMode {
         resetCycles();
 
         cycleHang();
+        updateHang();
         followPath(Outtake1, 0.5, 0.5,this::Step1);
 
 
@@ -144,6 +145,7 @@ public class DontPressSquareAutonomous extends LinearOpMode {
         tracker.update();
         pathFollower.update();
         telemetry.update();
+
 
         wormGearSubsystem.updateTelemetry(telemetry);
         if(step<2) {
@@ -189,7 +191,7 @@ public class DontPressSquareAutonomous extends LinearOpMode {
         viperSlideSubsystem.update();
     }
     public void Step1(){
-        step=1;
+        step=183;
         waitSec(0.5);
         cycleHang();
         updateHang();
