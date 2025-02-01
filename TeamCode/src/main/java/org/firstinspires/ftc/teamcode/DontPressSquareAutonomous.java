@@ -33,7 +33,7 @@ public class DontPressSquareAutonomous extends LinearOpMode {
     int step=0;
 
 
-    public PathFollower generatePathFollower(PathContainer pathContainer, double deceleration, double speed) {
+    public PathFollower generatePathFollower(PathContainer pathContainer, double deceleration, double speed, Runnable action) {
         return new PathFollower.PathFollowerBuilder(mecanumController, tracker, pathContainer)
                 .setHeadingPID(new PID(0.3, 0, 0))
                 .setEndpointPID(new PID(0.0003,0,0))
@@ -41,6 +41,7 @@ public class DontPressSquareAutonomous extends LinearOpMode {
                 .setEndTolerance(0.5, Math.toRadians(0.5))
                 .setEndVelocityTolerance(2)
                 .setSpeed(speed)
+                .addFinalAction(action)
                 .build();
 
 
@@ -74,7 +75,7 @@ public class DontPressSquareAutonomous extends LinearOpMode {
                         ,     new ParametricHeading(new double[]{
                                 0,Math.toRadians(-0)
                         }
-                        ),this::Step1
+                        )
 
 
                 )
@@ -86,7 +87,7 @@ public class DontPressSquareAutonomous extends LinearOpMode {
                         new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(0, 25),
-                                        new Vector2D(0,20),
+                                        new Vector2D(0,15),
                                         new Vector2D(-29,18),
 
 
@@ -95,7 +96,7 @@ public class DontPressSquareAutonomous extends LinearOpMode {
                         ,     new ParametricHeading(new double[]{
                                 0,Math.toRadians(-0)
                         }
-                        ), this::Step2
+                        )
 
 
                 )
@@ -130,7 +131,7 @@ public class DontPressSquareAutonomous extends LinearOpMode {
         resetCycles();
 
         cycleHang();
-        followPath(Outtake1, 0.5, 0.5);
+        followPath(Outtake1, 0.5, 0.5,this::Step1);
 
 
     }
@@ -152,9 +153,9 @@ public class DontPressSquareAutonomous extends LinearOpMode {
         }
 
     }
-    public void followPath (PathContainer path,double deceleration, double speed){
+    public void followPath (PathContainer path,double deceleration, double speed, Runnable action){
         if (isStopRequested()) return;
-        pathFollower = generatePathFollower(path, deceleration, speed);
+        pathFollower = generatePathFollower(path, deceleration, speed,action);
         while (opModeIsActive() && !isStopRequested() && !pathFollower.isCompleted()) {
             loopOpMode();
         }
@@ -199,20 +200,29 @@ public class DontPressSquareAutonomous extends LinearOpMode {
         resetCycles();
 //        step++;
         waitSec(0.1);
-        followPath(Intake1, 0.5, 1);
+        followPath(Intake1, 0.5, 1, this::Step2);
 //        step++;
 
     }
     public void Step2(){
         step=2;
         waitSec(1);
-
         cycle();
+        update();
         clawSubsystem.setClose();
         clawSubsystem.update();
         waitSec(0.1);
         cycle();
-//            followPath(Outtake2
+        update();
+        followPath(Outtake2,0.5,1,this::Step3);
+
+    }
+    public void Step3(){
+        cycle();
+        update();
+        clawSubsystem.setOpen();
+        clawSubsystem.update();
+
     }
 }
 

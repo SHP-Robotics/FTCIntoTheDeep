@@ -161,7 +161,7 @@ public class DontPressSquare extends LinearOpMode {
                 wristSubsystem.incrementSubtract();
             }
             if (gamepad1.a) {
-//                viperSlideSubsystem.zero();
+                viperSlideSubsystem.zero();
 
             }
 

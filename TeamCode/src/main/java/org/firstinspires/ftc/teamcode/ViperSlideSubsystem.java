@@ -178,11 +178,11 @@ public class ViperSlideSubsystem {
        hangMode= NONE;
        mode=DRIVING;
     }
-//    public void zero() {
-//      viperSlide.setPower(0);
-//        viperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        viperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//    }
+    public void zero() {
+        viperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        viperSlide.setTargetPosition(0);
+        viperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
     public void updateTelemetry(Telemetry telemetry) {
         telemetry.addData("VIPER SLIDE Mode", hangMode);
 
