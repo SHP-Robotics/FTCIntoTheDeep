@@ -46,6 +46,6 @@ public class Constants {
         public static final String kLedName = "led";
 
         public static final double kOpen = 0.45;
-        public static final double kClose = 0.05;
+        public static final double kClose = 0.0;
     }
 }

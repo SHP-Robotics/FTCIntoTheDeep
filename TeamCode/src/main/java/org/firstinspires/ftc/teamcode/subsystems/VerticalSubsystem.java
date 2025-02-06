@@ -24,12 +24,12 @@ public class VerticalSubsystem extends Subsystem {
 
     public enum State {
         BOTTOM(0),
-        DEPOSITING(1000),
+        DEPOSITING(750),
         DOWN(50),
         LOWBAR(0),
-        HIGHBAR(925),
-        LOWBUCKET(800), //TODO TUNE
-        HIGHBUCKET(3100), //TODO TUNE
+        HIGHBAR(1000),
+        LOWBUCKET(800),
+        HIGHBUCKET(2400),
         MANUAL(0),
         NOPOWER(0);
 

@@ -39,7 +39,7 @@ public class DrivetoBucketCommand extends Command {
     @Override
     public void execute() {
         horiz.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.OUTTAKE2);
+        pivot.setState(PivotSubsystem.State.OUTTAKEBUCKET);
         vertical.setDepositState(VerticalSubsystem.State.HIGHBUCKET);
         vertical.setState(VerticalSubsystem.State.DEPOSITING);
     }

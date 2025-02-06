@@ -18,9 +18,10 @@ public class HorizSubsystem extends Subsystem {
     private final CachingServo rail;
 
     public enum State {
-        INTAKEWALL(0, 0),
+        INTAKEWALL(0.75, 0),
+        SPECIMENDEPOSIT(0.25, 0),
         AUTOINTAKE(0.5, 0),
-        WALLPICKUP(1,0.2),
+        WALLPICKUPAUTO(1,0.2),
         DRIVING(0, 0), //1, 0.725 is all in
         BLOCKINBOT(0,0.5),
         INTAKINGEXTENDED(1,1), // 0.55 rail max out, 0 slide max out

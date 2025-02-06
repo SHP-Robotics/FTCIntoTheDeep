@@ -375,7 +375,7 @@ public class ThreeSpecimen extends LinearOpMode {
     /** Raises the pivot */
     public void prepArm(){
         horizontal.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.OUTTAKE1);
+        pivot.setState(PivotSubsystem.State.OUTTAKESPEC);
         updateCommands(0.5);
 
         pivot.setState(PivotSubsystem.State.OUTTAKE2);

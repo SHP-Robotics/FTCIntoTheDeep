@@ -38,18 +38,19 @@ public class DrivetoSpecimenCommand extends Command {
     // Called repeatedly until isFinished() returns true
     @Override
     public void execute() {
-        horiz.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.OUTTAKE1);
+//        horiz.setState(HorizSubsystem.State.SPECIMENDEPOSIT);
         vertical.setDepositState(VerticalSubsystem.State.HIGHBAR);
         vertical.setState(VerticalSubsystem.State.DEPOSITING);
+//        horiz.setState(HorizSubsystem.State.DRIVING);
+        horiz.setState(HorizSubsystem.State.SPECIMENDEPOSIT);
+
     }
 
     // Called once after isFinished() returns true
     @Override
     public void end() {
-        pivot.setState(PivotSubsystem.State.OUTTAKE2);
+        pivot.setState(PivotSubsystem.State.OUTTAKESPEC);
         rotate.setState(RotateSubsystem.State.DROPOFF);
-
     }
 
     // Specifies whether or not the command has finished

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.autos;
 
-import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WALLPICKUP;
+import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WALLPICKUPAUTO;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -825,7 +825,7 @@ public class TestAuto extends LinearOpMode {
     /** Grabs specimen and returns to driving mode */
     public void finishIntake(){
         updateCommands(0.55);
-        horizontal.setState(WALLPICKUP);
+        horizontal.setState(WALLPICKUPAUTO);
         updateCommands(0.05);
 
         claw.close();
@@ -839,7 +839,7 @@ public class TestAuto extends LinearOpMode {
     /** Raises the pivot */
     public void prepArm(){
         horizontal.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.OUTTAKE1);
+        pivot.setState(PivotSubsystem.State.OUTTAKESPEC);
         updateCommands(0.1); //TODO removed wait HERE
 
         pivot.setState(PivotSubsystem.State.OUTTAKE2);

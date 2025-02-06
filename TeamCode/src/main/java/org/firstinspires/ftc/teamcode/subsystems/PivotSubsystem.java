@@ -19,20 +19,22 @@ public class PivotSubsystem extends Subsystem {
 
     public enum State {
 //        TRANSITION(0.6,0.3), //Rename to some TRANSITION STATE
-        DRIVING(0.6, 0.325), //0 is down
-        PREPAREDRIVING(0.2, 0.2), //0 is down
+        DRIVING(0.0, 0.3), //0 is down TODO 0.325->0.3
+        PREPAREDRIVING(0, 0.2), //0 is down
 
-        PREPAREINTAKE(0.6, 0.06),
-        INTAKE(0.63,0), //  0.63 wrist is level with floor
-        PICKUP(0.925,0.2),
-        PICKUP2(0.925,0.35),
-        PICKUP3(0.925, 0.1),
-        OUTTAKE1(0.2,0.3),
-        OUTTAKE2(0.2, 0.55),
-        OUTTAKE3(0.2, 0.55),
-        OUTTAKEBUCKET(0.2,0.55),
-        HUMAN(0.4,0.6),
-        PARK(0, 0.355),
+        PREPAREINTAKE(0, 0.06),
+        INTAKE(0,0), //  0.63 wrist is level with floor
+        PREPAREPICKUP(0.93,0.325),
+        PICKUP(0.93,0.75), //picks up from wall
+        PICKUP2(1,0.6),  //^^^
+        SUBTODRIVING(1, 0.1),
+
+        OUTTAKESPEC(0.3,0.325),
+
+        OUTTAKE2(0.34, 0.6),
+        OUTTAKEBUCKET(1,0.5),
+        HUMAN(1,0.6),
+        PARK(0.7, 0.355),
         MANUAL(0,0);
 
         final double wristPos;

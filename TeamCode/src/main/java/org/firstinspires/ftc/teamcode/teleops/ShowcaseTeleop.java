@@ -23,7 +23,6 @@ import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.commands.RunCommand;
 import org.firstinspires.ftc.teamcode.shplib.commands.Trigger;
 import org.firstinspires.ftc.teamcode.shplib.commands.WaitCommand;
-import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
@@ -104,7 +103,7 @@ public class ShowcaseTeleop extends BaseRobot {
                                         CommandScheduler.getInstance().scheduleCommand(
                                                 new RunCommand(()->{
                                                     rotate.setState(RotateSubsystem.State.NEUTRAL);
-                                                    pivot.setState(PivotSubsystem.State.PICKUP3);
+                                                    pivot.setState(PivotSubsystem.State.SUBTODRIVING);
                                                     cageState = State.COMPLETE;
                                                 })
                                                         .then(new WaitCommand(0.05))
@@ -133,7 +132,7 @@ public class ShowcaseTeleop extends BaseRobot {
                         new RunCommand(()->{
                             claw.close();
                             rotate.setState(RotateSubsystem.State.NEUTRAL);
-                            pivot.setState(PivotSubsystem.State.PICKUP3);
+                            pivot.setState(PivotSubsystem.State.SUBTODRIVING);
                         })
                                 .then(new WaitCommand(0.05))
                                 .then(new RunCommand(() -> {

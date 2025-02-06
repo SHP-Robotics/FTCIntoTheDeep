@@ -21,7 +21,7 @@ public class DrivetoWallCommand extends Command {
         this.claw = claw;
         this.pivot = pivot;
         this.horiz = horiz;
-        endTime = 0.5;
+        endTime = 0.75;
     }
 
 
@@ -35,7 +35,8 @@ public class DrivetoWallCommand extends Command {
     // Called repeatedly until isFinished() returns true
     @Override
     public void execute() {
-        pivot.setState(PivotSubsystem.State.PICKUP);
+        pivot.setState(PivotSubsystem.State.PREPAREPICKUP);
+//        pivot.setState(PivotSubsystem.State.PICKUP);
         horiz.setState(HorizSubsystem.State.INTAKEWALL);
     }
 
@@ -43,6 +44,7 @@ public class DrivetoWallCommand extends Command {
     @Override
     public void end() {
         rotate.setState(RotateSubsystem.State.PICKUP);
+        pivot.setState(PivotSubsystem.State.PICKUP);
         claw.open();
     }
 

@@ -24,7 +24,7 @@ public class BuckettoDriveCommand extends Command {
         this.pivot = pivot;
         this.horiz = horiz;
         this.vertical = vertical;
-        endTime = 1;
+        endTime = 0.5;
     }
 
 
@@ -39,16 +39,12 @@ public class BuckettoDriveCommand extends Command {
     @Override
     public void execute() {
         claw.open();
-
     }
 
     // Called once after isFinished() returns true
     @Override
     public void end() {
         rotate.setState(RotateSubsystem.State.NEUTRAL);
-        pivot.setState(PivotSubsystem.State.PREPAREDRIVING);
-        claw.close();
-
     }
 
     // Specifies whether or not the command has finished

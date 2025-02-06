@@ -23,7 +23,6 @@ import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.commands.RunCommand;
 import org.firstinspires.ftc.teamcode.shplib.commands.Trigger;
 import org.firstinspires.ftc.teamcode.shplib.commands.WaitCommand;
-import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
@@ -61,7 +60,7 @@ public class AOfficialTeleOp extends BaseRobot {
         gamepadInterface1 = new GamepadInterface(gamepad1);
         gamepadInterface2 = new GamepadInterface(gamepad2);
 
-        vision.limelight.start();
+//        vision.limelight.start();
 
     }
     @Override
@@ -81,6 +80,7 @@ public class AOfficialTeleOp extends BaseRobot {
         drive.update(gamepad2);
 
 
+        //collect from sub
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER), new RunCommand(() -> {
             if (cageState == State.COMPLETE) {
                 CommandScheduler.getInstance().scheduleCommand(
@@ -100,12 +100,12 @@ public class AOfficialTeleOp extends BaseRobot {
                             );
                             andrewWompWomp++;
                         }
-                        else { //TODO add fake controller rumble
+                        else {
                             claw.setColor(GREEN);
                             CommandScheduler.getInstance().scheduleCommand(
                                 new RunCommand(()->{
                                     rotate.setState(RotateSubsystem.State.NEUTRAL);
-                                    pivot.setState(PivotSubsystem.State.PICKUP3);
+                                    pivot.setState(PivotSubsystem.State.SUBTODRIVING);
                                     cageState = State.COMPLETE;
                                 })
                                 .then(new WaitCommand(0.05))
@@ -128,6 +128,7 @@ public class AOfficialTeleOp extends BaseRobot {
             horizontal.setTriggerPos(gamepad1.right_trigger);
         }));
 
+        //abort
         new Trigger(gamepad1.dpad_up, new RunCommand(() -> {
             claw.close();
             rotate.setState(RotateSubsystem.State.NEUTRAL);
@@ -138,7 +139,9 @@ public class AOfficialTeleOp extends BaseRobot {
             claw.setColor(OFF);
         }));
 
-        //intake specimen
+        //TODO ADD ABORT FOR SUB ON SHORTSIDE
+
+        //intake specimen from wall
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER), new RunCommand(() -> {
             if (intakeState == State.COMPLETE) {
                 CommandScheduler.getInstance().scheduleCommand(
@@ -153,20 +156,25 @@ public class AOfficialTeleOp extends BaseRobot {
                     .then(new RunCommand(()->{
                     if (!claw.isBlockInClaw()) {
                         CommandScheduler.getInstance().scheduleCommand(
-                                new DrivetoWallCommand(rotate, claw, pivot, horizontal)
+                                new RunCommand(()->{
+                                    claw.open();
+                                })
                         );
                         andrewWompWomp++;
                     }
                     else {
+                        horizontal.setState(HorizSubsystem.State.DRIVING);
                         claw.setColor(GREEN);
                         CommandScheduler.getInstance().scheduleCommand(
                             new RunCommand(()->{
                                 pivot.setState(PivotSubsystem.State.PICKUP2);
                                 rotate.setState(RotateSubsystem.State.NEUTRAL);
+                                horizontal.setState(HorizSubsystem.State.DRIVING);
                                 intakeState = State.COMPLETE;
                             })
                             .then(new WaitCommand(0.25))
                             .then(new RunCommand(() -> {
+                                horizontal.setState(HorizSubsystem.State.DRIVING);
                                 pivot.setState(PivotSubsystem.State.DRIVING);
                                 claw.setColor(OFF);
                             }))
@@ -185,20 +193,20 @@ public class AOfficialTeleOp extends BaseRobot {
                 }))
         );
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && !LTTrigger,
-                new SpecimentoDriveCommand(rotate, claw, pivot, horizontal, vertical)
-                .then(new RunCommand(()->{
-                    LTTrigger = true;
-                }))
-                .then(new WaitCommand(0.5))
-                .then(new RunCommand(()->{
-                    claw.close();
-                    pivot.setState(PivotSubsystem.State.PREPAREDRIVING);
-                }))
-                .then(new WaitCommand(0.25))
-                .then(new RunCommand(()->{
-                    pivot.setState(PivotSubsystem.State.DRIVING);
-                    vertical.setState(VerticalSubsystem.State.BOTTOM);
-                }))
+                new DrivetoWallCommand(rotate, claw, pivot, horizontal)
+                        .then(new RunCommand(()->{
+                            intakeState = State.EXTENDED;
+                            claw.setColor(PINK);
+                            LTTrigger = true;
+                        }))
+//                new SpecimentoDriveCommand(rotate, claw, pivot, horizontal, vertical)
+//                .then(new RunCommand(()->{
+//                    LTTrigger = true;
+//                }))
+//                .then(new WaitCommand(0.5))
+//                .then(new RunCommand(()->{
+//                    claw.close();
+//                }))
         );
 
         //deposit bucket
@@ -218,8 +226,8 @@ public class AOfficialTeleOp extends BaseRobot {
                         .then(new RunCommand(()->{
                             pivot.setState(PivotSubsystem.State.DRIVING);
                             vertical.setState(VerticalSubsystem.State.BOTTOM);
+                            claw.close();
                         }))
-
         );
 
         //Claw

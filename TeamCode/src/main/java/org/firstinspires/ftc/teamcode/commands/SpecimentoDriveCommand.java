@@ -24,7 +24,7 @@ public class SpecimentoDriveCommand extends Command {
         this.pivot = pivot;
         this.horiz = horiz;
         this.vertical = vertical;
-        endTime = 0.6;
+        endTime = 0.5;
     }
 
 
@@ -38,14 +38,16 @@ public class SpecimentoDriveCommand extends Command {
     // Called repeatedly until isFinished() returns true
     @Override
     public void execute() {
-        pivot.setState(PivotSubsystem.State.OUTTAKE3);
-        vertical.setState(VerticalSubsystem.State.DOWN);
+        vertical.setState(VerticalSubsystem.State.BOTTOM);
+
     }
 
     // Called once after isFinished() returns true
     @Override
     public void end() {
         claw.open();
+        horiz.setState(HorizSubsystem.State.DRIVING);
+        pivot.setState(PivotSubsystem.State.DRIVING);
     }
 
     // Specifies whether or not the command has finished
