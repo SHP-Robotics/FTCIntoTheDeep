@@ -4,7 +4,6 @@ import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WAL
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.shprobotics.pestocore.algorithms.PID;
@@ -26,8 +25,7 @@ import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
 @Config
-@Disabled
-@Autonomous(name = "Testing 3 + 0")
+@Autonomous(name = "***TEST 4 + 0 TEST***")
 public class TestAuto extends LinearOpMode {
     private MecanumController mecanumController;
     private DeterministicTracker tracker;
@@ -37,10 +35,10 @@ public class TestAuto extends LinearOpMode {
     HorizSubsystem horizontal;
     ClawSubsystem claw;
     PathContainer startToSub,
-//            sweepBlock1a, sweepBlock1b,
+    //            sweepBlock1a, sweepBlock1b,
 //            sweepBlock2a, sweepBlock2b,
 //            sweepBlock3a, sweepBlock3b,
-            pushBlock1, pushBlock2a, pushBlock2b, pushBlock2c,
+    pushBlock1, pushBlock2a, pushBlock2b, pushBlock2c,
             grabBlock1a, grabBlock1b, depositBlock1,
             grabBlock2a, grabBlock2b, depositBlock2,
             grabBlock3a, grabBlock3b, depositBlock3,
@@ -77,7 +75,7 @@ public class TestAuto extends LinearOpMode {
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(0, 0),
-                                        new Vector2D(12, -30.5)
+                                        new Vector2D(-12, 30.5)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -248,12 +246,9 @@ public class TestAuto extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(12, -30.5),
-                                        new Vector2D(-24, -25),
-                                        new Vector2D(-24, -25),
-                                        new Vector2D(-24, -25),
-                                        new Vector2D(-24, -25),
-                                        new Vector2D(-24, -25)
+                                        new Vector2D(-12, 30.5),
+                                        new Vector2D(20, 25),
+                                        new Vector2D(20, 25)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -263,10 +258,10 @@ public class TestAuto extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-24, -25),
-                                        new Vector2D(-22, -50),
-                                        new Vector2D(-22, -50),
-                                        new Vector2D(-22, -50)
+                                        new Vector2D(20, 25),
+                                        new Vector2D(22, 50),
+                                        new Vector2D(22, 50),
+                                        new Vector2D(22, 50)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -275,10 +270,10 @@ public class TestAuto extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-22, -50),
-                                        new Vector2D(-37, -50),
-                                        new Vector2D(-37, -50),
-                                        new Vector2D(-37, -50)
+                                        new Vector2D(22, 50),
+                                        new Vector2D(37, 50),
+                                        new Vector2D(37, 50),
+                                        new Vector2D(37, 50)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -288,10 +283,10 @@ public class TestAuto extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-37, -50),
-                                        new Vector2D(-37, -10),
-                                        new Vector2D(-37, -10),
-                                        new Vector2D(-37, -10)
+                                        new Vector2D(37, 50),
+                                        new Vector2D(37, 10),
+                                        new Vector2D(37, 10),
+                                        new Vector2D(37, 10)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -305,10 +300,10 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-37, -10),
-                                        new Vector2D(-37, -45),
-                                        new Vector2D(-37, -45),
-                                        new Vector2D(-37, -45)
+                                        new Vector2D(37, 10),
+                                        new Vector2D(37, 45),
+                                        new Vector2D(37, 45),
+                                        new Vector2D(37, 45)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -317,10 +312,10 @@ public class TestAuto extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-37, -45),
-                                        new Vector2D(-46, -45),
-                                        new Vector2D(-46, -45),
-                                        new Vector2D(-46, -45)
+                                        new Vector2D(37, 45),
+                                        new Vector2D(46, 45),
+                                        new Vector2D(46, 45),
+                                        new Vector2D(46, 45)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -332,10 +327,10 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-46, -45), //TODO MAYBE TUNE
-                                        new Vector2D(-50, -45),
-                                        new Vector2D(-50, -45),
-                                        new Vector2D(-50, -45)
+                                        new Vector2D(46, 45), //TODO MAYBE TUNE
+                                        new Vector2D(50, 45),
+                                        new Vector2D(50, 45),
+                                        new Vector2D(50, 45)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -348,10 +343,10 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-50, -45),
-                                        new Vector2D(-50, -12),
-                                        new Vector2D(-50, -12),
-                                        new Vector2D(-50, -12)
+                                        new Vector2D(50, 45),
+                                        new Vector2D(50, 12),
+                                        new Vector2D(50, 12),
+                                        new Vector2D(50, 12)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -365,10 +360,10 @@ public class TestAuto extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-50, -12),
-                                        new Vector2D(-40, -12),
-                                        new Vector2D(-40, -12),
-                                        new Vector2D(-40, -12)
+                                        new Vector2D(50, 12),
+                                        new Vector2D(40, 12),
+                                        new Vector2D(40, 12),
+                                        new Vector2D(40, 12)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -382,10 +377,10 @@ public class TestAuto extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-40, -12),
-                                        new Vector2D(-40, -7.5),
-                                        new Vector2D(-40, -7.5),
-                                        new Vector2D(-40, -7.5)
+                                        new Vector2D(40, 12),
+                                        new Vector2D(40, 7.5),
+                                        new Vector2D(40, 7.5),
+                                        new Vector2D(40, 7.5)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -398,11 +393,11 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-40, -7.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(8, -20),
-                                        new Vector2D(8, -20),
-                                        new Vector2D(8, -20),
-                                        new Vector2D(8, -20)
+                                        new Vector2D(40, 7.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(-8, 20),
+                                        new Vector2D(-8, 20),
+                                        new Vector2D(-8, 20),
+                                        new Vector2D(-8, 20)
 
                                 }
                         ),
@@ -412,11 +407,11 @@ public class TestAuto extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(8, -20), //with 2 blocks (-47, 10)
-                                        new Vector2D(8, -30.5),
-                                        new Vector2D(8, -30.5),
-                                        new Vector2D(8, -30.5),
-                                        new Vector2D(8, -30.5)
+                                        new Vector2D(-8, 20), //with 2 blocks (-47, 10)
+                                        new Vector2D(-8, 30.5),
+                                        new Vector2D(-8, 30.5),
+                                        new Vector2D(-8, 30.5),
+                                        new Vector2D(-8, 30.5)
 
                                 }
                         ),
@@ -430,8 +425,8 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(8, -30.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(8, -27)
+                                        new Vector2D(-8, 30.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(-8, 27)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -440,8 +435,8 @@ public class TestAuto extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(8, -27),
-                                        new Vector2D(-27.8, -15)
+                                        new Vector2D(-8, 27),
+                                        new Vector2D(27.8, 15)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -454,10 +449,10 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-27.8, -15),
-                                        new Vector2D(-27.8, -7.5),
-                                        new Vector2D(-27.8, -7.5),
-                                        new Vector2D(-27.8, -7.5)
+                                        new Vector2D(27.8, 15),
+                                        new Vector2D(27.8, 7),
+                                        new Vector2D(27.8, 7),
+                                        new Vector2D(27.8, 7)
 
                                 }
                         ),
@@ -471,11 +466,11 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-27.8, -7.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(5, -20),
-                                        new Vector2D(5, -20),
-                                        new Vector2D(5, -20),
-                                        new Vector2D(5, -20)
+                                        new Vector2D(27.8, 7), //with 2 blocks (-47, 10)
+                                        new Vector2D(-5, 20),
+                                        new Vector2D(-5, 20),
+                                        new Vector2D(-5, 20),
+                                        new Vector2D(-5, 20)
 
                                 }
                         ),
@@ -485,11 +480,11 @@ public class TestAuto extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(5, -20), //with 2 blocks (-47, 10)
-                                        new Vector2D(5, -30.5),
-                                        new Vector2D(5, -30.5),
-                                        new Vector2D(5, -30.5),
-                                        new Vector2D(5, -30.5)
+                                        new Vector2D(-5, 20), //with 2 blocks (-47, 10)
+                                        new Vector2D(-5, 31),
+                                        new Vector2D(-5, 31),
+                                        new Vector2D(-5, 31),
+                                        new Vector2D(-5, 31)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -502,8 +497,8 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(5, -30.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(5, -27)
+                                        new Vector2D(-5, 31), //with 2 blocks (-47, 10)
+                                        new Vector2D(-5, 27)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -512,8 +507,8 @@ public class TestAuto extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(5, -27),
-                                        new Vector2D(-27.8, -15)
+                                        new Vector2D(-5, 27),
+                                        new Vector2D(27.8, 15)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -526,10 +521,10 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-27.8, -15),
-                                        new Vector2D(-27.8, -7.5),
-                                        new Vector2D(-27.8, -7.5),
-                                        new Vector2D(-27.8, -7.5),
+                                        new Vector2D(27.8, 15),
+                                        new Vector2D(27.8, 7.5),
+                                        new Vector2D(27.8, 7.5),
+                                        new Vector2D(27.8, 7.5),
 
                                 }
                         ),
@@ -543,11 +538,11 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-27.8, -7.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(3, -11),
-                                        new Vector2D(3, -11),
-                                        new Vector2D(3, -11),
-                                        new Vector2D(3, -11)
+                                        new Vector2D(27.8, 7.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(-2, 11),
+                                        new Vector2D(-2, 11),
+                                        new Vector2D(-2, 11),
+                                        new Vector2D(-2, 11)
 
                                 }
                         ),
@@ -557,11 +552,11 @@ public class TestAuto extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(3, -11), //with 2 blocks (-47, 10)
-                                        new Vector2D(3, -30.5),
-                                        new Vector2D(3, -30.5),
-                                        new Vector2D(3, -30.5),
-                                        new Vector2D(3, -30.5)
+                                        new Vector2D(-2, 11), //with 2 blocks (-47, 10)
+                                        new Vector2D(-2, 30.5),
+                                        new Vector2D(-2, 30.5),
+                                        new Vector2D(-2, 30.5),
+                                        new Vector2D(-2, 30.5)
 
                                 }
                         ),
@@ -576,8 +571,8 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.03)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(3, -30.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(-30, -6)
+                                        new Vector2D(-2, 30.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(30, 6)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -605,7 +600,7 @@ public class TestAuto extends LinearOpMode {
         rotate.processState(RotateSubsystem.State.NEUTRAL);
 
         //TODO THIS IS THE START
-        //TODO add 1/10 back 
+        //TODO add 1/10 back
 
         waitForStart();
 
@@ -635,7 +630,7 @@ public class TestAuto extends LinearOpMode {
         raiseArm();
 
         //Deposit Block 1
-        followPath(depositBlock1, 0.15, 0.8);
+        followPath(depositBlock1, 0.25, 0.8);
         lowerArm();
 
         //Grab Block 2
@@ -647,7 +642,7 @@ public class TestAuto extends LinearOpMode {
         raiseArm();
 
         //Deposit Block 2
-        followPath(depositBlock2, 0.15, 0.8);
+        followPath(depositBlock2, 0.25, 0.8);
         lowerArm();
 
         //Grab Block 3
@@ -659,7 +654,7 @@ public class TestAuto extends LinearOpMode {
         raiseArm();
 
         //Deposit Block 2
-        followPath(depositBlock3, 0.15, 0.8);
+        followPath(depositBlock3, 0.25, 0.8);
         lowerArm();
 
         followPath(park, 0.25, 0.8);
@@ -824,14 +819,14 @@ public class TestAuto extends LinearOpMode {
     }
     /** Grabs specimen and returns to driving mode */
     public void finishIntake(){
-        updateCommands(0.55);
+        updateCommands(0.5);
         horizontal.setState(WALLPICKUPAUTO);
-        updateCommands(0.05);
+        updateCommands(0.25);
 
         claw.close();
         updateCommands(0.15);
 
-        pivot.setState(PivotSubsystem.State.PICKUP2);
+        pivot.setState(PivotSubsystem.State.DRIVING);
         rotate.setState(RotateSubsystem.State.NEUTRAL);
         updateCommands(0.2);
     }
@@ -840,9 +835,8 @@ public class TestAuto extends LinearOpMode {
     public void prepArm(){
         horizontal.setState(HorizSubsystem.State.DRIVING);
         pivot.setState(PivotSubsystem.State.OUTTAKESPEC);
-        updateCommands(0.1); //TODO removed wait HERE
+        updateCommands(0.1);
 
-        pivot.setState(PivotSubsystem.State.OUTTAKE2);
         rotate.setState(RotateSubsystem.State.NEUTRAL);
         updateCommands();
     }
@@ -859,13 +853,11 @@ public class TestAuto extends LinearOpMode {
         updateCommands(0.525);
 
         claw.open();
-        updateCommands(0.25);
+        updateCommands(0.2); //TODO .25 -> .2
 
         claw.close();
         vertical.setState(VerticalSubsystem.State.BOTTOM);
         pivot.setState(PivotSubsystem.State.DRIVING);
         updateCommands();
-
-
     }
 }

@@ -29,7 +29,7 @@ public class PivotSubsystem extends Subsystem {
         PICKUP2(1,0.6),  //^^^
         SUBTODRIVING(1, 0.1),
 
-        OUTTAKESPEC(0.3,0.325),
+        OUTTAKESPEC(0.275,0.325),
 
         OUTTAKE2(0.34, 0.6),
         OUTTAKEBUCKET(1,0.5),

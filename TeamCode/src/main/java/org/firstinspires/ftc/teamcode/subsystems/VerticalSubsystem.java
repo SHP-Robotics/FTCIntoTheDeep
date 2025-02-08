@@ -25,11 +25,11 @@ public class VerticalSubsystem extends Subsystem {
     public enum State {
         BOTTOM(0),
         DEPOSITING(750),
-        DOWN(50),
+        DOWN(100),
         LOWBAR(0),
-        HIGHBAR(1000),
+        HIGHBAR(1500),
         LOWBUCKET(800),
-        HIGHBUCKET(2400),
+        HIGHBUCKET(3250),
         MANUAL(0),
         NOPOWER(0);
 

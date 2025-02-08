@@ -193,12 +193,20 @@ public class AOfficialTeleOp extends BaseRobot {
                 }))
         );
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && !LTTrigger,
-                new DrivetoWallCommand(rotate, claw, pivot, horizontal)
-                        .then(new RunCommand(()->{
-                            intakeState = State.EXTENDED;
-                            claw.setColor(PINK);
-                            LTTrigger = true;
-                        }))
+                new RunCommand(()->{
+                    vertical.setState(VerticalSubsystem.State.DOWN);
+                })
+                    .then(new WaitCommand(0.6))
+                    .then(new RunCommand(()->{
+                        claw.open();
+                    }))
+                    .then(new DrivetoWallCommand(rotate, claw, pivot, horizontal)
+                    .then(new RunCommand(()->{
+                        vertical.setState(VerticalSubsystem.State.BOTTOM);
+                        intakeState = State.EXTENDED;
+                        claw.setColor(PINK);
+                        LTTrigger = true;
+                    }))
 //                new SpecimentoDriveCommand(rotate, claw, pivot, horizontal, vertical)
 //                .then(new RunCommand(()->{
 //                    LTTrigger = true;
@@ -207,7 +215,7 @@ public class AOfficialTeleOp extends BaseRobot {
 //                .then(new RunCommand(()->{
 //                    claw.close();
 //                }))
-        );
+        ));
 
         //deposit bucket
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && crossTrigger,
