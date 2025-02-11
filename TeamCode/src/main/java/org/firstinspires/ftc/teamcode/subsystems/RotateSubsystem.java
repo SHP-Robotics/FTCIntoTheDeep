@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.shplib.Constants.Rotate.kBrokenPickup;
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Rotate.kNeutral;
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Rotate.kPickup;
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Rotate.kRotateName;
@@ -31,7 +30,7 @@ public class RotateSubsystem extends Subsystem {
 
     public RotateSubsystem(HardwareMap hardwareMap){
         rotate = new CachingServo((Servo) hardwareMap.get(kRotateName));
-        rotate.setDirection(Servo.Direction.FORWARD);
+        rotate.setDirection(Servo.Direction.REVERSE);
         rotatePos = kNeutral;
         setState(State.NEUTRAL);
     }
@@ -68,17 +67,11 @@ public class RotateSubsystem extends Subsystem {
         else if (this.state == State.PICKUP){
             rotatePos = kPickup;
         }
-        else if (this.state == State.BROKENPICKUP){
-            rotatePos = kBrokenPickup;
-        }
         else if (this.state == State.DROPOFFBUCKET){
-            rotatePos = 0.625;
+            rotatePos = 0.425; //0.625;
         }
         else if (this.state == State.SAMPLE){
-            rotatePos = 1;
-        }
-        else if (this.state == State.SPECIMEN){
-            rotatePos = 0.75;
+            rotatePos = kNeutral; // 1;
         }
         rotate.setPosition(rotatePos);
 

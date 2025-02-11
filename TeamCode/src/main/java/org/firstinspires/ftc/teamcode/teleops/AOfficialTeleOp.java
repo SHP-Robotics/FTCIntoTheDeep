@@ -196,7 +196,7 @@ public class AOfficialTeleOp extends BaseRobot {
                 new RunCommand(()->{
                     vertical.setState(VerticalSubsystem.State.DOWN);
                 })
-                    .then(new WaitCommand(0.6))
+                    .then(new WaitCommand(0.7))
                     .then(new RunCommand(()->{
                         claw.open();
                     }))
