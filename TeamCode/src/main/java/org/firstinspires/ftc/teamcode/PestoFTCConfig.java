@@ -35,13 +35,14 @@ public class PestoFTCConfig {
     public static double maxEndpointI = 0;
 
     public static PID endpointPID = new PID(endpointP, endpointI, endpointD);
-    public static final DcMotorSimple.Direction leftEncoderDirection = FORWARD;
-    public static final DcMotorSimple.Direction centerEncoderDirection = REVERSE;
+
+    public static final DcMotorSimple.Direction leftEncoderDirection = REVERSE;
+    public static final DcMotorSimple.Direction centerEncoderDirection = FORWARD;
     public static final DcMotorSimple.Direction rightEncoderDirection = FORWARD;
 
-    public static String leftName = "leftFront";
-    public static String centerName = "rightFront";
-    public static String rightName = "rightRear";
+    public static String leftName = "frontLeft";
+    public static String centerName = "frontRight";
+    public static String rightName = "right";
 
     public static MecanumController getMecanumController(HardwareMap hardwareMap) {
         MecanumController mecanumController = new MecanumController(hardwareMap, new String[] {
