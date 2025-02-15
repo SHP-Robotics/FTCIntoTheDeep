@@ -22,6 +22,8 @@ dependencies {
     implementation 'org.firstinspires.ftc:Vision:10.1.1'
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
+    implementation 'org.ftclib.ftclib:vision:2.1.0'
+
     implementation "dev.frozenmilk.dairy:CachingHardware:1.0.0"
     implementation 'com.pedropathing:pedro:1.0.7'
 
