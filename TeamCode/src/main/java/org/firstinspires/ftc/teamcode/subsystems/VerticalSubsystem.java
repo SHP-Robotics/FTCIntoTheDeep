@@ -22,12 +22,15 @@ public class VerticalSubsystem extends Subsystem {
     private int slidePos;
     private int offset;
 
+
     public enum State {
         BOTTOM(0),
         DEPOSITING(750),
         DOWN(100),
+        DOWNAUTO(50),
         LOWBAR(0),
         HIGHBAR(1500),
+        AUTOHIGHBAR(1050),
         LOWBUCKET(800),
         HIGHBUCKET(3250),
         MANUAL(0),
@@ -113,6 +116,19 @@ public class VerticalSubsystem extends Subsystem {
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    public void lowerSlides(){
+        if(depositState == State.HIGHBUCKET || depositState == State.LOWBUCKET) {
+            if (Math.abs(rightSlide.getVelocity()) > 10.0) {
+                rightSlide.setPower(0);
+                leftSlide.setPower(0);
+            }
+            else {
+                rightSlide.setPower(Constants.Vertical.kRunPower);
+                leftSlide.setPower(Constants.Vertical.kRunPower);
+            }
+        }
+    }
+
     public void setDepositState(State state){
         this.depositState = state;
     }
@@ -146,7 +162,14 @@ public class VerticalSubsystem extends Subsystem {
             this.setPosition(this.depositState.position+offset);
             return;
         }
-        this.setPosition(this.state.position+offset);
+        if (this.state == State.BOTTOM){
+            this.setPosition(this.state.position);
+            lowerSlides();
+            return;
+        }
+        else {
+            this.setPosition(this.state.position + offset);
+        }
 
     }
 
@@ -154,6 +177,7 @@ public class VerticalSubsystem extends Subsystem {
     public void periodic(Telemetry telemetry) {
         processState();
         telemetry.addData("DEPOSIT STATE:", depositState);
+        telemetry.addData("Slide Velocity:", rightSlide.getVelocity());
         telemetry.addData("Slide State: ", state);
         telemetry.addData("Left Slide Position: ", leftSlide.getCurrentPosition());
         telemetry.addData("Right Slide Position: ", rightSlide.getCurrentPosition());

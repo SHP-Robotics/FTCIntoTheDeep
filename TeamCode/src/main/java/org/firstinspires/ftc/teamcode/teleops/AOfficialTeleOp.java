@@ -194,9 +194,9 @@ public class AOfficialTeleOp extends BaseRobot {
         );
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && !LTTrigger,
                 new RunCommand(()->{
-                    vertical.setState(VerticalSubsystem.State.DOWN);
+                    vertical.setState(VerticalSubsystem.State.BOTTOM); //down to bottom
                 })
-                    .then(new WaitCommand(0.7))
+                    .then(new WaitCommand(0.5))
                     .then(new RunCommand(()->{
                         claw.open();
                     }))

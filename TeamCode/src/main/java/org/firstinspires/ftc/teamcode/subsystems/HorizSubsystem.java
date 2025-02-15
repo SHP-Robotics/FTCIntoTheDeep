@@ -19,9 +19,8 @@ public class HorizSubsystem extends Subsystem {
 
     public enum State {
         INTAKEWALL(0.75, 0),
-        SPECIMENDEPOSIT(0.25, 0),
-        AUTOINTAKE(1, 0),
-        WALLPICKUPAUTO(0,0),
+        SPECIMENDEPOSIT(0.75, 0),
+        WALLPICKUPAUTO(0.75,0),
         DRIVING(0, 0), //1, 0.725 is all in
         BLOCKINBOT(0,0.5),
         INTAKINGEXTENDED(1,1), // 0.55 rail max out, 0 slide max out

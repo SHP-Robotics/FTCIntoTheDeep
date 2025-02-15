@@ -75,7 +75,7 @@ public class FourSpecimen extends LinearOpMode {
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(0, 0),
-                                        new Vector2D(-12, 30.5)
+                                        new Vector2D(12, -30.5)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -246,9 +246,9 @@ public class FourSpecimen extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-12, 30.5),
-                                        new Vector2D(23, 25),
-                                        new Vector2D(23, -25)
+                                        new Vector2D(12, -30.5),
+                                        new Vector2D(-23, -25),
+                                        new Vector2D(-23, -25)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -258,10 +258,10 @@ public class FourSpecimen extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(23, 25),
-                                        new Vector2D(22, 50),
-                                        new Vector2D(22, 50),
-                                        new Vector2D(22, 50)
+                                        new Vector2D(-23, -25),
+                                        new Vector2D(-22, -50),
+                                        new Vector2D(-22, -50),
+                                        new Vector2D(-22, -50)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -270,10 +270,10 @@ public class FourSpecimen extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(22, 50),
-                                        new Vector2D(37, 50),
-                                        new Vector2D(37, 50),
-                                        new Vector2D(37, 50)
+                                        new Vector2D(-22, -50),
+                                        new Vector2D(-37, -50),
+                                        new Vector2D(-37, -50),
+                                        new Vector2D(-37, -50)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -283,10 +283,10 @@ public class FourSpecimen extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(37, 50),
-                                        new Vector2D(37, 10),
-                                        new Vector2D(37, 10),
-                                        new Vector2D(37, 10)
+                                        new Vector2D(-37, -50),
+                                        new Vector2D(-37, -10),
+                                        new Vector2D(-37, -10),
+                                        new Vector2D(-37, -10)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -300,10 +300,10 @@ public class FourSpecimen extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(37, 10),
-                                        new Vector2D(37, 45),
-                                        new Vector2D(37, 45),
-                                        new Vector2D(37, 45)
+                                        new Vector2D(-37, -10),
+                                        new Vector2D(-37, -45),
+                                        new Vector2D(-37, -45),
+                                        new Vector2D(-37, -45)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -312,10 +312,10 @@ public class FourSpecimen extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(37, 45),
-                                        new Vector2D(46, 45),
-                                        new Vector2D(46, 45),
-                                        new Vector2D(46, 45)
+                                        new Vector2D(-37, -45),
+                                        new Vector2D(-46, -45),
+                                        new Vector2D(-46, -45),
+                                        new Vector2D(-46, -45)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -327,10 +327,10 @@ public class FourSpecimen extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(46, 45), //TODO MAYBE TUNE
-                                        new Vector2D(50, 45),
-                                        new Vector2D(50, 45),
-                                        new Vector2D(50, 45)
+                                        new Vector2D(-46, -45),
+                                        new Vector2D(-50, -45),
+                                        new Vector2D(-50, -45),
+                                        new Vector2D(-50, -45)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -343,10 +343,10 @@ public class FourSpecimen extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(50, 45),
-                                        new Vector2D(50, 12),
-                                        new Vector2D(50, 12),
-                                        new Vector2D(50, 12)
+                                        new Vector2D(-50, -45),
+                                        new Vector2D(-50, -12),
+                                        new Vector2D(-50, -12),
+                                        new Vector2D(-50, -12)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -360,10 +360,10 @@ public class FourSpecimen extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(50, 12),
-                                        new Vector2D(40, 12),
-                                        new Vector2D(40, 12),
-                                        new Vector2D(40, 12)
+                                        new Vector2D(-50, -12),
+                                        new Vector2D(-40, -12),
+                                        new Vector2D(-40, -12),
+                                        new Vector2D(-40, -12)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -377,10 +377,10 @@ public class FourSpecimen extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(40, 12),
-                                        new Vector2D(40, 7.5),
-                                        new Vector2D(40, 7.5),
-                                        new Vector2D(40, 7.5)
+                                        new Vector2D(-40, -12),
+                                        new Vector2D(-40, -7.5),
+                                        new Vector2D(-40, -7.5),
+                                        new Vector2D(-40, -7.5)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -393,11 +393,11 @@ public class FourSpecimen extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(40, 7.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(-8, 20),
-                                        new Vector2D(-8, 20),
-                                        new Vector2D(-8, 20),
-                                        new Vector2D(-8, 20)
+                                        new Vector2D(-40, -7.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(8, -20),
+                                        new Vector2D(8, -20),
+                                        new Vector2D(8, -20),
+                                        new Vector2D(8, -20)
 
                                 }
                         ),
@@ -407,11 +407,11 @@ public class FourSpecimen extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-8, 20), //with 2 blocks (-47, 10)
-                                        new Vector2D(-8, 30.5),
-                                        new Vector2D(-8, 30.5),
-                                        new Vector2D(-8, 30.5),
-                                        new Vector2D(-8, 30.5)
+                                        new Vector2D(8, -20), //with 2 blocks (-47, 10)
+                                        new Vector2D(8, -30.5),
+                                        new Vector2D(8, -30.5),
+                                        new Vector2D(8, -30.5),
+                                        new Vector2D(8, -30.5)
 
                                 }
                         ),
@@ -425,8 +425,8 @@ public class FourSpecimen extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-8, 30.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(-8, 27)
+                                        new Vector2D(8, -30.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(8, -27)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -435,8 +435,8 @@ public class FourSpecimen extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-8, 27),
-                                        new Vector2D(27.8, 15)
+                                        new Vector2D(8, -27),
+                                        new Vector2D(-27.8, -15)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -449,10 +449,10 @@ public class FourSpecimen extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(27.8, 15),
-                                        new Vector2D(27.8, 7),
-                                        new Vector2D(27.8, 7),
-                                        new Vector2D(27.8, 7)
+                                        new Vector2D(-27.8, -15),
+                                        new Vector2D(-27.8, -7),
+                                        new Vector2D(-27.8, -7),
+                                        new Vector2D(-27.8, -7)
 
                                 }
                         ),
@@ -466,11 +466,11 @@ public class FourSpecimen extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(27.8, 7), //with 2 blocks (-47, 10)
-                                        new Vector2D(-5, 20),
-                                        new Vector2D(-5, 20),
-                                        new Vector2D(-5, 20),
-                                        new Vector2D(-5, 20)
+                                        new Vector2D(-27.8, -7), //with 2 blocks (-47, 10)
+                                        new Vector2D(5, -20),
+                                        new Vector2D(5, -20),
+                                        new Vector2D(5, -20),
+                                        new Vector2D(5, -20)
 
                                 }
                         ),
@@ -480,11 +480,11 @@ public class FourSpecimen extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-5, 20), //with 2 blocks (-47, 10)
-                                        new Vector2D(-5, 31),
-                                        new Vector2D(-5, 31),
-                                        new Vector2D(-5, 31),
-                                        new Vector2D(-5, 31)
+                                        new Vector2D(5, -20), //with 2 blocks (-47, 10)
+                                        new Vector2D(5, -31),
+                                        new Vector2D(5, -31),
+                                        new Vector2D(5, -31),
+                                        new Vector2D(5, -31)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -497,8 +497,8 @@ public class FourSpecimen extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-5, 31), //with 2 blocks (-47, 10)
-                                        new Vector2D(-5, 27)
+                                        new Vector2D(5, -31), //with 2 blocks (-47, 10)
+                                        new Vector2D(5, -27)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -507,8 +507,8 @@ public class FourSpecimen extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-5, 27),
-                                        new Vector2D(27.8, 15)
+                                        new Vector2D(5, -27),
+                                        new Vector2D(-27.8, -15)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -521,10 +521,10 @@ public class FourSpecimen extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(27.8, 15),
-                                        new Vector2D(27.8, 7.5),
-                                        new Vector2D(27.8, 7.5),
-                                        new Vector2D(27.8, 7.5),
+                                        new Vector2D(-27.8, -15),
+                                        new Vector2D(-27.8, -7.5),
+                                        new Vector2D(-27.8, -7.5),
+                                        new Vector2D(-27.8, -7.5),
 
                                 }
                         ),
@@ -538,11 +538,11 @@ public class FourSpecimen extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(27.8, 7.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(-2, 11),
-                                        new Vector2D(-2, 11),
-                                        new Vector2D(-2, 11),
-                                        new Vector2D(-2, 11)
+                                        new Vector2D(-27.8, -7.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(2, -11),
+                                        new Vector2D(2, -11),
+                                        new Vector2D(2, -11),
+                                        new Vector2D(2, -11)
 
                                 }
                         ),
@@ -552,11 +552,11 @@ public class FourSpecimen extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-2, 11), //with 2 blocks (-47, 10)
-                                        new Vector2D(-2, 30.5),
-                                        new Vector2D(-2, 30.5),
-                                        new Vector2D(-2, 30.5),
-                                        new Vector2D(-2, 30.5)
+                                        new Vector2D(2, -11), //with 2 blocks (-47, 10)
+                                        new Vector2D(2, -30.5),
+                                        new Vector2D(2, -30.5),
+                                        new Vector2D(2, -30.5),
+                                        new Vector2D(2, -30.5)
 
                                 }
                         ),
@@ -571,8 +571,8 @@ public class FourSpecimen extends LinearOpMode {
                 .setIncrement(0.03)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-2, 30.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(30, 6)
+                                        new Vector2D(2, -30.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(-30, -6)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -600,7 +600,6 @@ public class FourSpecimen extends LinearOpMode {
         rotate.processState(RotateSubsystem.State.NEUTRAL);
 
         //TODO THIS IS THE START
-        //TODO add 1/10 back
 
         waitForStart();
 
@@ -810,8 +809,8 @@ public class FourSpecimen extends LinearOpMode {
     /** Prepares the intake for wall, opens claw */
     public void prepIntake(){
         //prep intake
-        pivot.setState(PivotSubsystem.State.PICKUP);
-        horizontal.setState(HorizSubsystem.State.AUTOINTAKE);
+        pivot.setState(PivotSubsystem.State.AUTOINTAKE);
+        horizontal.setState(HorizSubsystem.State.DRIVING);
         updateCommands(0.25);
         rotate.setState(RotateSubsystem.State.PICKUP);
         claw.open();
@@ -834,7 +833,7 @@ public class FourSpecimen extends LinearOpMode {
     /** Raises the pivot */
     public void prepArm(){
         horizontal.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.OUTTAKESPEC);
+        pivot.setState(PivotSubsystem.State.AUTOSPEC);
         updateCommands(0.1);
 
         rotate.setState(RotateSubsystem.State.NEUTRAL);
@@ -853,7 +852,7 @@ public class FourSpecimen extends LinearOpMode {
         updateCommands(0.525);
 
         claw.open();
-        updateCommands(0.2); //TODO .25 -> .2
+        updateCommands(0.2);
 
         claw.close();
         vertical.setState(VerticalSubsystem.State.BOTTOM);

@@ -35,10 +35,9 @@ public class TestAuto extends LinearOpMode {
     HorizSubsystem horizontal;
     ClawSubsystem claw;
     PathContainer startToSub,
-    //            sweepBlock1a, sweepBlock1b,
-//            sweepBlock2a, sweepBlock2b,
-//            sweepBlock3a, sweepBlock3b,
-    pushBlock1, pushBlock2a, pushBlock2b, pushBlock2c,
+            pushBlock1,
+            pushBlock2a, pushBlock2b, pushBlock2c,
+            pushBlock3a, pushBlock3b, pushBlock3c,
             grabBlock1a, grabBlock1b, depositBlock1,
             grabBlock2a, grabBlock2b, depositBlock2,
             grabBlock3a, grabBlock3b, depositBlock3,
@@ -51,8 +50,8 @@ public class TestAuto extends LinearOpMode {
 
     public PathFollower generatePathFollower(PathContainer pathContainer, double deceleration, double speed) {
         return new PathFollower.PathFollowerBuilder(mecanumController, tracker, pathContainer)
-                .setEndpointPID(new PID(kp,0, 0)) //make 0.02
-                .setHeadingPID(new PID(0.3, 0, 0)) //0.375
+                .setEndpointPID(new PID(0.0044, 0, 0.0005)) //0.03/0.025 , 0.005
+                .setHeadingPID(new PID(1, 0, 0.0015))
                 .setDeceleration(2.0)
                 .setSpeed(speed)
 //                .setDecelerationFunction(PathFollower.SQUID_DECELERATION)
@@ -60,7 +59,7 @@ public class TestAuto extends LinearOpMode {
                 // takes the square root of PID. PID controls drive speed
                 // call this "SQUID"
                 //.setCheckFinishedFunction()
-                .setEndTolerance(0.4, Math.toRadians(0.5))
+                .setEndTolerance(0.5, Math.toRadians(0.5))
                 .setEndVelocityTolerance(4)
                 .setTimeAfterDeceleration(deceleration)
                 .build();
@@ -71,228 +70,93 @@ public class TestAuto extends LinearOpMode {
         CommandScheduler.resetInstance();
 
         startToSub = new PathContainer.PathContainerBuilder()
-                .setIncrement(0.05)
+                .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(0, 0),
-                                        new Vector2D(-12, 30.5)
+                                        new Vector2D(6, -31),
+                                        new Vector2D(6, -31),
+                                        new Vector2D(6, -31),
+                                        new Vector2D(6, -31)
                                 }
                         ),
                         new ParametricHeading(new double[]{
-                                0, 0 //90
+                                0, 0, 0, 0, 0, 0, 0, 0, 0 //90
                         })
                 )
                 .build();
 
-//        sweepBlock1a = new PathContainer.PathContainerBuilder()
-//                .setIncrement(0.02)
-//                .addCurve(
-//                        new BezierCurve(
-//                                new Vector2D[]{
-//                                        new Vector2D(5, -30.5),
-//                                        new Vector2D(-25, -18) //-35, -25
-//                                }
-//                        ),
-//                        new ParametricHeading(new double[]{
-//                                0,
-//                                Math.toRadians(135),
-//                                Math.toRadians(135),
-//                                Math.toRadians(135),
-//                                Math.toRadians(135),
-//                                Math.toRadians(135),
-//                                Math.toRadians(135),
-//                                Math.toRadians(135),
-//                                Math.toRadians(135)
-//                        })
-//                )
-//                .build();
-//
-//        sweepBlock1b = new PathContainer.PathContainerBuilder()
-//                .setIncrement(0.02)
-//                .addCurve(
-//                        new BezierCurve(
-//                                new Vector2D[]{
-//                                        new Vector2D(-25, -18),
-//                                        new Vector2D(-14, -10) //-35, -25
-//                                }
-//                        ),
-//                        new ParametricHeading(new double[]{
-//                                Math.toRadians(135),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40)
-//                        })
-//                )
-//                .build();
-//
-//        sweepBlock2a = new PathContainer.PathContainerBuilder()
-//                .setIncrement(0.02)
-//                .addCurve(
-//                        new BezierCurve(
-//                                new Vector2D[]{
-//                                        new Vector2D(-14, -10),
-//                                        new Vector2D(-29, -18) //-35, -25
-//                                }
-//                        ),
-//                        new ParametricHeading(new double[]{
-//                                Math.toRadians(40),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130)
-//                        })
-//                )
-//                .build();
-//
-//        sweepBlock2b = new PathContainer.PathContainerBuilder()
-//                .setIncrement(0.02)
-//                .addCurve(
-//                        new BezierCurve(
-//                                new Vector2D[]{
-//                                        new Vector2D(-29, -18),
-//                                        new Vector2D(-20, -15) //-35, -25
-//                                }
-//                        ),
-//                        new ParametricHeading(new double[]{
-//                                Math.toRadians(130),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40),
-//                                Math.toRadians(40)
-//                        })
-//                )
-//                .build();
-
-//        sweepBlock3a = new PathContainer.PathContainerBuilder()
-//                .setIncrement(0.02)
-//                .addCurve(
-//                        new BezierCurve(
-//                                new Vector2D[]{
-//                                        new Vector2D(-20, -22),
-//                                        new Vector2D(-40, -25.1) //-35, -25
-//                                }
-//                        ),
-//                        new ParametricHeading(new double[]{
-//                                Math.toRadians(40),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130),
-//                                Math.toRadians(130)
-//                        })
-//                )
-//                .build();
-//
-//        sweepBlock3b = new PathContainer.PathContainerBuilder()
-//                .setIncrement(0.02)
-//                .addCurve(
-//                        new BezierCurve(
-//                                new Vector2D[]{
-//                                        new Vector2D(-40, -25.1),
-//                                        new Vector2D(-44, -13.1) //-35, -25
-//                                }
-//                        ),
-//                        new ParametricHeading(new double[]{
-//                                Math.toRadians(130),
-//                                Math.toRadians(25),
-//                                Math.toRadians(25),
-//                                Math.toRadians(25),
-//                                Math.toRadians(25),
-//                                Math.toRadians(25),
-//                                Math.toRadians(25),
-//                                Math.toRadians(25),
-//                                Math.toRadians(25),
-//                                Math.toRadians(25),
-//                                Math.toRadians(25),
-//                                Math.toRadians(25),
-//                                Math.toRadians(25)
-//                        })
-//                )
-//                .build();
         pushBlock1 = new PathContainer.PathContainerBuilder()
                 .setIncrement(0.02)
-                .addCurve(
-                        new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(-12, 30.5),
-                                        new Vector2D(20, 25),
-                                        new Vector2D(20, 25)
-                                }
-                        ),
-                        new ParametricHeading(new double[]{
-                                0, 0 //90
-                        })
-                )
-                .addCurve(
-                        new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(20, 25),
-                                        new Vector2D(22, 50),
-                                        new Vector2D(22, 50),
-                                        new Vector2D(22, 50)
-                                }
-                        ),
-                        new ParametricHeading(new double[]{
-                                0, 0 //90
-                        }))
-                .addCurve(
-                        new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(22, 50),
-                                        new Vector2D(37, 50),
-                                        new Vector2D(37, 50),
-                                        new Vector2D(37, 50)
-                                }
-                        ),
-                        new ParametricHeading(new double[]{
-                                0, 0 //90
-                        })
 
-                )
-                .addCurve(new BezierCurve(
+                .addCurve(
+                        new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(37, 50),
-                                        new Vector2D(37, 10),
-                                        new Vector2D(37, 10),
-                                        new Vector2D(37, 10)
+                                        new Vector2D(6, -31),
+                                        new Vector2D(-35, -12),
+                                        new Vector2D(-35, -12),
+                                        new Vector2D(-35, -12),
+                                        new Vector2D(-35, -12)
                                 }
                         ),
                         new ParametricHeading(new double[]{
-                                0, 0 //90
+                                0, Math.toRadians(180), Math.toRadians(180), Math.toRadians(180), Math.toRadians(180), Math.toRadians(180), Math.toRadians(180), Math.toRadians(180), Math.toRadians(180) //90
                         })
                 )
+
+
+//                .addCurve(
+//                        new BezierCurve(
+//                                new Vector2D[]{
+//                                        new Vector2D(6, -33),
+//                                        new Vector2D(-24, -28),
+//                                        new Vector2D(-24, -28),
+//                                        new Vector2D(-24, -28),
+//                                        new Vector2D(-24, -28)
+//                                }
+//                        ),
+//                        new ParametricHeading(new double[]{
+//                                0, 0 //90
+//                        })
+//                )
+//                .addCurve(
+//                        new BezierCurve(
+//                                new Vector2D[]{
+//                                        new Vector2D(-24, -28),
+//                                        new Vector2D(-24, -50),
+//                                        new Vector2D(-24, -50),
+//                                        new Vector2D(-24, -50)
+//                                }
+//                        ),
+//                        new ParametricHeading(new double[]{
+//                                0, 0 //90
+//                        }))
+//                .addCurve(
+//                        new BezierCurve(
+//                                new Vector2D[]{
+//                                        new Vector2D(-24, -50),
+//                                        new Vector2D(-35, -50),
+//                                        new Vector2D(-35, -50),
+//                                        new Vector2D(-35, -50)
+//                                }
+//                        ),
+//                        new ParametricHeading(new double[]{
+//                                0, 0 //90
+//                        })
+//
+//                )
+//                .addCurve(new BezierCurve(
+//                                new Vector2D[]{
+//                                        new Vector2D(-35, -50),
+//                                        new Vector2D(-35, -10),
+//                                        new Vector2D(-35, -10),
+//                                        new Vector2D(-35, -10)
+//                                }
+//                        ),
+//                        new ParametricHeading(new double[]{
+//                                0, 0 //90
+//                        })
+//                )
 
                 .build();
 
@@ -300,53 +164,155 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(37, 10),
-                                        new Vector2D(37, 45),
-                                        new Vector2D(37, 45),
-                                        new Vector2D(37, 45)
+                                        new Vector2D(-35, -12),
+                                        new Vector2D(-45, -12),
+                                        new Vector2D(-45, -12),
+                                        new Vector2D(-45, -12)
                                 }
                         ),
                         new ParametricHeading(new double[]{
-                                0, 0 //90
+                                Math.toRadians(180), Math.toRadians(180), Math.toRadians(180) //90
                         })
                 )
-                .addCurve(new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(37, 45),
-                                        new Vector2D(46, 45),
-                                        new Vector2D(46, 45),
-                                        new Vector2D(46, 45)
-                                }
-                        ),
-                        new ParametricHeading(new double[]{
-                                0, 0 //90
-                        })
-                )
+
+
+//                .addCurve(new BezierCurve(
+//                                new Vector2D[]{
+//                                        new Vector2D(-35, -10),
+//                                        new Vector2D(-35, -45),
+//                                        new Vector2D(-35, -45),
+//                                        new Vector2D(-35, -45)
+//                                }
+//                        ),
+//                        new ParametricHeading(new double[]{
+//                                0, 0 //90
+//                        })
+//                )
+//                .addCurve(new BezierCurve(
+//                                new Vector2D[]{
+//                                        new Vector2D(-35, -45),
+//                                        new Vector2D(-52, -45),
+//                                        new Vector2D(-52, -45),
+//                                        new Vector2D(-52, -45)
+//                                }
+//                        ),
+//                        new ParametricHeading(new double[]{
+//                                0, 0 //90
+//                        })
+//                )
                 .build();
-        pushBlock2b = new PathContainer.PathContainerBuilder()
-                .setIncrement(0.02)
-                .addCurve(new BezierCurve(
-                                new Vector2D[]{
-                                        new Vector2D(46, 45), //TODO MAYBE TUNE
-                                        new Vector2D(50, 45),
-                                        new Vector2D(50, 45),
-                                        new Vector2D(50, 45)
-                                }
-                        ),
-                        new ParametricHeading(new double[]{
-                                0, 0 //90
-                        })
-                )
-                .build();
+
+//        pushBlock2b = new PathContainer.PathContainerBuilder()
+//                .setIncrement(0.02)
+//                .addCurve(new BezierCurve(
+//                                new Vector2D[]{
+//                                        new Vector2D(-35, -45),
+//                                        new Vector2D(-48, -45),
+//                                        new Vector2D(-48, -45),
+//                                        new Vector2D(-48, -45)
+//                                }
+//                        ),
+//                        new ParametricHeading(new double[]{
+//                                0, 0 //90
+//                        })
+//                )
+//                .build();
 
         pushBlock2c = new PathContainer.PathContainerBuilder()
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(50, 45),
-                                        new Vector2D(50, 12),
-                                        new Vector2D(50, 12),
-                                        new Vector2D(50, 12)
+                                        new Vector2D(-52, -45),
+                                        new Vector2D(-52, -10),
+                                        new Vector2D(-52, -10),
+                                        new Vector2D(-52, -10)
+                                }
+                        ),
+                        new ParametricHeading(new double[]{
+                                0, 0, 0, 0, 0, 0, 0, 0, 0
+                        })
+                )
+                .build();
+
+        pushBlock3a = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.02)
+                .addCurve(new BezierCurve(
+                                new Vector2D[]{
+                                        new Vector2D(-45, -12),
+                                        new Vector2D(-45, -12),
+                                        new Vector2D(-45, -12),
+                                        new Vector2D(-45, -12)
+                                }
+                        ),
+                        new ParametricHeading(new double[]{
+                                Math.toRadians(180), Math.toRadians(220), Math.toRadians(220), Math.toRadians(220), Math.toRadians(220), Math.toRadians(220), Math.toRadians(220), Math.toRadians(220), Math.toRadians(220), Math.toRadians(220) //90
+                        })
+                )
+
+//                .addCurve(new BezierCurve(
+//                                new Vector2D[]{
+//                                        new Vector2D(-52, -10),
+//                                        new Vector2D(-50, -50),
+//                                        new Vector2D(-50, -50),
+//                                        new Vector2D(-50, -50)
+//                                }
+//                        ),
+//                        new ParametricHeading(new double[]{
+//                                0, 0 //90
+//                        })
+//                )
+//                .addCurve(new BezierCurve(
+//                                new Vector2D[]{
+//                                        new Vector2D(-50, -50),
+//                                        new Vector2D(-57, -50),
+//                                        new Vector2D(-57, -50),
+//                                        new Vector2D(-57, -50)
+//                                }
+//                        ),
+//                        new ParametricHeading(new double[]{
+//                                0, 0 //90
+//                        })
+//                )
+                .build();
+        pushBlock3b = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.02)
+
+                .addCurve(new BezierCurve(
+                                new Vector2D[]{
+                                        new Vector2D(-35, -10),
+                                        new Vector2D(-35, -10),
+                                        new Vector2D(-35, -10),
+                                        new Vector2D(-35, -10)
+                                }
+                        ),
+                        new ParametricHeading(new double[]{
+                                Math.toRadians(220), 0, 0, 0, 0, 0, 0 //90
+                        })
+                )
+
+
+//                .addCurve(new BezierCurve(
+//                                new Vector2D[]{
+//                                        new Vector2D(-48, -50),
+//                                        new Vector2D(-57, -50),
+//                                        new Vector2D(-57, -50),
+//                                        new Vector2D(-57, -50)
+//                                }
+//                        ),
+//                        new ParametricHeading(new double[]{
+//                                0, 0 //90
+//                        })
+//                )
+                .build();
+
+        pushBlock3c = new PathContainer.PathContainerBuilder()
+                .setIncrement(0.02)
+                .addCurve(new BezierCurve(
+                                new Vector2D[]{
+                                        new Vector2D(-57, -50),
+                                        new Vector2D(-57, -12),
+                                        new Vector2D(-57, -12),
+                                        new Vector2D(-57, -12)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -360,10 +326,10 @@ public class TestAuto extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(50, 12),
-                                        new Vector2D(40, 12),
-                                        new Vector2D(40, 12),
-                                        new Vector2D(40, 12)
+                                        new Vector2D(-57, -12),
+                                        new Vector2D(-40, -12),
+                                        new Vector2D(-40, -12),
+                                        new Vector2D(-40, -12)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -377,10 +343,10 @@ public class TestAuto extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(40, 12),
-                                        new Vector2D(40, 7.5),
-                                        new Vector2D(40, 7.5),
-                                        new Vector2D(40, 7.5)
+                                        new Vector2D(-40, -12),
+                                        new Vector2D(-40, -7.5),
+                                        new Vector2D(-40, -7.5),
+                                        new Vector2D(-40, -7.5)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -393,11 +359,11 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(40, 7.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(-8, 20),
-                                        new Vector2D(-8, 20),
-                                        new Vector2D(-8, 20),
-                                        new Vector2D(-8, 20)
+                                        new Vector2D(-40, -7.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(8, -20),
+                                        new Vector2D(8, -20),
+                                        new Vector2D(8, -20),
+                                        new Vector2D(8, -20)
 
                                 }
                         ),
@@ -407,11 +373,11 @@ public class TestAuto extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-8, 20), //with 2 blocks (-47, 10)
-                                        new Vector2D(-8, 30.5),
-                                        new Vector2D(-8, 30.5),
-                                        new Vector2D(-8, 30.5),
-                                        new Vector2D(-8, 30.5)
+                                        new Vector2D(8, -20), //with 2 blocks (-47, 10)
+                                        new Vector2D(8, -30.5),
+                                        new Vector2D(8, -30.5),
+                                        new Vector2D(8, -30.5),
+                                        new Vector2D(8, -30.5)
 
                                 }
                         ),
@@ -425,8 +391,8 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-8, 30.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(-8, 27)
+                                        new Vector2D(8, -30.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(8, -27)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -435,8 +401,8 @@ public class TestAuto extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-8, 27),
-                                        new Vector2D(27.8, 15)
+                                        new Vector2D(8, -27),
+                                        new Vector2D(-27.8, -15)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -449,10 +415,10 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(27.8, 15),
-                                        new Vector2D(27.8, 7),
-                                        new Vector2D(27.8, 7),
-                                        new Vector2D(27.8, 7)
+                                        new Vector2D(-27.8, -15),
+                                        new Vector2D(-27.8, -7),
+                                        new Vector2D(-27.8, -7),
+                                        new Vector2D(-27.8, -7)
 
                                 }
                         ),
@@ -466,11 +432,11 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(27.8, 7), //with 2 blocks (-47, 10)
-                                        new Vector2D(-5, 20),
-                                        new Vector2D(-5, 20),
-                                        new Vector2D(-5, 20),
-                                        new Vector2D(-5, 20)
+                                        new Vector2D(-27.8, -7), //with 2 blocks (-47, 10)
+                                        new Vector2D(5, -20),
+                                        new Vector2D(5, -20),
+                                        new Vector2D(5, -20),
+                                        new Vector2D(5, -20)
 
                                 }
                         ),
@@ -480,11 +446,11 @@ public class TestAuto extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-5, 20), //with 2 blocks (-47, 10)
-                                        new Vector2D(-5, 31),
-                                        new Vector2D(-5, 31),
-                                        new Vector2D(-5, 31),
-                                        new Vector2D(-5, 31)
+                                        new Vector2D(5, -20), //with 2 blocks (-47, 10)
+                                        new Vector2D(5, -31),
+                                        new Vector2D(5, -31),
+                                        new Vector2D(5, -31),
+                                        new Vector2D(5, -31)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -497,8 +463,8 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-5, 31), //with 2 blocks (-47, 10)
-                                        new Vector2D(-5, 27)
+                                        new Vector2D(5, -31), //with 2 blocks (-47, 10)
+                                        new Vector2D(5, -27)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -507,8 +473,8 @@ public class TestAuto extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-5, 27),
-                                        new Vector2D(27.8, 15)
+                                        new Vector2D(5, -27),
+                                        new Vector2D(-27.8, -15)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -521,10 +487,10 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(27.8, 15),
-                                        new Vector2D(27.8, 7.5),
-                                        new Vector2D(27.8, 7.5),
-                                        new Vector2D(27.8, 7.5),
+                                        new Vector2D(-27.8, -15),
+                                        new Vector2D(-27.8, -7.5),
+                                        new Vector2D(-27.8, -7.5),
+                                        new Vector2D(-27.8, -7.5),
 
                                 }
                         ),
@@ -538,11 +504,11 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.02)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(27.8, 7.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(-2, 11),
-                                        new Vector2D(-2, 11),
-                                        new Vector2D(-2, 11),
-                                        new Vector2D(-2, 11)
+                                        new Vector2D(-27.8, -7.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(2, -11),
+                                        new Vector2D(2, -11),
+                                        new Vector2D(2, -11),
+                                        new Vector2D(2, -11)
 
                                 }
                         ),
@@ -552,11 +518,11 @@ public class TestAuto extends LinearOpMode {
                 )
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-2, 11), //with 2 blocks (-47, 10)
-                                        new Vector2D(-2, 30.5),
-                                        new Vector2D(-2, 30.5),
-                                        new Vector2D(-2, 30.5),
-                                        new Vector2D(-2, 30.5)
+                                        new Vector2D(2, -11), //with 2 blocks (-47, 10)
+                                        new Vector2D(2, -30.5),
+                                        new Vector2D(2, -30.5),
+                                        new Vector2D(2, -30.5),
+                                        new Vector2D(2, -30.5)
 
                                 }
                         ),
@@ -571,8 +537,8 @@ public class TestAuto extends LinearOpMode {
                 .setIncrement(0.03)
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-2, 30.5), //with 2 blocks (-47, 10)
-                                        new Vector2D(30, 6)
+                                        new Vector2D(2, -30.5), //with 2 blocks (-47, 10)
+                                        new Vector2D(-30, -6)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -600,7 +566,6 @@ public class TestAuto extends LinearOpMode {
         rotate.processState(RotateSubsystem.State.NEUTRAL);
 
         //TODO THIS IS THE START
-        //TODO add 1/10 back
 
         waitForStart();
 
@@ -615,49 +580,70 @@ public class TestAuto extends LinearOpMode {
         lowerArm();
 
         //Push Block 1
-        followPath(pushBlock1, 0.15, 0.8);
-        followPath(pushBlock2a, 0.05, 0.8);
-        followPath(pushBlock2b, 0.15, 0.8);
-        followPath(pushBlock2c, 0.15, 0.8);
+        followPath(pushBlock1, 0.25, 0.8);
+//        prepNewIntake();
+//        startNewIntake();
+//        finishNewIntake();
 
 
+        //Push Block 2
+//        prepNewIntake();
+//        followPath(pushBlock2a, 0.05, 0.8);
+//        startNewIntake();
+//        finishNewIntake();
+////        followPath(pushBlock2c, 0.05, 0.8);
+//        //Push Block 3
+//        prepNewIntake();
+//        rotateNewIntake();
+//        followPath(pushBlock3a, 0.05, 0.8);
+//        startNewIntake();
+//        finishNewIntake();
+//        followPath(pushBlock3b, 0.05, 0.8);
+
+
+        //prepIntake();
+//        followPath(pushBlock3c, 0.05, 0.8);
+
+//
         //Grab Block 1
-        prepIntake();
-        followPath(grabBlock1a, 0.15, 0.8);
-        followPath(grabBlock1b, 0.15, 0.8);
-        finishIntake();
-        prepArm();
-        raiseArm();
+        //prepIntake();
+//        followPath(grabBlock1a, 0.15, 0.8);
+//        followPath(grabBlock1b, 0.15, 0.8);
+       // finishIntake();
+//        prepArm();
+//        raiseArm();
 
-        //Deposit Block 1
-        followPath(depositBlock1, 0.25, 0.8);
-        lowerArm();
 
-        //Grab Block 2
-        prepIntake();
-        followPath(grabBlock2a, 0.15, 0.8);
-        followPath(grabBlock2b, 0.15, 0.8);
-        finishIntake();
-        prepArm();
-        raiseArm();
 
-        //Deposit Block 2
-        followPath(depositBlock2, 0.25, 0.8);
-        lowerArm();
-
-        //Grab Block 3
-        prepIntake();
-        followPath(grabBlock3a, 0.15, 0.8);
-        followPath(grabBlock3b, 0.15, 0.8);
-        finishIntake();
-        prepArm();
-        raiseArm();
-
-        //Deposit Block 2
-        followPath(depositBlock3, 0.25, 0.8);
-        lowerArm();
-
-        followPath(park, 0.25, 0.8);
+//        //Deposit Block 1
+//        followPath(depositBlock1, 0.25, 0.8);
+//        lowerArm();
+//
+//        //Grab Block 2
+//        prepIntake();
+//        followPath(grabBlock2a, 0.15, 0.8);
+//        followPath(grabBlock2b, 0.15, 0.8);
+//        finishIntake();
+//        prepArm();
+//        raiseArm();
+//
+//        //Deposit Block 2
+//        followPath(depositBlock2, 0.25, 0.8);
+//        lowerArm();
+//
+//        //Grab Block 3
+//        prepIntake();
+//        followPath(grabBlock3a, 0.15, 0.8);
+//        followPath(grabBlock3b, 0.15, 0.8);
+//        finishIntake();
+//        prepArm();
+//        raiseArm();
+//
+//        //Deposit Block 2
+//        followPath(depositBlock3, 0.25, 0.8);
+//        lowerArm();
+//
+//        followPath(park, 0.25, 0.8);
 
 
 //        //Sweep Block 1
@@ -810,8 +796,8 @@ public class TestAuto extends LinearOpMode {
     /** Prepares the intake for wall, opens claw */
     public void prepIntake(){
         //prep intake
-        pivot.setState(PivotSubsystem.State.PICKUP);
-        horizontal.setState(HorizSubsystem.State.AUTOINTAKE);
+        pivot.setState(PivotSubsystem.State.AUTOINTAKE);
+        horizontal.setState(HorizSubsystem.State.DRIVING);
         updateCommands(0.25);
         rotate.setState(RotateSubsystem.State.PICKUP);
         claw.open();
@@ -819,9 +805,9 @@ public class TestAuto extends LinearOpMode {
     }
     /** Grabs specimen and returns to driving mode */
     public void finishIntake(){
-        updateCommands(0.5);
+        updateCommands(0.55);
         horizontal.setState(WALLPICKUPAUTO);
-        updateCommands(0.25);
+        updateCommands(0.05);
 
         claw.close();
         updateCommands(0.15);
@@ -834,7 +820,7 @@ public class TestAuto extends LinearOpMode {
     /** Raises the pivot */
     public void prepArm(){
         horizontal.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.OUTTAKESPEC);
+        pivot.setState(PivotSubsystem.State.AUTOSPEC);
         updateCommands(0.1);
 
         rotate.setState(RotateSubsystem.State.NEUTRAL);
@@ -842,22 +828,78 @@ public class TestAuto extends LinearOpMode {
     }
     /** Raises the Vertical */
     public void raiseArm(){
-        vertical.setDepositState(VerticalSubsystem.State.HIGHBAR);
+        vertical.setDepositState(VerticalSubsystem.State.AUTOHIGHBAR);
         vertical.setState(VerticalSubsystem.State.DEPOSITING);
         updateCommands(0.25);
     }
 
     /** Deposits, and lowers arm */
     public void lowerArm(){
-        vertical.setState(VerticalSubsystem.State.DOWN);
-        updateCommands(0.525);
+        vertical.setState(VerticalSubsystem.State.BOTTOM);
+        updateCommands(0.75);
 
         claw.open();
-        updateCommands(0.2); //TODO .25 -> .2
+        updateCommands(0.2);
 
         claw.close();
         vertical.setState(VerticalSubsystem.State.BOTTOM);
         pivot.setState(PivotSubsystem.State.DRIVING);
+        updateCommands();
+    }
+
+
+    /** Prepares the intake sample */
+    public void prepNewIntake(){
+        //prep intake
+        horizontal.setState(HorizSubsystem.State.PREPAUTOINTAKE);
+        pivot.setState(PivotSubsystem.State.PREPAREINTAKE);
+        rotate.setState(RotateSubsystem.State.INTAKE);
+        updateCommands(0.25);
+        claw.open();
+        horizontal.setState(HorizSubsystem.State.INTAKINGEXTENDED);
+        updateCommands(1);
+    }
+
+    /** Prepares the intake sample */
+    public void rotateNewIntake(){
+        //prep intake
+        rotate.setState(RotateSubsystem.State.SAMPLE);
+        updateCommands();
+    }
+    /** Grabs sample */
+    public void startNewIntake(){
+        pivot.setState(PivotSubsystem.State.INTAKE);
+        updateCommands(0.25);
+        claw.close();
+        updateCommands(0.25);
+
+        //reattempt if fail
+        if(!claw.isBlockInClaw()){
+            claw.setColor(ClawSubsystem.ColorState.RED);
+
+            pivot.setState(PivotSubsystem.State.PREPAREINTAKE);
+            claw.open();
+            updateCommands(0.25);
+
+            pivot.setState(PivotSubsystem.State.INTAKE);
+            updateCommands(0.25);
+            claw.close();
+            updateCommands(0.25);
+
+            if(claw.isBlockInClaw()) {
+                claw.setColor(ClawSubsystem.ColorState.GREEN);
+                updateCommands();
+            }
+        }
+
+    }
+    /** Returns to driving mode */
+    public void finishNewIntake(){
+        rotate.setState(RotateSubsystem.State.NEUTRAL);
+        pivot.setState(PivotSubsystem.State.DRIVING);
+        horizontal.setState(HorizSubsystem.State.DRIVING);
+        updateCommands(0.25); //removed wait
+        claw.setColor(ClawSubsystem.ColorState.OFF);
         updateCommands();
     }
 }

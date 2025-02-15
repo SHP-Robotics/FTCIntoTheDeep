@@ -41,7 +41,7 @@ public class FourSample extends LinearOpMode {
     public PathFollower generatePathFollower(PathContainer pathContainer, double deceleration, double speed) {
         return new PathFollower.PathFollowerBuilder(mecanumController, tracker, pathContainer)
                 .setEndpointPID(new PID(0.03, 0, 0.005))
-                .setHeadingPID(new PID(3.0, 0, 0.01))
+                .setHeadingPID(new PID(3.0, 0, 0.02))
                 .setDeceleration(2.0)
                 .setSpeed(speed)
 //                .setDecelerationFunction(PathFollower.SQUID_DECELERATION)
@@ -65,7 +65,7 @@ public class FourSample extends LinearOpMode {
                 .addCurve(new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(0, 0),
-                                        new Vector2D(-8, -30)
+                                        new Vector2D(-9, -28)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -80,20 +80,20 @@ public class FourSample extends LinearOpMode {
                         new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(-9, -29),
-                                        new Vector2D(-12, -20.5),
-                                        new Vector2D(-12, -20.5),
-                                        new Vector2D(-12, -20.5),
-                                        new Vector2D(-12, -20.5)
+                                        new Vector2D(-12, -19.5), //-19.5?
+                                        new Vector2D(-12, -19.5),
+                                        new Vector2D(-12, -19.5),
+                                        new Vector2D(-12, -19.5)
                                 }
                         ),
                         new ParametricHeading(new double[]{
                                 Math.toRadians(45),
-                                Math.toRadians(88),
-                                Math.toRadians(88),
-                                Math.toRadians(88),
-                                Math.toRadians(88),
-                                Math.toRadians(88),
-                                Math.toRadians(88) //150
+                                Math.toRadians(90),
+                                Math.toRadians(90),
+                                Math.toRadians(90),
+                                Math.toRadians(90),
+                                Math.toRadians(90),
+                                Math.toRadians(90) //150
                         })
                 )
 
@@ -104,12 +104,12 @@ public class FourSample extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-12, -20.5),
-                                        new Vector2D(-7, -29)
+                                        new Vector2D(-12, -19.5),
+                                        new Vector2D(-8, -29)
                                 }
                         ),
                         new ParametricHeading(new double[]{
-                                Math.toRadians(88),
+                                Math.toRadians(90),
                                 Math.toRadians(45),
                                 Math.toRadians(45),
                                 Math.toRadians(45)
@@ -124,9 +124,9 @@ public class FourSample extends LinearOpMode {
                         new BezierCurve(
                                 new Vector2D[]{
                                         new Vector2D(-7, -29),
-                                        new Vector2D(-12, -30),
-                                        new Vector2D(-12, -30),
-                                        new Vector2D(-12, -30)
+                                        new Vector2D(-12, -30.25),
+                                        new Vector2D(-12, -30.25),
+                                        new Vector2D(-12, -30.25)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -146,8 +146,8 @@ public class FourSample extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-12, -30),
-                                        new Vector2D(-7, -29)
+                                        new Vector2D(-12, -30.25),
+                                        new Vector2D(-8, -29)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -271,7 +271,7 @@ public class FourSample extends LinearOpMode {
         lowerArm();
 
         //Get Block 2
-        prepIntake();
+        prepBlock2Intake();
         followPath(getBlock2, 1, 0.6);
         startIntake();
         finishIntake();
@@ -369,6 +369,16 @@ public class FourSample extends LinearOpMode {
         horizontal.setState(HorizSubsystem.State.INTAKINGEXTENDED);
         updateCommands();
     }
+    public void prepBlock2Intake(){
+        //prep intake
+        horizontal.setState(HorizSubsystem.State.PREPAUTOINTAKE);
+        pivot.setState(PivotSubsystem.State.PREPAREINTAKEHIGHER);
+        rotate.setState(RotateSubsystem.State.INTAKE);
+        updateCommands(0.25);
+        claw.open();
+        horizontal.setState(HorizSubsystem.State.INTAKINGEXTENDED);
+        updateCommands();
+    }
     /** Prepares the intake sample */
     public void rotateIntake(){
         //prep intake
@@ -420,7 +430,7 @@ public class FourSample extends LinearOpMode {
         updateCommands();
 
         horizontal.setState(HorizSubsystem.State.DRIVING);
-        updateCommands(0.5);
+        updateCommands(1);
         pivot.setState(PivotSubsystem.State.OUTTAKEBUCKET);
         updateCommands(0.5);
         rotate.setState(RotateSubsystem.State.DROPOFFBUCKET);

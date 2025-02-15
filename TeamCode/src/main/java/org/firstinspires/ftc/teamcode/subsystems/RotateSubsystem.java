@@ -49,13 +49,13 @@ public class RotateSubsystem extends Subsystem {
     public void rotateCW(){
         //if(state == State.INTAKE){
         state = State.INTAKE;
-        rotatePos += 0.1;
+        rotatePos += 0.2;
         //}
     }
     public void rotateCCW() {
         //if (state == State.INTAKE) {
         state = State.INTAKE;
-        rotatePos -= 0.1;
+        rotatePos -= 0.2;
        // }
     }
     public void processState(State state) {
@@ -71,7 +71,7 @@ public class RotateSubsystem extends Subsystem {
             rotatePos = 0.425; //0.625;
         }
         else if (this.state == State.SAMPLE){
-            rotatePos = kNeutral; // 1;
+            rotatePos = 0.9; // 1;
         }
         rotate.setPosition(rotatePos);
 
