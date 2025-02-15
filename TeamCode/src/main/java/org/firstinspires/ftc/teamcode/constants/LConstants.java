@@ -10,26 +10,26 @@ public class LConstants {
         // START -- AUTO FROM PESTO
         ThreeWheelConstants.forwardTicksToInches = 1 / PestoFTCConfig.ODOMETRY_TICKS_PER_INCH;
         ThreeWheelConstants.strafeTicksToInches = 1 / PestoFTCConfig.ODOMETRY_TICKS_PER_INCH;
-        ThreeWheelConstants.turnTicksToInches = 0.0026; // TODO: USE TURN AUTONOMOUS TUNER, DO CALCULATIONS BY SELF
+        ThreeWheelConstants.turnTicksToInches = 1 / PestoFTCConfig.ODOMETRY_TICKS_PER_INCH;
 
         // NOT COMPATIBLE?
-        ThreeWheelConstants.leftY = PestoFTCConfig.ODOMETRY_WIDTH / 2;
-        ThreeWheelConstants.rightY = -PestoFTCConfig.ODOMETRY_WIDTH / 2;
+        ThreeWheelConstants.leftY = 5.65; // PestoFTCConfig.ODOMETRY_WIDTH / 2;
+        ThreeWheelConstants.rightY = -5.65; // -PestoFTCConfig.ODOMETRY_WIDTH / 2;
 
         // TODO: CHECK THIS
-        ThreeWheelConstants.strafeX = -PestoFTCConfig.FORWARD_OFFSET;
+        ThreeWheelConstants.strafeX = -2.7931 ; // PestoFTCConfig.FORWARD_OFFSET;
 
         ThreeWheelConstants.leftEncoder_HardwareMapName = PestoFTCConfig.leftName;
         ThreeWheelConstants.rightEncoder_HardwareMapName = PestoFTCConfig.rightName;
         ThreeWheelConstants.strafeEncoder_HardwareMapName = PestoFTCConfig.centerName;
         // END -- AUTO FROM PESTO
 
-        // SAME AS PESTO
-        ThreeWheelConstants.leftEncoderDirection = Encoder.REVERSE;
-        ThreeWheelConstants.rightEncoderDirection = Encoder.FORWARD;
-
         // REVERSE OF PESTO
-        ThreeWheelConstants.strafeEncoderDirection = Encoder.REVERSE;
+        ThreeWheelConstants.leftEncoderDirection = Encoder.FORWARD;
+        ThreeWheelConstants.rightEncoderDirection = Encoder.REVERSE;
+
+        // SAME AS PESTO
+        ThreeWheelConstants.strafeEncoderDirection = Encoder.FORWARD;
     }
 }
 
