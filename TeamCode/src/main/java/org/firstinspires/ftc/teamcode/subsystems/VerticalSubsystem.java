@@ -127,7 +127,7 @@ public class VerticalSubsystem extends Subsystem {
                 && (((depositState == State.HIGHBUCKET || depositState == State.LOWBUCKET)
                     && slideVelocity > 250.0
                     && getSlidePosition() > 100)
-                || getSlidePosition() < 5)){
+                || getSlidePosition() < 10)){
                 rightSlide.setPower(0);
                 leftSlide.setPower(0);
         }
