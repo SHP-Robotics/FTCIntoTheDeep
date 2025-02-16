@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.shprobotics.pestocore.algorithms.LowPassFilter;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.shplib.Constants;
@@ -22,6 +23,7 @@ public class VerticalSubsystem extends Subsystem {
     private int slidePos;
     private int offset;
     private double slideVelocity;
+    private LowPassFilter lowPassFilter;
 
 
     public enum State {
@@ -50,6 +52,8 @@ public class VerticalSubsystem extends Subsystem {
         slidePos = 0;
         offset = 0;
         slideVelocity = 0;
+
+        lowPassFilter = new LowPassFilter(0.5);
 
         leftSlide = new CachingDcMotorEx((DcMotorEx) hardwareMap.get(kLeftSlideName));
         leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -104,7 +108,7 @@ public class VerticalSubsystem extends Subsystem {
         offset = (leftSlide.getCurrentPosition()+rightSlide.getCurrentPosition())/2;
         slidePos = 0;
     }
-    public void resetZeroPosition() { //TODO Switch to William's stalling detection
+    public void resetZeroPosition() {
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -119,20 +123,19 @@ public class VerticalSubsystem extends Subsystem {
     }
 
     public void updateSlidePower(){
-        if(state == State.BOTTOM && (depositState == State.HIGHBUCKET || depositState == State.LOWBUCKET)) {
-            if (slideVelocity > 10.0) {
+        if(state == State.BOTTOM && (depositState == State.HIGHBUCKET || depositState == State.LOWBUCKET)
+                && slideVelocity > 10.0) {
                 rightSlide.setPower(0);
                 leftSlide.setPower(0);
-            }
-            else {
-                rightSlide.setPower(Constants.Vertical.kRunPower);
-                leftSlide.setPower(Constants.Vertical.kRunPower);
-            }
+        }
+        else {
+            rightSlide.setPower(Constants.Vertical.kRunPower);
+            leftSlide.setPower(Constants.Vertical.kRunPower);
         }
     }
     public void updateSlideVelocity(){
         double currentPos = (Math.abs(rightSlide.getVelocity()) + Math.abs(leftSlide.getVelocity()))/2;
-        slideVelocity = slideVelocity * 0.5 + currentPos * 0.5;
+        slideVelocity = lowPassFilter.forward(currentPos);
     }
 
     public void setDepositState(State state){
