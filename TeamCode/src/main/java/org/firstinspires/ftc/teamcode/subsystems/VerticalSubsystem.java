@@ -118,7 +118,7 @@ public class VerticalSubsystem extends Subsystem {
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void lowerSlides(){
+    public void updateSlidePower(){
         if(state == State.BOTTOM && (depositState == State.HIGHBUCKET || depositState == State.LOWBUCKET)) {
             if (slideVelocity > 10.0) {
                 rightSlide.setPower(0);
@@ -145,6 +145,7 @@ public class VerticalSubsystem extends Subsystem {
 
     private void processState() {
         updateSlideVelocity();
+        updateSlidePower();
         if (this.state == State.MANUAL) {
             this.setPosition(slidePos+offset);
             return;
@@ -155,7 +156,6 @@ public class VerticalSubsystem extends Subsystem {
         }
         else if (this.state == State.BOTTOM){
             this.setPosition(this.state.position);
-            lowerSlides();
             return;
         }
         else {
