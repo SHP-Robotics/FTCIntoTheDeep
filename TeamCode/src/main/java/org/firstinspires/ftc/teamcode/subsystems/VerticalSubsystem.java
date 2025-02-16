@@ -21,6 +21,7 @@ public class VerticalSubsystem extends Subsystem {
     private final CachingDcMotorEx rightSlide;
     private int slidePos;
     private int offset;
+    private double slideVelocity;
 
 
     public enum State {
@@ -48,6 +49,7 @@ public class VerticalSubsystem extends Subsystem {
     public VerticalSubsystem(HardwareMap hardwareMap) {
         slidePos = 0;
         offset = 0;
+        slideVelocity = 0;
 
         leftSlide = new CachingDcMotorEx((DcMotorEx) hardwareMap.get(kLeftSlideName));
         leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -117,8 +119,8 @@ public class VerticalSubsystem extends Subsystem {
     }
 
     public void lowerSlides(){
-        if(depositState == State.HIGHBUCKET || depositState == State.LOWBUCKET) {
-            if (Math.abs(rightSlide.getVelocity()) > 10.0) {
+        if(state == State.BOTTOM && (depositState == State.HIGHBUCKET || depositState == State.LOWBUCKET)) {
+            if (slideVelocity > 10.0) {
                 rightSlide.setPower(0);
                 leftSlide.setPower(0);
             }
@@ -128,25 +130,13 @@ public class VerticalSubsystem extends Subsystem {
             }
         }
     }
+    public void updateSlideVelocity(){
+        double currentPos = (Math.abs(rightSlide.getVelocity()) + Math.abs(leftSlide.getVelocity()))/2;
+        slideVelocity = slideVelocity * 0.5 + currentPos * 0.5;
+    }
 
     public void setDepositState(State state){
         this.depositState = state;
-    }
-    public void cycleStates(boolean bar){
-        if(bar) {
-            if (depositState == State.HIGHBAR) {
-                depositState = State.LOWBAR;
-            } else {
-                depositState = State.HIGHBAR;
-            }
-        }
-        else{
-            if (depositState == State.HIGHBUCKET) {
-                depositState = State.LOWBUCKET;
-            } else {
-                depositState = State.HIGHBUCKET;
-            }
-        }
     }
     private void setPosition(double position){
         rightSlide.setTargetPosition((int) position);
@@ -154,15 +144,16 @@ public class VerticalSubsystem extends Subsystem {
     }
 
     private void processState() {
+        updateSlideVelocity();
         if (this.state == State.MANUAL) {
             this.setPosition(slidePos+offset);
             return;
         }
-        if (this.state == State.DEPOSITING){
+        else if (this.state == State.DEPOSITING){
             this.setPosition(this.depositState.position+offset);
             return;
         }
-        if (this.state == State.BOTTOM){
+        else if (this.state == State.BOTTOM){
             this.setPosition(this.state.position);
             lowerSlides();
             return;
