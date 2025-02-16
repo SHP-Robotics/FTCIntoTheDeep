@@ -41,7 +41,7 @@ public class DetectSample extends OpenCvPipeline {
     public Mat processFrame(Mat input){
         Mat mat = ComputerVision.convertColor(input, Imgproc.COLOR_RGB2HSV);
         Mat scaledThresh = ComputerVision.filterColor(mat, new Scalar(lowH, lowS, lowV), new Scalar(highH, highS, highV));
-        Mat blurred = ComputerVision.blur(scaledThresh, new Size(1, 1));
+        Mat blurred = ComputerVision.blur(scaledThresh, new Size(1, 1)); //TODO ENP THIS IS A CNN
 
         ArrayList<MatOfPoint> contours = new ArrayList<>();
         Imgproc.findContours(blurred, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);

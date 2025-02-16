@@ -5,6 +5,8 @@ import static org.firstinspires.ftc.teamcode.shplib.Constants.Vertical.kLeftSlid
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Vertical.kMaxHeight;
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Vertical.kRightSlideName;
 
+import android.text.Spannable;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -23,6 +25,7 @@ public class VerticalSubsystem extends Subsystem {
     private int slidePos;
     private int offset;
     private double slideVelocity;
+    private boolean slideBottom;
     private LowPassFilter lowPassFilter;
 
 
@@ -49,6 +52,7 @@ public class VerticalSubsystem extends Subsystem {
     private State state, depositState;
 
     public VerticalSubsystem(HardwareMap hardwareMap) {
+        slideBottom = false;
         slidePos = 0;
         offset = 0;
         slideVelocity = 0;
@@ -127,13 +131,17 @@ public class VerticalSubsystem extends Subsystem {
                 && (((depositState == State.HIGHBUCKET || depositState == State.LOWBUCKET)
                     && slideVelocity > 250.0
                     && getSlidePosition() > 100)
-                || getSlidePosition() < 10)){
+                || slideBottom)){
                 rightSlide.setPower(0);
                 leftSlide.setPower(0);
         }
         else {
             rightSlide.setPower(Constants.Vertical.kRunPower);
             leftSlide.setPower(Constants.Vertical.kRunPower);
+        }
+
+        if(getSlidePosition() < 5){
+            slideBottom = true;
         }
     }
     public void updateSlideVelocity(){
@@ -154,19 +162,17 @@ public class VerticalSubsystem extends Subsystem {
         updateSlidePower();
         if (this.state == State.MANUAL) {
             this.setPosition(slidePos+offset);
-            return;
         }
         else if (this.state == State.DEPOSITING){
             this.setPosition(this.depositState.position+offset);
-            return;
         }
         else if (this.state == State.BOTTOM){
             this.setPosition(this.state.position);
-            return;
         }
         else {
             this.setPosition(this.state.position + offset);
         }
+        slideBottom = slideBottom && state == State.BOTTOM;
 
     }
 

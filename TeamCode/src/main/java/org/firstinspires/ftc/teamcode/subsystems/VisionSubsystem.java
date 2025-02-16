@@ -52,7 +52,7 @@ public class VisionSubsystem {
             return defaultValue;
         }
         return result.getTx();
-    } 
+    }
 
     public double getTy(double defaultValue) {
         if (result == null) {
