@@ -123,8 +123,10 @@ public class VerticalSubsystem extends Subsystem {
     }
 
     public void updateSlidePower(){
-        if(state == State.BOTTOM && (depositState == State.HIGHBUCKET || depositState == State.LOWBUCKET)
-                && slideVelocity > 10.0) {
+        if(state == State.BOTTOM
+                && (depositState == State.HIGHBUCKET || depositState == State.LOWBUCKET)
+                && slideVelocity > 250.0
+                && rightSlide.getCurrentPosition() > 100) {
                 rightSlide.setPower(0);
                 leftSlide.setPower(0);
         }
