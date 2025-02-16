@@ -11,6 +11,7 @@ import com.shprobotics.pestocore.devices.GamepadKey;
 import org.firstinspires.ftc.teamcode.commands.BuckettoDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.DrivetoBucketCommand;
 import org.firstinspires.ftc.teamcode.commands.DrivetoHumanCommand;
+import org.firstinspires.ftc.teamcode.commands.DrivetoPassiveCommand;
 import org.firstinspires.ftc.teamcode.commands.DrivetoSpecimenCommand;
 import org.firstinspires.ftc.teamcode.commands.DrivetoSubCommand;
 import org.firstinspires.ftc.teamcode.commands.DrivetoWallCommand;
@@ -163,22 +164,29 @@ public class AOfficialTeleOp extends BaseRobot {
                         andrewWompWomp++;
                     }
                     else {
-                        horizontal.setState(HorizSubsystem.State.DRIVING);
                         claw.setColor(GREEN);
+                        intakeState = State.COMPLETE;
+                        claw.setColor(OFF);
+                        LTTrigger = false;
                         CommandScheduler.getInstance().scheduleCommand(
-                            new RunCommand(()->{
-                                pivot.setState(PivotSubsystem.State.PICKUP2);
-                                rotate.setState(RotateSubsystem.State.NEUTRAL);
-                                horizontal.setState(HorizSubsystem.State.DRIVING);
-                                intakeState = State.COMPLETE;
-                            })
-                            .then(new WaitCommand(0.25))
-                            .then(new RunCommand(() -> {
-                                horizontal.setState(HorizSubsystem.State.DRIVING);
-                                pivot.setState(PivotSubsystem.State.DRIVING);
-                                claw.setColor(OFF);
-                            }))
-                        );
+                                new DrivetoPassiveCommand(rotate, claw, pivot, horizontal, vertical));
+
+//                        horizontal.setState(HorizSubsystem.State.DRIVING);
+//                        claw.setColor(GREEN);
+//                        CommandScheduler.getInstance().scheduleCommand(
+//                            new RunCommand(()->{
+//                                pivot.setState(PivotSubsystem.State.PICKUP2);
+//                                rotate.setState(RotateSubsystem.State.NEUTRAL);
+//                                horizontal.setState(HorizSubsystem.State.DRIVING);
+//                                intakeState = State.COMPLETE;
+//                            })
+//                            .then(new WaitCommand(0.25))
+//                            .then(new RunCommand(() -> {
+//                                horizontal.setState(HorizSubsystem.State.DRIVING);
+//                                pivot.setState(PivotSubsystem.State.DRIVING);
+//                                claw.setColor(OFF);
+//                            }))
+//                        );
                     }
                 })));
             }
@@ -187,26 +195,59 @@ public class AOfficialTeleOp extends BaseRobot {
 
         //deposit specimen
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && LTTrigger,
-                new DrivetoSpecimenCommand(rotate, claw, pivot, horizontal, vertical)
+                new DrivetoPassiveCommand(rotate, claw, pivot, horizontal, vertical)
                 .then(new RunCommand(()->{
                     LTTrigger = false;
                 }))
+
+//TODO THIS IS THE ACTIVE
+//                new DrivetoSpecimenCommand(rotate, claw, pivot, horizontal, vertical)
+//                .then(new RunCommand(()->{
+//                    LTTrigger = false;
+//                }))
         );
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && !LTTrigger,
                 new RunCommand(()->{
-                    vertical.setState(VerticalSubsystem.State.BOTTOM); //down to bottom
+                   claw.open();
+                   horizontal.setState(HorizSubsystem.State.DRIVING);
+                   pivot.setState(PivotSubsystem.State.FINISHPASSIVE);
+                   LTTrigger = true;
                 })
-                    .then(new WaitCommand(0.5))
-                    .then(new RunCommand(()->{
-                        claw.open();
-                    }))
-                    .then(new DrivetoWallCommand(rotate, claw, pivot, horizontal)
-                    .then(new RunCommand(()->{
-                        vertical.setState(VerticalSubsystem.State.BOTTOM);
-                        intakeState = State.EXTENDED;
-                        claw.setColor(PINK);
-                        LTTrigger = true;
-                    }))
+                        .then(new WaitCommand(0.5))
+                        .then(new RunCommand(()->{
+                            vertical.setState(VerticalSubsystem.State.BOTTOM);
+                            claw.close();
+                        }))
+                        .then(new WaitCommand(0.5))
+                        .then(new RunCommand(()->{
+                            pivot.setState(PivotSubsystem.State.DRIVING);
+                            intakeState = State.EXTENDED;
+                            claw.setColor(PINK);
+                        }))
+                        .then(new DrivetoWallCommand(rotate, claw, pivot, horizontal))
+
+
+
+
+//TODO THIS IS THE ACTIVE
+//                new RunCommand(()->{
+//                    vertical.setState(VerticalSubsystem.State.BOTTOM); //down to bottom
+//                })
+//                    .then(new WaitCommand(0.5))
+//                    .then(new RunCommand(()->{
+//                        claw.open();
+//                    }))
+//                    .then(new DrivetoWallCommand(rotate, claw, pivot, horizontal)
+//                    .then(new RunCommand(()->{
+//                        vertical.setState(VerticalSubsystem.State.BOTTOM);
+//                        intakeState = State.EXTENDED;
+//                        claw.setColor(PINK);
+//                        LTTrigger = true;
+//                    }))
+
+
+
+
 //                new SpecimentoDriveCommand(rotate, claw, pivot, horizontal, vertical)
 //                .then(new RunCommand(()->{
 //                    LTTrigger = true;
@@ -215,7 +256,7 @@ public class AOfficialTeleOp extends BaseRobot {
 //                .then(new RunCommand(()->{
 //                    claw.close();
 //                }))
-        ));
+        );
 
         //deposit bucket
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && crossTrigger,
@@ -247,8 +288,9 @@ public class AOfficialTeleOp extends BaseRobot {
         }));
 
         //give sample to human player
-        new Trigger(gamepad1.square, new DrivetoHumanCommand(rotate, claw, pivot, horizontal)
-                .then(new WaitCommand(0.75))
+        new Trigger(gamepad1.square,
+                new DrivetoHumanCommand(rotate, claw, pivot, horizontal)
+                .then(new WaitCommand(0.5))
                 .then(new HumantoDriveCommand(rotate, claw, pivot, horizontal)));
 
 

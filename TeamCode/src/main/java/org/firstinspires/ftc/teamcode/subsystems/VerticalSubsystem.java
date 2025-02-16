@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.shprobotics.pestocore.algorithms.LowPassFilter;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.shplib.Constants;
 import org.firstinspires.ftc.teamcode.shplib.commands.Subsystem;
 
@@ -32,6 +33,7 @@ public class VerticalSubsystem extends Subsystem {
     public enum State {
         BOTTOM(0),
         DEPOSITING(750),
+        PASSIVE(1580),
         DOWN(100),
         DOWNAUTO(50),
         LOWBAR(0),
@@ -69,7 +71,7 @@ public class VerticalSubsystem extends Subsystem {
 
         resetZeroPosition();
 
-        setState(State.MANUAL);
+        setState(State.BOTTOM);
         depositState = State.HIGHBAR;
     }
 
@@ -93,14 +95,14 @@ public class VerticalSubsystem extends Subsystem {
 
     public void incrementSlide(){
         if(slidePos <= kMaxHeight - kIncrement) {
-            state = State.MANUAL;
+//            state = State.MANUAL;
             slidePos += kIncrement;
         }
     }
 
     public void decrementSlide(){
         if(slidePos >= kIncrement ) {
-            state = State.MANUAL;
+//            state = State.MANUAL;
             slidePos -= kIncrement;
         }
     }
@@ -160,17 +162,17 @@ public class VerticalSubsystem extends Subsystem {
     private void processState() {
         updateSlideVelocity();
         updateSlidePower();
-        if (this.state == State.MANUAL) {
-            this.setPosition(slidePos+offset);
+        if (this.state == State.PASSIVE){
+            this.setPosition(this.state.position+slidePos);
         }
         else if (this.state == State.DEPOSITING){
-            this.setPosition(this.depositState.position+offset);
+            this.setPosition(this.depositState.position+slidePos);
         }
         else if (this.state == State.BOTTOM){
             this.setPosition(this.state.position);
         }
         else {
-            this.setPosition(this.state.position + offset);
+            this.setPosition(this.state.position + slidePos);
         }
         slideBottom = slideBottom && state == State.BOTTOM;
 
@@ -180,6 +182,10 @@ public class VerticalSubsystem extends Subsystem {
     public void periodic(Telemetry telemetry) {
         processState();
         telemetry.addData("DEPOSIT STATE:", depositState);
+        telemetry.addData("Mode", rightSlide.getMode());
+        telemetry.addData("Slide Power", rightSlide.getPower());
+        telemetry.addData("Target Pos", rightSlide.getTargetPosition());
+        telemetry.addData("Slide Current:", (rightSlide.getCurrent(CurrentUnit.AMPS)+leftSlide.getCurrent(CurrentUnit.AMPS))/2);
         telemetry.addData("Slide Velocity:", rightSlide.getVelocity());
         telemetry.addData("Slide State: ", state);
         telemetry.addData("Left Slide Position: ", leftSlide.getCurrentPosition());

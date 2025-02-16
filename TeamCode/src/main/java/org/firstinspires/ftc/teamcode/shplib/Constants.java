@@ -22,7 +22,7 @@ public class Constants {
         public static final String kLeftSlideName = "leftVSlide";
         public static final String kRightSlideName = "rightVSlide";
 
-        public static final double kMaxHeight = 3200;
+        public static final double kMaxHeight = 3300;
         public static final double kSlideTolerance = 5;
         public static final double kIncrement = 25;
         public static final double kRunPower = 0.8;

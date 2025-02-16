@@ -26,6 +26,7 @@ public class HorizSubsystem extends Subsystem {
         INTAKINGEXTENDED(1,1), // 0.55 rail max out, 0 slide max out
         PREPAUTOINTAKE(0.5,0),
         PARK(0.725,0),
+        PASSIVE(0,0.6),
         MANUAL(0.7,0);
 
         final double railPos;
@@ -46,12 +47,13 @@ public class HorizSubsystem extends Subsystem {
         manualRailPos = 0.0;
 
         lHoriz = new CachingServo((Servo) hardwareMap.get(kLeftHorizSlideName));
-        lHoriz.scaleRange(0.325, 0.9);
         lHoriz.setDirection(Servo.Direction.REVERSE);
+        lHoriz.scaleRange(0.325, 0.9);
 
         rHoriz = new CachingServo((Servo) hardwareMap.get(kRightHorizSlideName));
-        lHoriz.scaleRange(0.325, 0.9);
+
         rHoriz.setDirection(Servo.Direction.FORWARD);
+        lHoriz.scaleRange(0.325, 0.9);
 
         rail = new CachingServo((Servo) hardwareMap.get(kRailName));
         rail.setDirection(Servo.Direction.FORWARD);
@@ -127,7 +129,8 @@ public class HorizSubsystem extends Subsystem {
             rail.setPosition(this.state.railPos);
         }
         else {
-            setHorizPosition(manualHorizPos);
+            lHoriz.setPosition(manualHorizPos);
+            rHoriz.setPosition(manualHorizPos);
             rail.setPosition(manualRailPos);
         }
     }

@@ -6,22 +6,25 @@ import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
-public class DrivetoHumanCommand extends Command {
+public class DrivetoPassiveCommand extends Command {
     RotateSubsystem rotate;
     ClawSubsystem claw;
     PivotSubsystem pivot;
     HorizSubsystem horiz;
+    VerticalSubsystem vertical;
     double trigger, startTime, endTime;
 
-    public DrivetoHumanCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz) {
+    public DrivetoPassiveCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz, VerticalSubsystem vertical) {
         // You MUST call the parent class constructor and pass through any subsystems you use
         super(rotate, claw, pivot, horiz);
         this.rotate = rotate;
         this.claw = claw;
         this.pivot = pivot;
         this.horiz = horiz;
-        endTime = 0.75;
+        this.vertical = vertical;
+        endTime = 0.5;
     }
 
 
@@ -35,14 +38,15 @@ public class DrivetoHumanCommand extends Command {
     // Called repeatedly until isFinished() returns true
     @Override
     public void execute() {
-        horiz.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.HUMAN);
+        vertical.setState(VerticalSubsystem.State.PASSIVE);
+        horiz.setState(HorizSubsystem.State.PASSIVE);
     }
 
     // Called once after isFinished() returns true
     @Override
     public void end() {
-        claw.open();
+        pivot.setState(PivotSubsystem.State.PASSIVE);
+        rotate.setState(RotateSubsystem.State.DROPOFF);
     }
 
     // Specifies whether or not the command has finished

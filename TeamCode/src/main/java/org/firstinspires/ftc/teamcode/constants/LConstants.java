@@ -24,11 +24,11 @@ public class LConstants {
         // END -- AUTO FROM PESTO
 
         // REVERSE OF PESTO
-        ThreeWheelConstants.leftEncoderDirection = Encoder.REVERSE;
-        ThreeWheelConstants.rightEncoderDirection = Encoder.REVERSE;
+        ThreeWheelConstants.leftEncoderDirection = Encoder.FORWARD;
+        ThreeWheelConstants.rightEncoderDirection = Encoder.FORWARD;
 
         // SAME AS PESTO
-        ThreeWheelConstants.strafeEncoderDirection = Encoder.REVERSE;
+        ThreeWheelConstants.strafeEncoderDirection = Encoder.FORWARD;
     }
 }
 

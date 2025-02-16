@@ -27,18 +27,18 @@ public class PivotSubsystem extends Subsystem {
 
         INTAKE(0,0), //  0.63 wrist is level with floor
         PREPAREPICKUP(0.93,0.325),
-        PICKUP(0.93,0.75), //picks up from wall
+        PICKUP(0.93,0.8), //picks up from wall
         PICKUP2(1,0.6),  //^^^
         SUBTODRIVING(1, 0.1),
 
         OUTTAKESPEC(0.275,0.325),
-
-        OUTTAKE2(0.34, 0.6),
         OUTTAKEBUCKET(1,0.5),
         HUMAN(1,0.6),
         PARK(0.7, 0.355),
         AUTOSPEC(0.915, 0.5),
         AUTOINTAKE(0.275,0.325),
+        PASSIVE(0.55,0.12),
+        FINISHPASSIVE(0.55,0.075),
         MANUAL(0,0);
 
         final double wristPos;

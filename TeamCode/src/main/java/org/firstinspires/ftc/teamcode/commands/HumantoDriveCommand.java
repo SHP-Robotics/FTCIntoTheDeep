@@ -36,13 +36,13 @@ public class HumantoDriveCommand extends Command {
     @Override
     public void execute() {
         claw.close();
+        horiz.setState(HorizSubsystem.State.DRIVING);
+        pivot.setState(PivotSubsystem.State.DRIVING);
     }
 
     // Called once after isFinished() returns true
     @Override
     public void end() {
-        horiz.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.DRIVING);
     }
 
     // Specifies whether or not the command has finished
