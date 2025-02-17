@@ -48,14 +48,17 @@ public class PP extends OpMode {
      * It is necessary to do this so that all the paths are built before the auto starts. **/
     public void buildPaths() {
         scorePreload = new Path(new BezierLine(new Point(startPose), new Point(scorePose)));
+        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
 
         pickup1 = new Path(new BezierCurve(
                         new Point(scorePose),
                         new Point(new Pose(10, 8)),
                         new Point(new Pose(75, 58)),
                         new Point(pickup1Pose)));
+        pickup1.setLinearHeadingInterpolation(scorePose.getHeading(), pickup1Pose.getHeading());
 
         pickupToPush1 = new Path(new BezierLine(new Point(pickup1Pose), new Point(push1Pose)));
+        pickupToPush1.setLinearHeadingInterpolation(pickup1Pose.getHeading(), push1Pose.getHeading());
 
         pickup2 = new Path(new BezierCurve(
                 new Point(push1Pose),
@@ -64,6 +67,7 @@ public class PP extends OpMode {
                 new Point(new Pose(62, 6)),
                 new Point(pickup2Pose)
         ));
+        pickup2.setLinearHeadingInterpolation(push1Pose.getHeading(), pickup2Pose.getHeading());
 
         pickup3 = new Path(new BezierCurve(
                 new Point(pickup2Pose),
@@ -71,10 +75,13 @@ public class PP extends OpMode {
                 new Point(new Pose(77.5, 0.4)),
                 new Point(pickup3Pose)
         ));
+        pickup3.setLinearHeadingInterpolation(pickup2Pose.getHeading(), pickup3Pose.getHeading());
 
         sub = new Path(new BezierLine(new Point(pickup3Pose), new Point(subPose)));
+        sub.setLinearHeadingInterpolation(pickup3Pose.getHeading(), subPose.getHeading());
 
         grab = new Path(new BezierLine(new Point(subPose), new Point(pickupPose)));
+        grab.setLinearHeadingInterpolation(subPose.getHeading(), pickupPose.getHeading());
     }
 
     public void autonomousPathUpdate() {
@@ -159,6 +166,7 @@ public class PP extends OpMode {
         Constants.setConstants(FConstants.class, LConstants.class);
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
+        follower.setHeadingOffset(Math.toRadians(90)); // TODO: check if I am high
         buildPaths();
     }
 
