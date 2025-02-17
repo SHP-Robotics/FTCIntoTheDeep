@@ -77,7 +77,6 @@ public class ShowcaseTeleop extends BaseRobot {
         gamepadInterface2.update();
         drive.update(gamepad2);
 
-
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER), new RunCommand(() -> {
             if (cageState == State.COMPLETE) {
                 CommandScheduler.getInstance().scheduleCommand(
@@ -166,7 +165,7 @@ public class ShowcaseTeleop extends BaseRobot {
             }
             else if (intakeState == State.EXTENDED) {
                 CommandScheduler.getInstance().scheduleCommand(
-                        new WallToDriveCommand(rotate, claw, pivot, horiz)
+                        new WallToDriveCommand(rotate, claw, pivot, horiz, vertical)
                                 .then(new WaitCommand(0.25))
                                 .then(new RunCommand(()->{
                                     if (!claw.isBlockInClaw()) {

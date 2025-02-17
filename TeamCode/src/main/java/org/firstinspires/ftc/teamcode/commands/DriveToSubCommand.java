@@ -1,20 +1,25 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.PINK;
+
 import org.firstinspires.ftc.teamcode.shplib.commands.Command;
 import org.firstinspires.ftc.teamcode.shplib.utility.Clock;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
+import org.firstinspires.ftc.teamcode.teleops.AOfficialTeleOp;
 
 public class DriveToSubCommand extends Command {
     RotateSubsystem rotate;
     ClawSubsystem claw;
     PivotSubsystem pivot;
     HorizSubsystem horiz;
+    AOfficialTeleOp.State cageState;
+
     double startTime, endTime;
 
-    public DriveToSubCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz) {
+    public DriveToSubCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz, AOfficialTeleOp.State cageState) {
         // You MUST call the parent class constructor and pass through any subsystems you use
         super(rotate, claw, pivot, horiz);
         this.rotate = rotate;
@@ -44,6 +49,9 @@ public class DriveToSubCommand extends Command {
         pivot.setState(PivotSubsystem.State.PREPAREINTAKE);
         rotate.setState(RotateSubsystem.State.INTAKE);
         claw.open();
+
+        cageState = AOfficialTeleOp.State.EXTENDED;
+        claw.setColor(PINK);
     }
 
     // Specifies whether or not the command has finished
