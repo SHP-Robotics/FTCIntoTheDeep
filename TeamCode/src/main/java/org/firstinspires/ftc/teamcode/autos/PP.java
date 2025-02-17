@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.autos;
 
-import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.PINK;
-import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WALLPICKUPAUTO;
+import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WALL_PICKUP_AUTO;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
@@ -24,7 +23,6 @@ import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
-import org.firstinspires.ftc.teamcode.teleops.AOfficialTeleOp;
 
 
 @Autonomous(name = "*** Not William's PP ***")
@@ -240,7 +238,7 @@ public class PP extends OpMode {
         claw.open();
         updateCommands(0.55);
 
-        horizontal.setState(WALLPICKUPAUTO);
+        horizontal.setState(WALL_PICKUP_AUTO);
         updateCommands(0.05);
 
         claw.close();
@@ -273,7 +271,7 @@ public class PP extends OpMode {
         updateCommands();
 
         pivot.setState(PivotSubsystem.State.PREPAREPICKUP);
-        horizontal.setState(HorizSubsystem.State.INTAKEWALL);
+        horizontal.setState(HorizSubsystem.State.INTAKE_WALL);
         updateCommands(0.5);
         rotate.setState(RotateSubsystem.State.PICKUP);
         pivot.setState(PivotSubsystem.State.PICKUP);
