@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.commands.DriveToWallCommand;
 import org.firstinspires.ftc.teamcode.commands.SubToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.WallToDriveCommand;
 import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
+import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.commands.RunCommand;
 import org.firstinspires.ftc.teamcode.shplib.commands.Trigger;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
@@ -66,7 +67,7 @@ public class AOfficialTeleOp extends BaseRobot {
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() == PREPARE_INTAKE,
                 new SubToDriveCommand(rotate, claw, pivot, horiz));
 
-        if(gamepad1.right_trigger > 0.0 && (pivot.getState() == PREPARE_INTAKE || pivot.getState() == INTAKE))
+        if(gamepad1.right_trigger >= 0.0 && (pivot.getState() == PREPARE_INTAKE || pivot.getState() == INTAKE))
             horiz.setTriggerPos(gamepad1.right_trigger);
 
         //abort
@@ -81,10 +82,15 @@ public class AOfficialTeleOp extends BaseRobot {
         //intake specimen from wall
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && pivot.getState() != PICKUP,
                 new DriveToWallCommand(rotate, claw, pivot, horiz, vertical));
-
+        //
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && pivot.getState() == PICKUP,
                 new WallToDriveCommand(rotate, claw, pivot, horiz, vertical)
-                    .then(new DriveToPassiveCommand(rotate, claw, pivot, horiz, vertical)));
+                    .then(new RunCommand(()-> {
+                        if (claw.isBlockInClaw()) {
+                            CommandScheduler.getInstance().scheduleCommand(new DriveToPassiveCommand(rotate, claw, pivot, horiz, vertical));
+                        }
+                    }
+        )));
 
         //deposit bucket
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && vertical.getState() == VerticalSubsystem.State.BOTTOM,
