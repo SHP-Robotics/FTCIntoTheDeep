@@ -32,6 +32,7 @@ public class PivotSubsystem extends Subsystem {
         AUTO_SPEC(0.915, 0.5),
         AUTO_INTAKE(0.275,0.325),
         PASSIVE(0.55,0.12),
+        START_SPEC_AUTO(0.55, 0.2),
         FINISH_PASSIVE(0.55,0.075),
         MANUAL(0,0);
 
