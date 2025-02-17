@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.teleops;
 import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.OFF;
 import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.PINK;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PICKUP;
-import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPAREINTAKE;
+import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPARE_INTAKE;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.devices.GamepadInterface;
@@ -63,12 +63,12 @@ public class AOfficialTeleOp extends BaseRobot {
         drive.update(gamepad2);
 
         //collect from sub
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() != PREPAREINTAKE,
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() != PREPARE_INTAKE,
                 new DriveToSubCommand(rotate, claw, pivot, horiz));
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() == PREPAREINTAKE,
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() == PREPARE_INTAKE,
                 new SubToDriveCommand(rotate, claw, pivot, horiz));
 
-        if(gamepad1.right_trigger > 0.0 && pivot.getState() == PREPAREINTAKE) horiz.setTriggerPos(gamepad1.right_trigger);
+        if(gamepad1.right_trigger > 0.0 && pivot.getState() == PREPARE_INTAKE) horiz.setTriggerPos(gamepad1.right_trigger);
 
         //abort
         if(gamepad1.dpad_up){

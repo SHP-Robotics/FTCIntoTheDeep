@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
-import org.firstinspires.ftc.teamcode.teleops.AOfficialTeleOp;
 
 public class SubToDriveCommand extends Command {
     RotateSubsystem rotate;
@@ -20,8 +19,7 @@ public class SubToDriveCommand extends Command {
     PivotSubsystem pivot;
     HorizSubsystem horiz;
 
-    private double startTime;
-    private double endTime;
+    private double startTime, endTime;
 
     public SubToDriveCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz) {
         // You MUST call the parent class constructor and pass through any subsystems you use
@@ -57,7 +55,7 @@ public class SubToDriveCommand extends Command {
                 CommandScheduler.getInstance().scheduleCommand(
                         new RunCommand(()->{
                             rotate.setState(RotateSubsystem.State.NEUTRAL);
-                            pivot.setState(PivotSubsystem.State.SUBTODRIVING);
+                            pivot.setState(PivotSubsystem.State.SUB_TO_DRIVING);
                         })
                                 .then(new WaitCommand(0.05))
                                 .then(new RunCommand(() -> {

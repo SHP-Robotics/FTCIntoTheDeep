@@ -14,6 +14,7 @@ public class DriveToBucketCommand extends Command {
     PivotSubsystem pivot;
     HorizSubsystem horiz;
     VerticalSubsystem vertical;
+
     double startTime, endTime;
 
     public DriveToBucketCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz, VerticalSubsystem vertical) {
@@ -39,7 +40,7 @@ public class DriveToBucketCommand extends Command {
     @Override
     public void execute() {
         horiz.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.OUTTAKEBUCKET);
+        pivot.setState(PivotSubsystem.State.OUTTAKE_BUCKET);
         vertical.setDepositState(VerticalSubsystem.State.HIGH_BUCKET);
         vertical.setState(VerticalSubsystem.State.DEPOSITING);
     }

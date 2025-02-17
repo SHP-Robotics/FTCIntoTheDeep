@@ -231,7 +231,7 @@ public class PP extends OpMode {
     /** Prepares the intake for wall, opens claw, and closes */
     public void wallIntake(){
         //prep intake
-        pivot.setState(PivotSubsystem.State.AUTOINTAKE);
+        pivot.setState(PivotSubsystem.State.AUTO_INTAKE);
         horizontal.setState(HorizSubsystem.State.DRIVING);
         updateCommands(0.25);
         rotate.setState(RotateSubsystem.State.PICKUP);
@@ -260,7 +260,7 @@ public class PP extends OpMode {
     public void lowerArm(){
         claw.open();
         horizontal.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.FINISHPASSIVE);
+        pivot.setState(PivotSubsystem.State.FINISH_PASSIVE);
         updateCommands(0.5);
 
         vertical.setState(VerticalSubsystem.State.BOTTOM);
@@ -270,7 +270,7 @@ public class PP extends OpMode {
         pivot.setState(PivotSubsystem.State.DRIVING);
         updateCommands();
 
-        pivot.setState(PivotSubsystem.State.PREPAREPICKUP);
+        pivot.setState(PivotSubsystem.State.PREPARE_PICKUP);
         horizontal.setState(HorizSubsystem.State.INTAKE_WALL);
         updateCommands(0.5);
         rotate.setState(RotateSubsystem.State.PICKUP);

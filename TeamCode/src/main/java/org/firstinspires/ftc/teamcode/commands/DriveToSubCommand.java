@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
-import org.firstinspires.ftc.teamcode.teleops.AOfficialTeleOp;
 
 public class DriveToSubCommand extends Command {
     RotateSubsystem rotate;
@@ -45,7 +44,7 @@ public class DriveToSubCommand extends Command {
     // Called once after isFinished() returns true
     @Override
     public void end() {
-        pivot.setState(PivotSubsystem.State.PREPAREINTAKE);
+        pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
         rotate.setState(RotateSubsystem.State.INTAKE);
         claw.open();
 

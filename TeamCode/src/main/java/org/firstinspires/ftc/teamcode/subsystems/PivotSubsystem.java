@@ -19,26 +19,27 @@ public class PivotSubsystem extends Subsystem {
 
     public enum State {
         // todo: delete unused states
+//        TRANSITION(0.6,0.3), //0 is down
         DRIVING(0.0, 0.3), //0 is down
-        PREPAREDRIVING(0, 0.2), //0 is down
+        PREPARE_DRIVING(0, 0.2), //0 is down
 
-        PREPAREINTAKE(0, 0.06),
-        PREPAREINTAKEHIGHER(0,0.09),
+        PREPARE_INTAKE(0, 0.06),
+        PREPARE_INTAKE_HIGHER(0,0.09),
 
         INTAKE(0,0), //  0.63 wrist is level with floor
-        PREPAREPICKUP(0.93,0.325),
+        PREPARE_PICKUP(0.93,0.325),
         PICKUP(0.93,0.8), //picks up from wall
         PICKUP2(1,0.6),  //^^^
-        SUBTODRIVING(1, 0.1),
+        SUB_TO_DRIVING(1, 0.1),
 
-        OUTTAKESPEC(0.275,0.325),
-        OUTTAKEBUCKET(1,0.5),
+        OUTTAKE_SPEC(0.275,0.325),
+        OUTTAKE_BUCKET(1,0.5),
         HUMAN(1,0.6),
         PARK(0.7, 0.355),
-        AUTOSPEC(0.915, 0.5),
-        AUTOINTAKE(0.275,0.325),
+        AUTO_SPEC(0.915, 0.5),
+        AUTO_INTAKE(0.275,0.325),
         PASSIVE(0.55,0.12),
-        FINISHPASSIVE(0.55,0.075),
+        FINISH_PASSIVE(0.55,0.075),
         MANUAL(0,0);
 
         final double wristPos;

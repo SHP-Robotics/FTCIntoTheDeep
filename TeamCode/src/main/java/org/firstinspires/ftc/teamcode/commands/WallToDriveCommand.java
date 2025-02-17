@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
-import org.firstinspires.ftc.teamcode.teleops.AOfficialTeleOp;
 
 public class WallToDriveCommand extends Command {
     RotateSubsystem rotate;
@@ -19,8 +18,7 @@ public class WallToDriveCommand extends Command {
     PivotSubsystem pivot;
     HorizSubsystem horiz;
     VerticalSubsystem vertical;
-    private double startTime;
-    private double endTime;
+    private double startTime, endTime;
 
     public WallToDriveCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz, VerticalSubsystem vertical) {
         // You MUST call the parent class constructor and pass through any subsystems you use

@@ -809,7 +809,7 @@ public class FourSpecimen extends LinearOpMode {
     /** Prepares the intake for wall, opens claw */
     public void prepIntake(){
         //prep intake
-        pivot.setState(PivotSubsystem.State.AUTOINTAKE);
+        pivot.setState(PivotSubsystem.State.AUTO_INTAKE);
         horizontal.setState(HorizSubsystem.State.DRIVING);
         updateCommands(0.25);
         rotate.setState(RotateSubsystem.State.PICKUP);
@@ -833,7 +833,7 @@ public class FourSpecimen extends LinearOpMode {
     /** Raises the pivot */
     public void prepArm(){
         horizontal.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.AUTOSPEC);
+        pivot.setState(PivotSubsystem.State.AUTO_SPEC);
         updateCommands(0.1);
 
         rotate.setState(RotateSubsystem.State.NEUTRAL);

@@ -362,7 +362,7 @@ public class FourSample extends LinearOpMode {
     public void prepIntake(){
         //prep intake
         horizontal.setState(HorizSubsystem.State.PREP_AUTO_INTAKE);
-        pivot.setState(PivotSubsystem.State.PREPAREINTAKE);
+        pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
         rotate.setState(RotateSubsystem.State.INTAKE);
         updateCommands(0.25);
         claw.open();
@@ -372,7 +372,7 @@ public class FourSample extends LinearOpMode {
     public void prepBlock2Intake(){
         //prep intake
         horizontal.setState(HorizSubsystem.State.PREP_AUTO_INTAKE);
-        pivot.setState(PivotSubsystem.State.PREPAREINTAKEHIGHER);
+        pivot.setState(PivotSubsystem.State.PREPARE_INTAKE_HIGHER);
         rotate.setState(RotateSubsystem.State.INTAKE);
         updateCommands(0.25);
         claw.open();
@@ -396,7 +396,7 @@ public class FourSample extends LinearOpMode {
         if(!claw.isBlockInClaw()){
             claw.setColor(ClawSubsystem.ColorState.RED);
 
-            pivot.setState(PivotSubsystem.State.PREPAREINTAKE);
+            pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
             claw.open();
             updateCommands(0.25);
 
@@ -431,7 +431,7 @@ public class FourSample extends LinearOpMode {
 
         horizontal.setState(HorizSubsystem.State.DRIVING);
         updateCommands(1);
-        pivot.setState(PivotSubsystem.State.OUTTAKEBUCKET);
+        pivot.setState(PivotSubsystem.State.OUTTAKE_BUCKET);
         updateCommands(0.5);
         rotate.setState(RotateSubsystem.State.DROPOFF_BUCKET);
         updateCommands(0.25); // 0.5 -> 0.25

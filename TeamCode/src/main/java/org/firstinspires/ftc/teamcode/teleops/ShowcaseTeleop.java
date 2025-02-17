@@ -102,7 +102,7 @@ public class ShowcaseTeleop extends BaseRobot {
                                         CommandScheduler.getInstance().scheduleCommand(
                                                 new RunCommand(()->{
                                                     rotate.setState(RotateSubsystem.State.NEUTRAL);
-                                                    pivot.setState(PivotSubsystem.State.SUBTODRIVING);
+                                                    pivot.setState(PivotSubsystem.State.SUB_TO_DRIVING);
                                                     cageState = State.COMPLETE;
                                                 })
                                                         .then(new WaitCommand(0.05))
@@ -131,7 +131,7 @@ public class ShowcaseTeleop extends BaseRobot {
                         new RunCommand(()->{
                             claw.close();
                             rotate.setState(RotateSubsystem.State.NEUTRAL);
-                            pivot.setState(PivotSubsystem.State.SUBTODRIVING);
+                            pivot.setState(PivotSubsystem.State.SUB_TO_DRIVING);
                         })
                                 .then(new WaitCommand(0.05))
                                 .then(new RunCommand(() -> {
@@ -158,7 +158,7 @@ public class ShowcaseTeleop extends BaseRobot {
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER), new RunCommand(() -> {
             if (intakeState == State.COMPLETE) {
                 CommandScheduler.getInstance().scheduleCommand(
-                        new DriveToWallCommand(rotate, claw, pivot, horiz)
+                        new DriveToWallCommand(rotate, claw, pivot, horiz, vertical)
                 );
                 intakeState = State.EXTENDED;
                 claw.setColor(PINK);
@@ -171,7 +171,7 @@ public class ShowcaseTeleop extends BaseRobot {
                                     if (!claw.isBlockInClaw()) {
                                         gamepad1.rumble(500);
                                         CommandScheduler.getInstance().scheduleCommand(
-                                                new DriveToWallCommand(rotate, claw, pivot, horiz)
+                                                new DriveToWallCommand(rotate, claw, pivot, horiz, vertical)
                                         );
                                         andrewWompWomp++;
                                     }
@@ -210,7 +210,7 @@ public class ShowcaseTeleop extends BaseRobot {
                         .then(new WaitCommand(0.5))
                         .then(new RunCommand(()->{
                             claw.close();
-                            pivot.setState(PivotSubsystem.State.PREPAREDRIVING);
+                            pivot.setState(PivotSubsystem.State.PREPARE_DRIVING);
                         }))
                         .then(new WaitCommand(0.25))
                         .then(new RunCommand(()->{

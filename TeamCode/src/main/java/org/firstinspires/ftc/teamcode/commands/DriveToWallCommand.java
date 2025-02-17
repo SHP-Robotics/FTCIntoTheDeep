@@ -42,13 +42,13 @@ public class DriveToWallCommand extends Command {
     public void execute() {
         if(vertical.getState() == VerticalSubsystem.State.BOTTOM){
             endTime = 0.5;
-            pivot.setState(PivotSubsystem.State.PREPAREPICKUP);
+            pivot.setState(PivotSubsystem.State.PREPARE_PICKUP);
             horiz.setState(HorizSubsystem.State.INTAKE_WALL);
             return;
         }
 
         if(Clock.hasElapsed(startTime,1)){
-            pivot.setState(PivotSubsystem.State.PREPAREPICKUP);
+            pivot.setState(PivotSubsystem.State.PREPARE_PICKUP);
             horiz.setState(HorizSubsystem.State.INTAKE_WALL);
         }
         else if(Clock.hasElapsed(startTime, 0.6)){
@@ -60,7 +60,7 @@ public class DriveToWallCommand extends Command {
         }
         else if (Clock.hasElapsed(startTime, 0)){
             horiz.setState(HorizSubsystem.State.DRIVING);
-            pivot.setState(PivotSubsystem.State.FINISHPASSIVE);
+            pivot.setState(PivotSubsystem.State.FINISH_PASSIVE);
         }
     }
 

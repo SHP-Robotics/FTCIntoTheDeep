@@ -12,7 +12,8 @@ public class DriveToHumanCommand extends Command {
     ClawSubsystem claw;
     PivotSubsystem pivot;
     HorizSubsystem horiz;
-    double trigger, startTime, endTime;
+
+    double startTime, endTime;
 
     public DriveToHumanCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz) {
         // You MUST call the parent class constructor and pass through any subsystems you use

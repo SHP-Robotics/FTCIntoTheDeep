@@ -796,7 +796,7 @@ public class TestAuto extends LinearOpMode {
     /** Prepares the intake for wall, opens claw */
     public void prepIntake(){
         //prep intake
-        pivot.setState(PivotSubsystem.State.AUTOINTAKE);
+        pivot.setState(PivotSubsystem.State.AUTO_INTAKE);
         horizontal.setState(HorizSubsystem.State.DRIVING);
         updateCommands(0.25);
         rotate.setState(RotateSubsystem.State.PICKUP);
@@ -820,7 +820,7 @@ public class TestAuto extends LinearOpMode {
     /** Raises the pivot */
     public void prepArm(){
         horizontal.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.AUTOSPEC);
+        pivot.setState(PivotSubsystem.State.AUTO_SPEC);
         updateCommands(0.1);
 
         rotate.setState(RotateSubsystem.State.NEUTRAL);
@@ -852,7 +852,7 @@ public class TestAuto extends LinearOpMode {
     public void prepNewIntake(){
         //prep intake
         horizontal.setState(HorizSubsystem.State.PREP_AUTO_INTAKE);
-        pivot.setState(PivotSubsystem.State.PREPAREINTAKE);
+        pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
         rotate.setState(RotateSubsystem.State.INTAKE);
         updateCommands(0.25);
         claw.open();
@@ -877,7 +877,7 @@ public class TestAuto extends LinearOpMode {
         if(!claw.isBlockInClaw()){
             claw.setColor(ClawSubsystem.ColorState.RED);
 
-            pivot.setState(PivotSubsystem.State.PREPAREINTAKE);
+            pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
             claw.open();
             updateCommands(0.25);
 
