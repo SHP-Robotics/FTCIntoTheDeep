@@ -59,6 +59,7 @@ public class DriveToWallCommand extends Command {
             vertical.setState(VerticalSubsystem.State.BOTTOM);
         }
         else if (Clock.hasElapsed(startTime, 0)){
+            claw.open();
             horiz.setState(HorizSubsystem.State.DRIVING);
             pivot.setState(PivotSubsystem.State.FINISH_PASSIVE);
         }

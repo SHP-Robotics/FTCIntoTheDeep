@@ -50,14 +50,14 @@ public class PP extends OpMode {
      * Lets assume our robot is 18 by 18 inches
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
-    private final Pose startPose = new Pose(7, 64, Math.toRadians(270));
-    private final Pose scorePose = new Pose(35, 72, Math.toRadians(270));
-    private final Pose pickup1Pose = new Pose(61.5, 23.8, Math.toRadians(270));
-    private final Pose push1Pose = new Pose(7, 24, Math.toRadians(270));
-    private final Pose pickup2Pose = new Pose(7, 16, Math.toRadians(270));
-    private final Pose pickup3Pose = new Pose(7, 9, Math.toRadians(270));
-    private final Pose subPose = new Pose(42, 67, Math.toRadians(270));
-    private final Pose pickupPose = new Pose(7, 32, Math.toRadians(270));
+    private final Pose startPose = new Pose(7, 64);
+    private final Pose scorePose = new Pose(35, 72);
+    private final Pose pickup1Pose = new Pose(61.5, 23.8);
+    private final Pose push1Pose = new Pose(7, 24);
+    private final Pose pickup2Pose = new Pose(7, 16);
+    private final Pose pickup3Pose = new Pose(7, 9);
+    private final Pose subPose = new Pose(42, 67);
+    private final Pose pickupPose = new Pose(7, 32);
 
     private static Path scorePreload, pickup1, pickupToPush1, pickup2, pickup3, sub, grab;
 

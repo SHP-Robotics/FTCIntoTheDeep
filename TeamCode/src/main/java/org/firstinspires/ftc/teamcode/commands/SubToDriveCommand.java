@@ -42,39 +42,35 @@ public class SubToDriveCommand extends Command {
     @Override
     public void execute() {
         pivot.setState(PivotSubsystem.State.INTAKE);
-//        claw.close();
-
-        if (Clock.hasElapsed(startTime, 0.25)) {
-            if (!claw.isBlockInClaw()) {
-                CommandScheduler.getInstance().scheduleCommand(
-                        new DriveToSubCommand(rotate, claw, pivot, horiz)
-                );
-            }
-            else {
-                claw.setColor(GREEN);
-                CommandScheduler.getInstance().scheduleCommand(
-                        new RunCommand(()->{
-                            rotate.setState(RotateSubsystem.State.NEUTRAL);
-                            pivot.setState(PivotSubsystem.State.SUB_TO_DRIVING);
-                        })
-                                .then(new WaitCommand(0.05))
-                                .then(new RunCommand(() -> {
-                                    horiz.setState(HorizSubsystem.State.DRIVING);
-                                }))
-                                .then(new WaitCommand(0.5))
-                                .then(new RunCommand(() -> {
-                                    pivot.setState(PivotSubsystem.State.DRIVING);
-                                    claw.setColor(OFF);
-                                }))
-                );
-            }
-        }
+        claw.close();
     }
 
     // Called once after isFinished() returns true
     @Override
     public void end() {
-        claw.close();
+        if (!claw.isBlockInClaw()) {
+            CommandScheduler.getInstance().scheduleCommand(
+                    new DriveToSubCommand(rotate, claw, pivot, horiz)
+            );
+        }
+        else {
+            claw.setColor(GREEN);
+            CommandScheduler.getInstance().scheduleCommand(
+                    new RunCommand(()->{
+                        rotate.setState(RotateSubsystem.State.NEUTRAL);
+                        pivot.setState(PivotSubsystem.State.SUB_TO_DRIVING);
+                    })
+                            .then(new WaitCommand(0.05))
+                            .then(new RunCommand(() -> {
+                                horiz.setState(HorizSubsystem.State.DRIVING);
+                            }))
+                            .then(new WaitCommand(0.5))
+                            .then(new RunCommand(() -> {
+                                pivot.setState(PivotSubsystem.State.DRIVING);
+                                claw.setColor(OFF);
+                            }))
+            );
+        }
     }
 
     // Specifies whether or not the command has finished

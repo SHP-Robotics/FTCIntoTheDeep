@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
 import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.OFF;
+import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.INTAKE;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PICKUP;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPARE_INTAKE;
 
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.commands.BlockInBotCommand;
 import org.firstinspires.ftc.teamcode.commands.BucketToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToBucketCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToHumanCommand;
+import org.firstinspires.ftc.teamcode.commands.DriveToPassiveCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToSubCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToWallCommand;
 import org.firstinspires.ftc.teamcode.commands.SubToDriveCommand;
@@ -64,7 +66,8 @@ public class AOfficialTeleOp extends BaseRobot {
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() == PREPARE_INTAKE,
                 new SubToDriveCommand(rotate, claw, pivot, horiz));
 
-        if(gamepad1.right_trigger > 0.0 && pivot.getState() == PREPARE_INTAKE) horiz.setTriggerPos(gamepad1.right_trigger);
+        if(gamepad1.right_trigger > 0.0 && (pivot.getState() == PREPARE_INTAKE || pivot.getState() == INTAKE))
+            horiz.setTriggerPos(gamepad1.right_trigger);
 
         //abort
         if(gamepad1.dpad_up){
@@ -80,7 +83,8 @@ public class AOfficialTeleOp extends BaseRobot {
                 new DriveToWallCommand(rotate, claw, pivot, horiz, vertical));
 
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && pivot.getState() == PICKUP,
-                new WallToDriveCommand(rotate, claw, pivot, horiz, vertical));
+                new WallToDriveCommand(rotate, claw, pivot, horiz, vertical)
+                    .then(new DriveToPassiveCommand(rotate, claw, pivot, horiz, vertical)));
 
         //deposit bucket
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && vertical.getState() == VerticalSubsystem.State.BOTTOM,
