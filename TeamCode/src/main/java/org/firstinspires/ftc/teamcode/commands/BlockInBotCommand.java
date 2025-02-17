@@ -1,34 +1,28 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.PINK;
-
 import org.firstinspires.ftc.teamcode.shplib.commands.Command;
+import org.firstinspires.ftc.teamcode.shplib.commands.RunCommand;
+import org.firstinspires.ftc.teamcode.shplib.commands.WaitCommand;
 import org.firstinspires.ftc.teamcode.shplib.utility.Clock;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
-public class DriveToWallCommand extends Command {
-    RotateSubsystem rotate;
-    ClawSubsystem claw;
-    PivotSubsystem pivot;
+public class BlockInBotCommand extends Command {
     HorizSubsystem horiz;
-    double trigger, startTime, endTime;
+    double startTime, endTime;
 
-    public DriveToWallCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz) {
+    public BlockInBotCommand(HorizSubsystem horiz) {
         // You MUST call the parent class constructor and pass through any subsystems you use
-        super(rotate, claw, pivot, horiz);
-        this.rotate = rotate;
-        this.claw = claw;
-        this.pivot = pivot;
+        super(horiz);
         this.horiz = horiz;
         endTime = 0.5;
     }
 
 
     // Called once when the command is initially schedule
-
     public void init() {
         super.init();
         startTime = Clock.now();
@@ -37,17 +31,13 @@ public class DriveToWallCommand extends Command {
     // Called repeatedly until isFinished() returns true
     @Override
     public void execute() {
-        pivot.setState(PivotSubsystem.State.PREPAREPICKUP);
-        horiz.setState(HorizSubsystem.State.INTAKE_WALL);
+        horiz.setState(HorizSubsystem.State.BLOCK_IN_BOT);
     }
 
     // Called once after isFinished() returns true
     @Override
     public void end() {
-        rotate.setState(RotateSubsystem.State.PICKUP);
-        pivot.setState(PivotSubsystem.State.PICKUP);
-        claw.open();
-        claw.setColor(PINK);
+        horiz.setState(HorizSubsystem.State.DRIVING);
     }
 
     // Specifies whether or not the command has finished

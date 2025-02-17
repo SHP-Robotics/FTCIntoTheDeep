@@ -7,12 +7,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.devices.GamepadInterface;
 import com.shprobotics.pestocore.devices.GamepadKey;
 
+import org.firstinspires.ftc.teamcode.commands.BlockInBotCommand;
 import org.firstinspires.ftc.teamcode.commands.BucketToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToBucketCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToHumanCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToPassiveCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToSubCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToWallCommand;
+import org.firstinspires.ftc.teamcode.commands.PassiveToWallCommand;
 import org.firstinspires.ftc.teamcode.commands.SubToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.WallToDriveCommand;
 import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
@@ -68,18 +70,16 @@ public class AOfficialTeleOp extends BaseRobot {
         gamepadInterface2.update();
         drive.update(gamepad2);
 
-
         //collect from sub
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && cageState == State.COMPLETE,
+                new DriveToSubCommand(rotate, claw, pivot, horiz, cageState));
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && cageState == State.EXTENDED,
+                new SubToDriveCommand(rotate, claw, pivot, horiz, cageState));
 
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && cageState == State.COMPLETE, new DriveToSubCommand(rotate, claw, pivot, horiz, cageState));
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && cageState == State.EXTENDED, new SubToDriveCommand(rotate, claw, pivot, horiz, cageState));
-
-        new Trigger(gamepad1.right_trigger > 0.0 && cageState == State.EXTENDED, new RunCommand(() -> {
-            horiz.setTriggerPos(gamepad1.right_trigger);
-        }));
+        if(gamepad1.right_trigger > 0.0 && cageState == State.EXTENDED) horiz.setTriggerPos(gamepad1.right_trigger);
 
         //abort
-        new Trigger(gamepad1.dpad_up, new RunCommand(() -> {
+        if(gamepad1.dpad_up){
             claw.close();
             rotate.setState(RotateSubsystem.State.NEUTRAL);
             pivot.setState(PivotSubsystem.State.DRIVING);
@@ -87,29 +87,26 @@ public class AOfficialTeleOp extends BaseRobot {
             cageState = State.COMPLETE;
             intakeState = State.COMPLETE;
             claw.setColor(OFF);
-        }));
+        };
 
         //intake specimen from wall
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && intakeState == State.COMPLETE,
                 new DriveToWallCommand(rotate, claw, pivot, horiz)
-                .then(new RunCommand(()->{
-                    intakeState = State.EXTENDED;
-                    claw.setColor(PINK);
-                }))
+                .then(new RunCommand(()-> intakeState = State.EXTENDED))
         );
 
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER)&& intakeState == State.EXTENDED,
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && intakeState == State.EXTENDED,
                 new WallToDriveCommand(rotate, claw, pivot, horiz, vertical)
                 .then(new RunCommand(()-> intakeState = State.COMPLETE)
         ));
-
 
         //deposit specimen
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && vertical.getState() == VerticalSubsystem.State.BOTTOM,
                 new DriveToPassiveCommand(rotate, claw, pivot, horiz, vertical)
         );
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && vertical.getState() != VerticalSubsystem.State.BOTTOM,
-                new RunCommand(()-> intakeState = State.EXTENDED)
+                new PassiveToWallCommand(rotate, claw, pivot, horiz, vertical)
+                        .then(new RunCommand(()-> intakeState = State.EXTENDED))
         );
 
         //deposit bucket
@@ -121,45 +118,25 @@ public class AOfficialTeleOp extends BaseRobot {
         );
 
         //Claw
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.DPAD_LEFT),
-                new RunCommand(() -> rotate.rotateCW()));
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.DPAD_RIGHT),
-                new RunCommand(()-> rotate.rotateCCW()));
+        if(gamepadInterface1.isKeyDown(GamepadKey.DPAD_LEFT)) rotate.rotateCW();
+        if(gamepadInterface1.isKeyDown(GamepadKey.DPAD_RIGHT)) rotate.rotateCCW();
 
         //give sample to human player
-        new Trigger(gamepad1.square,
-                new DriveToHumanCommand(rotate, claw, pivot, horiz));
+        new Trigger(gamepad1.square, new DriveToHumanCommand(rotate, claw, pivot, horiz));
 
         //resetIMU
-        new Trigger(gamepad1.triangle,
-                new RunCommand(()-> drive.resetIMUAngle()));
+        if(gamepad1.triangle) drive.resetIMUAngle();
 
         //reset Slide Zero Pos
-        new Trigger(gamepad2.square,
-                new RunCommand(()-> vertical.resetZeroPosition()));
+        if(gamepad2.square) vertical.resetZeroPosition();
 
         //Reset encoders
-        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.DPAD_UP),
-                new RunCommand(() -> vertical.incrementSlide()));
-        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.DPAD_DOWN),
-                new RunCommand(()-> vertical.emergencyDecrementSlide()));
-
-        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.DPAD_LEFT),
-                new RunCommand(()-> vertical.endReset()));
+        if(gamepadInterface2.isKeyDown(GamepadKey.DPAD_UP)) vertical.incrementSlide();
+        if(gamepadInterface2.isKeyDown(GamepadKey.DPAD_DOWN)) vertical.emergencyDecrementSlide();
+        if(gamepadInterface2.isKeyDown(GamepadKey.DPAD_LEFT)) vertical.endReset();
 
         //EMERGENCY BLOCK IN BOT
-        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.A), new RunCommand(()->{ //CROSS
-            horiz.setState(HorizSubsystem.State.BLOCK_IN_BOT);
-            })
-                .then(new WaitCommand(0.5))
-                .then(new RunCommand(()-> {
-                    horiz.setState(HorizSubsystem.State.DRIVING);
-                })
-        ));
-
-        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.Y), new RunCommand(()->{ //TRIANGLE
-            drive.toggleIMU();
-        }));
-
+        if(gamepadInterface2.isKeyDown(GamepadKey.A)) new BlockInBotCommand(horiz); //CROSS?
+        if(gamepadInterface2.isKeyDown(GamepadKey.Y)) drive.toggleIMU(); //TRIANGLE
     }
 }
