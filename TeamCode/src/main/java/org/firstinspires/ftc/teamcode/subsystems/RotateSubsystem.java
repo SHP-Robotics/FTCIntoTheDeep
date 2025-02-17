@@ -58,9 +58,7 @@ public class RotateSubsystem extends Subsystem {
        // }
     }
     public void processState() {
-        if(this.state == State.INTAKE)
-            rotate.setPosition(rotatePos);
-        else if (this.state == State.NEUTRAL || this.state == State.DROPOFF)
+        if (this.state == State.NEUTRAL || this.state == State.DROPOFF)
             rotatePos = kNeutral;
         else if (this.state == State.PICKUP)
             rotatePos = kPickup;
@@ -69,6 +67,7 @@ public class RotateSubsystem extends Subsystem {
         else if (this.state == State.SAMPLE)
             rotatePos = 0.9; // 1;
 
+        rotate.setPosition(rotatePos);
     }
 
     @Override

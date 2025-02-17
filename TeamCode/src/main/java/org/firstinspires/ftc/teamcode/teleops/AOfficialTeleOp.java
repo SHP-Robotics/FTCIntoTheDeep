@@ -25,11 +25,11 @@ import org.firstinspires.ftc.teamcode.shplib.commands.Trigger;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
 @TeleOp(name = "A Official Teleop")
 public class AOfficialTeleOp extends BaseRobot {
     private double driveBias;
+    private boolean bucketExtended;
     GamepadInterface gamepadInterface1, gamepadInterface2;
 
     @Override
@@ -44,6 +44,7 @@ public class AOfficialTeleOp extends BaseRobot {
         gamepadInterface1 = new GamepadInterface(gamepad1);
         gamepadInterface2 = new GamepadInterface(gamepad2);
 //        vision.limelight.start();
+        bucketExtended = false;
     }
     @Override
     public void start(){
@@ -93,11 +94,14 @@ public class AOfficialTeleOp extends BaseRobot {
         )));
 
         //deposit bucket
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && vertical.getState() == VerticalSubsystem.State.BOTTOM,
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && !bucketExtended,
                 new DriveToBucketCommand(rotate, claw, pivot, horiz, vertical)
+                        .then(new RunCommand(()->bucketExtended = true))
         );
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && vertical.getState() != VerticalSubsystem.State.DEPOSITING,
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && bucketExtended,
                 new BucketToDriveCommand(rotate, claw, pivot, horiz, vertical)
+                        .then(new RunCommand(()->bucketExtended = false))
+
         );
 
         //Claw
