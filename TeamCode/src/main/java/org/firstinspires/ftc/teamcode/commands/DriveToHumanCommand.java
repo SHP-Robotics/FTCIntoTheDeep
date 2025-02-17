@@ -21,7 +21,7 @@ public class DriveToHumanCommand extends Command {
         this.claw = claw;
         this.pivot = pivot;
         this.horiz = horiz;
-        endTime = 0.75;
+        endTime = 1.25;
     }
 
 
@@ -37,12 +37,17 @@ public class DriveToHumanCommand extends Command {
     public void execute() {
         horiz.setState(HorizSubsystem.State.DRIVING);
         pivot.setState(PivotSubsystem.State.HUMAN);
+        if(Clock.hasElapsed(startTime, 0.75)){
+            claw.open();
+        }
     }
 
     // Called once after isFinished() returns true
     @Override
     public void end() {
-        claw.open();
+        claw.close();
+        horiz.setState(HorizSubsystem.State.DRIVING);
+        pivot.setState(PivotSubsystem.State.DRIVING);
     }
 
     // Specifies whether or not the command has finished

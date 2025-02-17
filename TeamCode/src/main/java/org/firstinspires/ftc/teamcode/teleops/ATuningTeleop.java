@@ -62,16 +62,16 @@ public class ATuningTeleop extends BaseRobot {
         }));
 
         new Trigger(gamepad1.circle, new RunCommand(() -> {
-            horizontal.incrementHorizSlide();
+            horiz.incrementHorizSlide();
         }));
         new Trigger(gamepad1.square, new RunCommand(() -> {
-            horizontal.decrementHorizSlide();
+            horiz.decrementHorizSlide();
         }));
         new Trigger(gamepad1.triangle, new RunCommand(() -> {
-            horizontal.incrementRail();
+            horiz.incrementRail();
         }));
         new Trigger(gamepad1.cross, new RunCommand(() -> {
-            horizontal.decrementRail();
+            horiz.decrementRail();
         }));
 
         new Trigger(gamepadInterface2.isKeyDown(GamepadKey.DPAD_LEFT), new RunCommand(() -> {

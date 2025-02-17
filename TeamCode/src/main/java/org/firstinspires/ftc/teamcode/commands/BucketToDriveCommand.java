@@ -24,7 +24,7 @@ public class BucketToDriveCommand extends Command {
         this.pivot = pivot;
         this.horiz = horiz;
         this.vertical = vertical;
-        endTime = 0.5;
+        endTime = 1;
     }
 
 
@@ -39,12 +39,17 @@ public class BucketToDriveCommand extends Command {
     @Override
     public void execute() {
         claw.open();
+
+        if(Clock.hasElapsed(startTime,0.5))
+            rotate.setState(RotateSubsystem.State.NEUTRAL);
     }
 
     // Called once after isFinished() returns true
     @Override
     public void end() {
-        rotate.setState(RotateSubsystem.State.NEUTRAL);
+        pivot.setState(PivotSubsystem.State.DRIVING);
+        vertical.setState(VerticalSubsystem.State.BOTTOM);
+        claw.close();
     }
 
     // Specifies whether or not the command has finished

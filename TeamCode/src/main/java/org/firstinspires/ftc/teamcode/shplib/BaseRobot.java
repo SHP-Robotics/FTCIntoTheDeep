@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 public class BaseRobot extends OpMode {
     // Declare subsystems and devices
     public DriveSubsystem drive;
-    public HorizSubsystem horizontal;
+    public HorizSubsystem horiz;
     public VerticalSubsystem vertical;
     public PivotSubsystem pivot;
     public RotateSubsystem rotate;
@@ -54,7 +54,7 @@ public class BaseRobot extends OpMode {
 
 //        vision = new VisionSubsystem(hardwareMap);
         claw = new ClawSubsystem(hardwareMap);
-        horizontal = new HorizSubsystem(hardwareMap);
+        horiz = new HorizSubsystem(hardwareMap);
     }
 
     // Called when you press the start button
