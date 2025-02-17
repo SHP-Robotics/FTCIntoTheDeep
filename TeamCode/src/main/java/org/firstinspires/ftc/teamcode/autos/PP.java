@@ -50,14 +50,14 @@ public class PP extends OpMode {
      * Lets assume our robot is 18 by 18 inches
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
-    private final Pose startPose = new Pose(7, 64);
-    private final Pose scorePose = new Pose(35, 72);
-    private final Pose pickup1Pose = new Pose(61.5, 23.8);
-    private final Pose push1Pose = new Pose(7, 24);
-    private final Pose pickup2Pose = new Pose(7, 16);
-    private final Pose pickup3Pose = new Pose(7, 9);
-    private final Pose subPose = new Pose(42, 67);
-    private final Pose pickupPose = new Pose(7, 32);
+    private final Pose startPose = new Pose(7, 64, Math.toRadians(90));
+    private final Pose scorePose = new Pose(35, 72, Math.toRadians(90));
+    private final Pose pickup1Pose = new Pose(61.5, 23.8, Math.toRadians(90));
+    private final Pose push1Pose = new Pose(7, 24, Math.toRadians(90));
+    private final Pose pickup2Pose = new Pose(7, 16, Math.toRadians(90));
+    private final Pose pickup3Pose = new Pose(7, 9, Math.toRadians(90));
+    private final Pose subPose = new Pose(42, 67, Math.toRadians(90));
+    private final Pose pickupPose = new Pose(7, 32, Math.toRadians(90));
 
     private static Path scorePreload, pickup1, pickupToPush1, pickup2, pickup3, sub, grab;
 
@@ -69,8 +69,8 @@ public class PP extends OpMode {
 
         pickup1 = new Path(new BezierCurve(
                         new Point(scorePose),
-                        new Point(new Pose(10, 8)),
-                        new Point(new Pose(75, 58)),
+                        new Point(new Pose(10, 8, Math.toRadians(90))),
+                        new Point(new Pose(75, 58, Math.toRadians(90))),
                         new Point(pickup1Pose)));
         pickup1.setLinearHeadingInterpolation(scorePose.getHeading(), pickup1Pose.getHeading());
 
@@ -79,17 +79,17 @@ public class PP extends OpMode {
 
         pickup2 = new Path(new BezierCurve(
                 new Point(push1Pose),
-                new Point(new Pose(63, 40.5)),
-                new Point(new Pose(78, 16)),
-                new Point(new Pose(62, 6)),
+                new Point(new Pose(63, 40.5, Math.toRadians(90))),
+                new Point(new Pose(78, 16, Math.toRadians(90))),
+                new Point(new Pose(62, 6, Math.toRadians(90))),
                 new Point(pickup2Pose)
         ));
         pickup2.setLinearHeadingInterpolation(push1Pose.getHeading(), pickup2Pose.getHeading());
 
         pickup3 = new Path(new BezierCurve(
                 new Point(pickup2Pose),
-                new Point(new Pose(76.5, 32.5)),
-                new Point(new Pose(77.5, 0.4)),
+                new Point(new Pose(76.5, 32.5, Math.toRadians(90))),
+                new Point(new Pose(77.5, 0.4, Math.toRadians(90))),
                 new Point(pickup3Pose)
         ));
         pickup3.setLinearHeadingInterpolation(pickup2Pose.getHeading(), pickup3Pose.getHeading());
