@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
 import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.OFF;
-import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.PINK;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PICKUP;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPARE_INTAKE;
 
@@ -13,16 +12,13 @@ import org.firstinspires.ftc.teamcode.commands.BlockInBotCommand;
 import org.firstinspires.ftc.teamcode.commands.BucketToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToBucketCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToHumanCommand;
-import org.firstinspires.ftc.teamcode.commands.DriveToPassiveCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToSubCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToWallCommand;
-import org.firstinspires.ftc.teamcode.commands.PassiveToWallCommand;
 import org.firstinspires.ftc.teamcode.commands.SubToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.WallToDriveCommand;
 import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
 import org.firstinspires.ftc.teamcode.shplib.commands.RunCommand;
 import org.firstinspires.ftc.teamcode.shplib.commands.Trigger;
-import org.firstinspires.ftc.teamcode.shplib.commands.WaitCommand;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
