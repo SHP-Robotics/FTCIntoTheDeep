@@ -29,14 +29,11 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 @TeleOp(name = "A Official Teleop")
 public class AOfficialTeleOp extends BaseRobot {
     private double driveBias;
-    private boolean LTTrigger, crossTrigger;
-
     GamepadInterface gamepadInterface1, gamepadInterface2;
 
     public enum State {
         EXTENDED,
         COMPLETE
-
     }
     private State cageState;
     private State intakeState;
@@ -49,17 +46,13 @@ public class AOfficialTeleOp extends BaseRobot {
                         () -> drive.mecanum(-driveBias*gamepad1.left_stick_y, driveBias*gamepad1.left_stick_x, driveBias*gamepad1.right_stick_x)
                 )
         );
-        LTTrigger = true;
-        crossTrigger = true;
 
         cageState = State.COMPLETE;
         intakeState = State.COMPLETE;
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
         gamepadInterface2 = new GamepadInterface(gamepad2);
-
 //        vision.limelight.start();
-
     }
     @Override
     public void start(){
@@ -155,83 +148,45 @@ public class AOfficialTeleOp extends BaseRobot {
         //deposit specimen
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && vertical.getState() == VerticalSubsystem.State.BOTTOM,
                 new DriveToPassiveCommand(rotate, claw, pivot, horiz, vertical)
-                .then(new RunCommand(()-> LTTrigger = false))
         );
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && vertical.getState() != VerticalSubsystem.State.BOTTOM,
-                new RunCommand(()->{
-                   claw.open();
-                   horiz.setState(HorizSubsystem.State.DRIVING);
-                   pivot.setState(PivotSubsystem.State.FINISHPASSIVE);
-                   LTTrigger = true;
-                })
-                        .then(new WaitCommand(0.5))
-                        .then(new RunCommand(()->{
-                            vertical.setState(VerticalSubsystem.State.BOTTOM);
-                        }))
-                        .then(new WaitCommand(0.5))
-                        .then(new RunCommand(()->{
-                            claw.close();
-                            pivot.setState(PivotSubsystem.State.DRIVING);
-                            intakeState = State.EXTENDED;
-                        }))
-                        .then(new DriveToWallCommand(rotate, claw, pivot, horiz))
+                new RunCommand(()-> intakeState = State.EXTENDED)
         );
 
         //deposit bucket
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && crossTrigger,
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && vertical.getState() == VerticalSubsystem.State.BOTTOM,
                 new DriveToBucketCommand(rotate, claw, pivot, horiz, vertical)
-                .then(new RunCommand(()-> crossTrigger = false))
-
         );
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && !crossTrigger,
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && vertical.getState() != VerticalSubsystem.State.DEPOSITING,
                 new BucketToDriveCommand(rotate, claw, pivot, horiz, vertical)
-                        .then(new RunCommand(()-> crossTrigger = true))
-
-//                        .then(new WaitCommand(0.5))
-//                        .then(new RunCommand(()->{
-//                            pivot.setState(PivotSubsystem.State.DRIVING);
-//                            vertical.setState(VerticalSubsystem.State.BOTTOM);
-//                            claw.close();
-//                        }))
         );
 
         //Claw
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.DPAD_LEFT), new RunCommand(() -> {
-                rotate.rotateCW();
-        }));
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.DPAD_RIGHT), new RunCommand(()->{
-                rotate.rotateCCW();
-        }));
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.DPAD_LEFT),
+                new RunCommand(() -> rotate.rotateCW()));
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.DPAD_RIGHT),
+                new RunCommand(()-> rotate.rotateCCW()));
 
         //give sample to human player
         new Trigger(gamepad1.square,
                 new DriveToHumanCommand(rotate, claw, pivot, horiz));
-//                .then(new WaitCommand(0.5))
-//                .then(new HumanToDriveCommand(rotate, claw, pivot, horizontal)));
-
 
         //resetIMU
-        new Trigger(gamepad1.triangle, new RunCommand(()->{
-            drive.resetIMUAngle();
-        }));
-
+        new Trigger(gamepad1.triangle,
+                new RunCommand(()-> drive.resetIMUAngle()));
 
         //reset Slide Zero Pos
-        new Trigger(gamepad2.square, new RunCommand(()->{
-            vertical.resetZeroPosition();
-        }));
+        new Trigger(gamepad2.square,
+                new RunCommand(()-> vertical.resetZeroPosition()));
 
         //Reset encoders
-        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.DPAD_UP), new RunCommand(() -> {
-            vertical.incrementSlide();
-        }));
-        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.DPAD_DOWN), new RunCommand(()->{
-            vertical.emergencyDecrementSlide();
-        }));
+        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.DPAD_UP),
+                new RunCommand(() -> vertical.incrementSlide()));
+        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.DPAD_DOWN),
+                new RunCommand(()-> vertical.emergencyDecrementSlide()));
 
-        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.DPAD_LEFT), new RunCommand(()->{
-            vertical.endReset();
-        }));
+        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.DPAD_LEFT),
+                new RunCommand(()-> vertical.endReset()));
 
         //EMERGENCY BLOCK IN BOT
         new Trigger(gamepadInterface2.isKeyDown(GamepadKey.A), new RunCommand(()->{ //CROSS
