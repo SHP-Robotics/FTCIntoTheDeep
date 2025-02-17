@@ -20,6 +20,7 @@ public class ClawSubsystem extends Subsystem {
     private final CachingServo ledLight;
     private final DigitalChannel breakBeam;
     boolean blockInClaw;
+
     public enum ColorState {
         OFF(0.0),
         RED(0.279),
@@ -31,6 +32,7 @@ public class ClawSubsystem extends Subsystem {
             this.color = color;
         }
     }
+
     private ColorState colorState;
 
     public enum State {
@@ -38,10 +40,10 @@ public class ClawSubsystem extends Subsystem {
         CLOSE,
         MANUAL;
     }
+
     private State state;
 
-
-    public ClawSubsystem(HardwareMap hardwareMap){
+    public ClawSubsystem(HardwareMap hardwareMap) {
         claw = new CachingServo((Servo) hardwareMap.get(kClawName));
         ledLight = new CachingServo((Servo) hardwareMap.get(kLedName));
         setColor(ColorState.OFF);
@@ -51,11 +53,11 @@ public class ClawSubsystem extends Subsystem {
         setState(State.CLOSE);
     }
 
-    public boolean isBlockInClaw(){
+    public boolean isBlockInClaw() {
         return blockInClaw;
     }
 
-    public void setColor(ColorState color){
+    public void setColor(ColorState color) {
         colorState = color;
     }
 
@@ -66,62 +68,56 @@ public class ClawSubsystem extends Subsystem {
     public State getState() {
         return state;
     }
-    public void increment(){
+
+    public void increment() {
         state = State.MANUAL;
         claw.setPosition(claw.getPosition() + 0.01);
     }
-    public void decrement(){
+
+    public void decrement() {
         state = State.MANUAL;
         claw.setPosition(claw.getPosition() - 0.01);
     }
 
-    public void open(){
+    public void open() {
         state = State.OPEN;
         claw.setPosition(kOpen);
     }
-    public void close(){
+
+    public void close() {
         state = State.CLOSE;
         claw.setPosition(kClose);
     }
 
 
-    private void processState(State state) {
-        if (this.state == State.CLOSE) {
+    private void processState() {
+        if (this.state == State.CLOSE)
             claw.setPosition(kClose);
-        }
-        else if (this.state == OPEN){
+        else if (this.state == OPEN)
             claw.setPosition(kOpen);
-        }
 
         updateBreakBeam();
 
-        if(colorState == ColorState.OFF){
+        if(colorState == ColorState.OFF)
             ledLight.setPosition(ColorState.OFF.color);
-        }
-        else if(colorState == ColorState.RED){
+        else if(colorState == ColorState.RED)
             ledLight.setPosition(colorState.color);
-        }
-        else if(colorState == ColorState.PINK){
+        else if(colorState == ColorState.PINK)
             ledLight.setPosition(ColorState.PINK.color);
-        }
-        else if(colorState == ColorState.GREEN){
+        else if(colorState == ColorState.GREEN)
             ledLight.setPosition(ColorState.GREEN.color);
-        }
     }
 
     private void updateBreakBeam(){
-        if(state == State.CLOSE && !breakBeam.getState()) //true is not broken/nothing in, false is broken
-            blockInClaw = true;
-        else
-            blockInClaw = false;
+        //true is not broken/nothing in, false is broken
+        blockInClaw = state == State.CLOSE && !breakBeam.getState();
     }
+
     @Override
     public void periodic(Telemetry telemetry) {
-        processState(state);
+        processState();
+
         telemetry.addData("Break Beam: ", breakBeam.getState());
         telemetry.addData("Claw State: ", state);
-        telemetry.addData("Claw Position: ", claw.getPosition());
     }
-
-
 }

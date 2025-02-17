@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.autos;
 
-import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WALLPICKUPAUTO;
+import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WALL_PICKUP_AUTO;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -596,8 +596,8 @@ public class FourSpecimen extends LinearOpMode {
         claw = new ClawSubsystem(hardwareMap);
 
         claw.close();
-        pivot.processState(PivotSubsystem.State.DRIVING);
-        rotate.processState(RotateSubsystem.State.NEUTRAL);
+        pivot.processState();
+        rotate.processState();
 
         //TODO THIS IS THE START
 
@@ -819,7 +819,7 @@ public class FourSpecimen extends LinearOpMode {
     /** Grabs specimen and returns to driving mode */
     public void finishIntake(){
         updateCommands(0.55);
-        horizontal.setState(WALLPICKUPAUTO);
+        horizontal.setState(WALL_PICKUP_AUTO);
         updateCommands(0.05);
 
         claw.close();
@@ -841,7 +841,7 @@ public class FourSpecimen extends LinearOpMode {
     }
     /** Raises the Vertical */
     public void raiseArm(){
-        vertical.setDepositState(VerticalSubsystem.State.HIGHBAR);
+        vertical.setDepositState(VerticalSubsystem.State.HIGH_BAR);
         vertical.setState(VerticalSubsystem.State.DEPOSITING);
         updateCommands(0.25);
     }

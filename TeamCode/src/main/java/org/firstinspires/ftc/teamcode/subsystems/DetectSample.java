@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 @Config
 public class DetectSample extends OpenCvPipeline {
-    ArrayList<double[]> frameList;
+    // todo: tune values in FTC Dashboard
     public static double lowH = 30;
     public static double highH = 70;
     public static double lowS = 0;
@@ -29,11 +29,7 @@ public class DetectSample extends OpenCvPipeline {
 
     Telemetry telemetry;
 
-    public DetectSample() {
-        frameList = new ArrayList<>();
-    }
-
-    public void configure(Telemetry telemetry) {
+    public DetectSample(Telemetry telemetry) {
         this.telemetry = telemetry;
     }
 
@@ -41,6 +37,7 @@ public class DetectSample extends OpenCvPipeline {
     public Mat processFrame(Mat input){
         Mat mat = ComputerVision.convertColor(input, Imgproc.COLOR_RGB2HSV);
         Mat scaledThresh = ComputerVision.filterColor(mat, new Scalar(lowH, lowS, lowV), new Scalar(highH, highS, highV));
+        // todo: 1x1 size does not do any blurring, scale up as needed during tuning
         Mat blurred = ComputerVision.blur(scaledThresh, new Size(1, 1)); //TODO ENP THIS IS A CNN
 
         ArrayList<MatOfPoint> contours = new ArrayList<>();
@@ -50,27 +47,28 @@ public class DetectSample extends OpenCvPipeline {
             Point[] points = contour.toArray();
             MatOfPoint2f contour2f = new MatOfPoint2f(points);
             RotatedRect rotatedRect = Imgproc.minAreaRect(contour2f);
+
             if (rotatedRect.size.height < 100 || rotatedRect.size.width < 100)
                 continue;
+
+            // todo: delete telemetry after tuning
             telemetry.addLine("h" + rotatedRect.size.height + " w" + rotatedRect.size.width);
-            drawRotatedRect(rotatedRect, input, new Scalar(255, 0, 0), 3);
+            drawRotatedRect(rotatedRect, input, new Scalar(255, 0, 0));
             contour2f.release();
         }
 
+        // todo: only works on a single block, run function on individual contours in the for loop
         Pose2D position = ComputerVision.getPose(blurred);
 
+        // todo: check if values correspond with image; move into while loop; delete after tuning
         telemetry.addData("X", position.getX());
         telemetry.addData("Y", position.getY());
         telemetry.addData("Theta", position.getHeadingRadians());
         telemetry.update();
 
-        if (frameList.size() > 5) {
-            frameList.remove(0);
-        }
+        // RELEASE EVERYTHING
 
-        //RELEASE EVERYTHING
-
-//        input.release();
+//      input.release();
         mat.release();
         scaledThresh.release();
         blurred.release();
@@ -83,16 +81,7 @@ public class DetectSample extends OpenCvPipeline {
         rect.points(points);
 
         for (int i = 0; i < 4; i++) {
-            Imgproc.line(mat, points[i], points[(i + 1) % 4], color, 2);
-        }
-    }
-
-    static void drawRotatedRect(RotatedRect rect, Mat mat, Scalar color, int thickness) {
-        Point[] points = new Point[4];
-        rect.points(points);
-
-        for (int i = 0; i < 4; i++) {
-            Imgproc.line(mat, points[i], points[(i + 1) % 4], color, thickness);
+            Imgproc.line(mat, points[i], points[(i + 1) % 4], color, 3);
         }
     }
 }

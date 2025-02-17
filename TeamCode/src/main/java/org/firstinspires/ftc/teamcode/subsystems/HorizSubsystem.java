@@ -13,18 +13,20 @@ import org.firstinspires.ftc.teamcode.shplib.commands.Subsystem;
 import dev.frozenmilk.dairy.cachinghardware.CachingServo;
 
 public class HorizSubsystem extends Subsystem {
+    // todo: consider renaming Horiz to horizontal in all files, OR don't if you don't want to
+    // it is pretty inconsistent between and within subsystems
     private final CachingServo lHoriz;
     private final CachingServo rHoriz;
     private final CachingServo rail;
 
     public enum State {
-        INTAKEWALL(0.75, 0),
-        SPECIMENDEPOSIT(0.75, 0),
-        WALLPICKUPAUTO(0.75,0),
+        INTAKE_WALL(0.75, 0),
+        SPECIMEN_DEPOSIT(0.75, 0),
+        WALL_PICKUP_AUTO(0.75,0),
         DRIVING(0, 0), //1, 0.725 is all in
-        BLOCKINBOT(0,0.5),
-        INTAKINGEXTENDED(1,1), // 0.55 rail max out, 0 slide max out
-        PREPAUTOINTAKE(0.5,0),
+        BLOCK_IN_BOT(0,0.5),
+        INTAKING_EXTENDED(1,1), // 0.55 rail max out, 0 slide max out
+        PREP_AUTO_INTAKE(0.5,0),
         PARK(0.725,0),
         PASSIVE(0,0.6),
         MANUAL(0.7,0);
@@ -71,41 +73,42 @@ public class HorizSubsystem extends Subsystem {
         return state;
     }
 
-    public void incrementHorizSlide(){
+    public void incrementHorizSlide() {
         if(manualHorizPos < 1.0) {
             state = State.MANUAL;
             manualHorizPos = lHoriz.getPosition() + 0.01;
         }
     }
 
-    public void decrementHorizSlide(){
+    public void decrementHorizSlide() {
         if(manualHorizPos > 0.0) {
             state = State.MANUAL;
             manualHorizPos = lHoriz.getPosition() - 0.01;
         }
     }
-    public void incrementRail(){
+
+    public void incrementRail() {
         if(manualRailPos < 1.0) {
             state = State.MANUAL;
             manualRailPos = rail.getPosition() + 0.01;
         }
     }
 
-    public void decrementRail(){
+    public void decrementRail() {
         if(manualRailPos > 0.0) {
             state = State.MANUAL;
             manualRailPos = rail.getPosition() - 0.01;
         }
     }
 
-    public void setPos(double pos){
+    public void setPos(double pos) {
         state = State.MANUAL;
         manualHorizPos = 0.65 *(1-pos);
         manualRailPos = rail.getPosition();
 
     }
 
-    public void setTriggerPos(double trigger){
+    public void setTriggerPos(double trigger) {
         state = State.MANUAL;
         if(trigger < 0.15){
             manualHorizPos = 0.0;
@@ -118,17 +121,16 @@ public class HorizSubsystem extends Subsystem {
     }
 
 
-    private void setHorizPosition(double position){
+    private void setHorizPosition(double position) {
         lHoriz.setPosition(position);
         rHoriz.setPosition(position);
     }
 
-    private void processState(State state) {
+    private void processState() {
         if (this.state != State.MANUAL) {
             setHorizPosition(this.state.slidePos);
             rail.setPosition(this.state.railPos);
-        }
-        else {
+        } else {
             lHoriz.setPosition(manualHorizPos);
             rHoriz.setPosition(manualHorizPos);
             rail.setPosition(manualRailPos);
@@ -137,12 +139,8 @@ public class HorizSubsystem extends Subsystem {
 
     @Override
     public void periodic(Telemetry telemetry) {
-        processState(state);
+        processState();
 
         telemetry.addData("Horiz State: ", state);
-        telemetry.addData("Left Horiz Position: ", lHoriz.getPosition());
-        telemetry.addData("Right Horiz Position: ", rHoriz.getPosition());
-        telemetry.addData("Rail Pos: ", rail.getPosition());
-
     }
 }

@@ -24,12 +24,11 @@ public class DriveSubsystem extends Subsystem {
     }
 
     public void toggleIMU(){
-        if(!IMU) {
+        if (!IMU) {
             teleOpController.useIMU();
             teleOpController.resetIMU();
             IMU = true;
-        }
-        else {
+        } else {
             teleOpController.useTrackerIMU(tracker);
             IMU = false;
         }
@@ -43,6 +42,7 @@ public class DriveSubsystem extends Subsystem {
     public void mecanum(double forward, double strafe, double rotate) {
         teleOpController.driveFieldCentric(forward, strafe, rotate);
     }
+
     public void resetIMUAngle() {
 //        teleOpController.resetIMU();
         tracker.reset();

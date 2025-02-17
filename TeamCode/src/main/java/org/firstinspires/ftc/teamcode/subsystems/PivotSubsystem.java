@@ -18,6 +18,7 @@ public class PivotSubsystem extends Subsystem {
     private final CachingServo rElbow;
 
     public enum State {
+        // todo: delete unused states
 //        TRANSITION(0.6,0.3), //Rename to some TRANSITION STATE
         DRIVING(0.0, 0.3), //0 is down TODO 0.325->0.3
         PREPAREDRIVING(0, 0.2), //0 is down
@@ -53,7 +54,7 @@ public class PivotSubsystem extends Subsystem {
     private State state;
     private double manualWristPos, manualElbowPos;
 
-    public PivotSubsystem(HardwareMap hardwareMap){
+    public PivotSubsystem(HardwareMap hardwareMap) {
         wrist = new CachingServo((Servo) hardwareMap.get(kWristName));
         lElbow = new CachingServo((Servo) hardwareMap.get(klElbowName));
         lElbow.setDirection(Servo.Direction.REVERSE);
@@ -71,40 +72,44 @@ public class PivotSubsystem extends Subsystem {
         return state;
     }
 
-    public void setWristPos(double pos){
+    public void setWristPos(double pos) {
         wrist.setPosition(pos);
     }
-    public void setElbowPos(double pos){
+
+    public void setElbowPos(double pos) {
         lElbow.setPosition(pos);
         rElbow.setPosition(pos);
     }
-    public void incrementElbowUp(){
+
+    public void incrementElbowUp() {
         if(lElbow.getPosition() < 0.83) {
             state = State.MANUAL;
             manualElbowPos = lElbow.getPosition() + 0.01;
         }
     }
-    public void decrementElbowDown(){
+
+    public void decrementElbowDown() {
         if(lElbow.getPosition() > 0.0) {
             state = State.MANUAL;
             manualElbowPos = lElbow.getPosition() - 0.01;
         }
     }
-    public void incrementWristUp(){
+
+    public void incrementWristUp() {
         if(wrist.getPosition() < 1.0) {
             state = State.MANUAL;
             manualWristPos = wrist.getPosition() + 0.01;
         }
     }
-    public void decrementWristDown(){
+
+    public void decrementWristDown() {
         if(wrist.getPosition() > 0.0) {
             state = State.MANUAL;
             manualWristPos = wrist.getPosition() - 0.01;
-
         }
     }
 
-    public void processState(State state) {
+    public void processState() {
         if (this.state != State.MANUAL) {
             setElbowPos(this.state.elbowPos);
             setWristPos(this.state.wristPos);
@@ -114,18 +119,11 @@ public class PivotSubsystem extends Subsystem {
             setWristPos(manualWristPos);
         }
     }
+
     @Override
     public void periodic(Telemetry telemetry) {
-        processState(state);
+        processState();
 
         telemetry.addData("Pivot State: ", state);
-        telemetry.addData("Left Elbow Position: ", lElbow.getPosition());
-        telemetry.addData("Right Elbow Position: ", lElbow.getPosition());
-        telemetry.addData("Wrist: ", wrist.getPosition());
-
-//        telemetry.addData("Left Slide Velocity: ", leftSlide.getVelocity());
-//        telemetry.addData("Right Slide Velocity: ", rightSlide.getVelocity());
     }
-
-
 }

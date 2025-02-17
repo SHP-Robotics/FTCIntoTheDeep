@@ -12,6 +12,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.List;
 
 public class VisionSubsystem {
+    // todo: determine if
+    // 1. using (limelight camera)        ComputerVision and DetectSample OR
+    // 2. using (limelight CV compatible) Vision Subsystem
+
+
     private final Limelight3A camera;
     public long staleness = 0;
     private final SampleColor detectionColor;

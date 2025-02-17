@@ -13,16 +13,18 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 @TeleOp
 public class ComputerVision extends LinearOpMode {
     public void runOpMode() {
-        DetectSample detectSample = new DetectSample();
-        detectSample.configure(telemetry);
+        DetectSample detectSample = new DetectSample(telemetry);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        // todo: get limelight device name in configuration
         OpenCvCamera camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        // todo: tune pipeline
         camera.setPipeline(detectSample);
 
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
+                // todo: get limelight resolution and camera orientation
                 camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
             }
 

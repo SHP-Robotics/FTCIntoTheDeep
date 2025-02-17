@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.autos;
 
-import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WALLPICKUPAUTO;
+import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WALL_PICKUP_AUTO;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -562,8 +562,8 @@ public class TestAuto extends LinearOpMode {
         claw = new ClawSubsystem(hardwareMap);
 
         claw.close();
-        pivot.processState(PivotSubsystem.State.DRIVING);
-        rotate.processState(RotateSubsystem.State.NEUTRAL);
+        pivot.processState();
+        rotate.processState();
 
         //TODO THIS IS THE START
 
@@ -806,7 +806,7 @@ public class TestAuto extends LinearOpMode {
     /** Grabs specimen and returns to driving mode */
     public void finishIntake(){
         updateCommands(0.55);
-        horizontal.setState(WALLPICKUPAUTO);
+        horizontal.setState(WALL_PICKUP_AUTO);
         updateCommands(0.05);
 
         claw.close();
@@ -828,7 +828,7 @@ public class TestAuto extends LinearOpMode {
     }
     /** Raises the Vertical */
     public void raiseArm(){
-        vertical.setDepositState(VerticalSubsystem.State.AUTOHIGHBAR);
+        vertical.setDepositState(VerticalSubsystem.State.AUTO_HIGH_BAR);
         vertical.setState(VerticalSubsystem.State.DEPOSITING);
         updateCommands(0.25);
     }
@@ -851,12 +851,12 @@ public class TestAuto extends LinearOpMode {
     /** Prepares the intake sample */
     public void prepNewIntake(){
         //prep intake
-        horizontal.setState(HorizSubsystem.State.PREPAUTOINTAKE);
+        horizontal.setState(HorizSubsystem.State.PREP_AUTO_INTAKE);
         pivot.setState(PivotSubsystem.State.PREPAREINTAKE);
         rotate.setState(RotateSubsystem.State.INTAKE);
         updateCommands(0.25);
         claw.open();
-        horizontal.setState(HorizSubsystem.State.INTAKINGEXTENDED);
+        horizontal.setState(HorizSubsystem.State.INTAKING_EXTENDED);
         updateCommands(1);
     }
 

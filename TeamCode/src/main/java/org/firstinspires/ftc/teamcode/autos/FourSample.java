@@ -257,7 +257,7 @@ public class FourSample extends LinearOpMode {
         claw = new ClawSubsystem(hardwareMap);
 
         claw.close();
-        pivot.processState(PivotSubsystem.State.DRIVING);
+        pivot.processState();
 
         //TODO THIS IS THE START
 
@@ -361,22 +361,22 @@ public class FourSample extends LinearOpMode {
     /** Prepares the intake sample */
     public void prepIntake(){
         //prep intake
-        horizontal.setState(HorizSubsystem.State.PREPAUTOINTAKE);
+        horizontal.setState(HorizSubsystem.State.PREP_AUTO_INTAKE);
         pivot.setState(PivotSubsystem.State.PREPAREINTAKE);
         rotate.setState(RotateSubsystem.State.INTAKE);
         updateCommands(0.25);
         claw.open();
-        horizontal.setState(HorizSubsystem.State.INTAKINGEXTENDED);
+        horizontal.setState(HorizSubsystem.State.INTAKING_EXTENDED);
         updateCommands();
     }
     public void prepBlock2Intake(){
         //prep intake
-        horizontal.setState(HorizSubsystem.State.PREPAUTOINTAKE);
+        horizontal.setState(HorizSubsystem.State.PREP_AUTO_INTAKE);
         pivot.setState(PivotSubsystem.State.PREPAREINTAKEHIGHER);
         rotate.setState(RotateSubsystem.State.INTAKE);
         updateCommands(0.25);
         claw.open();
-        horizontal.setState(HorizSubsystem.State.INTAKINGEXTENDED);
+        horizontal.setState(HorizSubsystem.State.INTAKING_EXTENDED);
         updateCommands();
     }
     /** Prepares the intake sample */
@@ -425,7 +425,7 @@ public class FourSample extends LinearOpMode {
     /** Raises the Vertical */
     public void raiseArm(){
         claw.setColor(ClawSubsystem.ColorState.OFF);
-        vertical.setDepositState(VerticalSubsystem.State.HIGHBUCKET);
+        vertical.setDepositState(VerticalSubsystem.State.HIGH_BUCKET);
         vertical.setState(VerticalSubsystem.State.DEPOSITING);
         updateCommands();
 
@@ -433,7 +433,7 @@ public class FourSample extends LinearOpMode {
         updateCommands(1);
         pivot.setState(PivotSubsystem.State.OUTTAKEBUCKET);
         updateCommands(0.5);
-        rotate.setState(RotateSubsystem.State.DROPOFFBUCKET);
+        rotate.setState(RotateSubsystem.State.DROPOFF_BUCKET);
         updateCommands(0.25); // 0.5 -> 0.25
     }
 

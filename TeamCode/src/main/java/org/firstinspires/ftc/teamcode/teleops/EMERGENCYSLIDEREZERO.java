@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.devices.GamepadInterface;
 import com.shprobotics.pestocore.devices.GamepadKey;
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
 import org.firstinspires.ftc.teamcode.shplib.commands.RunCommand;
 import org.firstinspires.ftc.teamcode.shplib.commands.Trigger;
 
+@Disabled
 @TeleOp
 public class EMERGENCYSLIDEREZERO extends BaseRobot {
     private double driveBias;

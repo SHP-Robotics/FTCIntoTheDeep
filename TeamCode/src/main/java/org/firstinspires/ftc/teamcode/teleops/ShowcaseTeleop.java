@@ -8,16 +8,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.devices.GamepadInterface;
 import com.shprobotics.pestocore.devices.GamepadKey;
 
-import org.firstinspires.ftc.teamcode.commands.BuckettoDriveCommand;
-import org.firstinspires.ftc.teamcode.commands.DrivetoBucketCommand;
-import org.firstinspires.ftc.teamcode.commands.DrivetoHumanCommand;
-import org.firstinspires.ftc.teamcode.commands.DrivetoSpecimenCommand;
-import org.firstinspires.ftc.teamcode.commands.DrivetoSubCommand;
-import org.firstinspires.ftc.teamcode.commands.DrivetoWallCommand;
-import org.firstinspires.ftc.teamcode.commands.HumantoDriveCommand;
-import org.firstinspires.ftc.teamcode.commands.SpecimentoDriveCommand;
-import org.firstinspires.ftc.teamcode.commands.SubtoDriveCommand;
-import org.firstinspires.ftc.teamcode.commands.WalltoDriveCommand;
+import org.firstinspires.ftc.teamcode.commands.BucketToDriveCommand;
+import org.firstinspires.ftc.teamcode.commands.DriveToBucketCommand;
+import org.firstinspires.ftc.teamcode.commands.DriveToHumanCommand;
+import org.firstinspires.ftc.teamcode.commands.DriveToSpecimenCommand;
+import org.firstinspires.ftc.teamcode.commands.DriveToSubCommand;
+import org.firstinspires.ftc.teamcode.commands.DriveToWallCommand;
+import org.firstinspires.ftc.teamcode.commands.HumanToDriveCommand;
+import org.firstinspires.ftc.teamcode.commands.SpecimenToDriveCommand;
+import org.firstinspires.ftc.teamcode.commands.SubToDriveCommand;
+import org.firstinspires.ftc.teamcode.commands.WallToDriveCommand;
 import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
 import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.commands.RunCommand;
@@ -81,20 +81,20 @@ public class ShowcaseTeleop extends BaseRobot {
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER), new RunCommand(() -> {
             if (cageState == State.COMPLETE) {
                 CommandScheduler.getInstance().scheduleCommand(
-                        new DrivetoSubCommand(rotate, claw, pivot, horizontal)
+                        new DriveToSubCommand(rotate, claw, pivot, horizontal)
                 );
                 cageState = State.EXTENDED;
                 claw.setColor(PINK);
             }
             else if (cageState == State.EXTENDED) {
                 CommandScheduler.getInstance().scheduleCommand(
-                        new SubtoDriveCommand(rotate, claw, pivot, horizontal)
+                        new SubToDriveCommand(rotate, claw, pivot, horizontal)
                                 .then(new WaitCommand(0.25))
                                 .then(new RunCommand(()->{
                                     if (!claw.isBlockInClaw()) {
                                         gamepad1.rumble(500);
                                         CommandScheduler.getInstance().scheduleCommand(
-                                                new DrivetoSubCommand(rotate, claw, pivot, horizontal)
+                                                new DriveToSubCommand(rotate, claw, pivot, horizontal)
                                         );
                                         andrewWompWomp++;
                                     }
@@ -159,20 +159,20 @@ public class ShowcaseTeleop extends BaseRobot {
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER), new RunCommand(() -> {
             if (intakeState == State.COMPLETE) {
                 CommandScheduler.getInstance().scheduleCommand(
-                        new DrivetoWallCommand(rotate, claw, pivot, horizontal)
+                        new DriveToWallCommand(rotate, claw, pivot, horizontal)
                 );
                 intakeState = State.EXTENDED;
                 claw.setColor(PINK);
             }
             else if (intakeState == State.EXTENDED) {
                 CommandScheduler.getInstance().scheduleCommand(
-                        new WalltoDriveCommand(rotate, claw, pivot, horizontal)
+                        new WallToDriveCommand(rotate, claw, pivot, horizontal)
                                 .then(new WaitCommand(0.25))
                                 .then(new RunCommand(()->{
                                     if (!claw.isBlockInClaw()) {
                                         gamepad1.rumble(500);
                                         CommandScheduler.getInstance().scheduleCommand(
-                                                new DrivetoWallCommand(rotate, claw, pivot, horizontal)
+                                                new DriveToWallCommand(rotate, claw, pivot, horizontal)
                                         );
                                         andrewWompWomp++;
                                     }
@@ -198,13 +198,13 @@ public class ShowcaseTeleop extends BaseRobot {
 
         //deposit specimen
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && LTTrigger,
-                new DrivetoSpecimenCommand(rotate, claw, pivot, horizontal, vertical)
+                new DriveToSpecimenCommand(rotate, claw, pivot, horizontal, vertical)
                         .then(new RunCommand(()->{
                             LTTrigger = false;
                         }))
         );
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && !LTTrigger,
-                new SpecimentoDriveCommand(rotate, claw, pivot, horizontal, vertical)
+                new SpecimenToDriveCommand(rotate, claw, pivot, horizontal, vertical)
                         .then(new RunCommand(()->{
                             LTTrigger = true;
                         }))
@@ -222,14 +222,14 @@ public class ShowcaseTeleop extends BaseRobot {
 
         //deposit bucket
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && crossTrigger,
-                new DrivetoBucketCommand(rotate, claw, pivot, horizontal, vertical)
+                new DriveToBucketCommand(rotate, claw, pivot, horizontal, vertical)
                         .then(new RunCommand(()->{
                             crossTrigger = false;
                         }))
 
         );
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && !crossTrigger,
-                new BuckettoDriveCommand(rotate, claw, pivot, horizontal, vertical)
+                new BucketToDriveCommand(rotate, claw, pivot, horizontal, vertical)
                         .then(new RunCommand(()->{
                             crossTrigger = true;
                         }))
@@ -250,9 +250,9 @@ public class ShowcaseTeleop extends BaseRobot {
         }));
 
         //give sample to human player
-        new Trigger(gamepad1.square, new DrivetoHumanCommand(rotate, claw, pivot, horizontal)
+        new Trigger(gamepad1.square, new DriveToHumanCommand(rotate, claw, pivot, horizontal)
                 .then(new WaitCommand(0.75))
-                .then(new HumantoDriveCommand(rotate, claw, pivot, horizontal)));
+                .then(new HumanToDriveCommand(rotate, claw, pivot, horizontal)));
 
 
         //resetIMU
@@ -280,7 +280,7 @@ public class ShowcaseTeleop extends BaseRobot {
 
         //EMERGENCY BLOCK IN BOT
         new Trigger(gamepadInterface2.isKeyDown(GamepadKey.A), new RunCommand(()->{
-            horizontal.setState(HorizSubsystem.State.BLOCKINBOT);
+            horizontal.setState(HorizSubsystem.State.BLOCK_IN_BOT);
         })
                 .then(new WaitCommand(0.5))
                 .then(new RunCommand(()-> {

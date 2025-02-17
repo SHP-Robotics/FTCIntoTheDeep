@@ -20,10 +20,8 @@ public class RotateSubsystem extends Subsystem {
         DROPOFF,
         INTAKE,
         PICKUP,
-        BROKENPICKUP,
         SAMPLE,
-        SPECIMEN,
-        DROPOFFBUCKET,
+        DROPOFF_BUCKET,
         NEUTRAL;
     }
     private State state;
@@ -43,10 +41,11 @@ public class RotateSubsystem extends Subsystem {
         return state;
     }
 
-    public void setPos(double pos){
+    public void setPos(double pos) {
         rotate.setPosition(pos);
     }
-    public void rotateCW(){
+
+    public void rotateCW() {
         //if(state == State.INTAKE){
         state = State.INTAKE;
         rotatePos += 0.2;
@@ -58,31 +57,26 @@ public class RotateSubsystem extends Subsystem {
         rotatePos -= 0.2;
        // }
     }
-    public void processState(State state) {
-        if(this.state == State.INTAKE){
-        }
-        else if (this.state == State.NEUTRAL || this.state == State.DROPOFF) {
-            rotatePos = kNeutral;
-        }
-        else if (this.state == State.PICKUP){
-            rotatePos = kPickup;
-        }
-        else if (this.state == State.DROPOFFBUCKET){
-            rotatePos = 0.425; //0.625;
-        }
-        else if (this.state == State.SAMPLE){
-            rotatePos = 0.9; // 1;
-        }
-        rotate.setPosition(rotatePos);
+    public void processState() {
+        if(this.state == State.INTAKE)
+            return;
 
+        if (this.state == State.NEUTRAL || this.state == State.DROPOFF)
+            rotatePos = kNeutral;
+        else if (this.state == State.PICKUP)
+            rotatePos = kPickup;
+        else if (this.state == State.DROPOFF_BUCKET)
+            rotatePos = 0.425; //0.625;
+        else if (this.state == State.SAMPLE)
+            rotatePos = 0.9; // 1;
+
+        rotate.setPosition(rotatePos);
     }
+
     @Override
     public void periodic(Telemetry telemetry) {
-        processState(state);
+        processState();
 
         telemetry.addData("Rotate State: ", state);
-        telemetry.addData("Rotate Position: ", rotate.getPosition());
     }
-
-
 }
