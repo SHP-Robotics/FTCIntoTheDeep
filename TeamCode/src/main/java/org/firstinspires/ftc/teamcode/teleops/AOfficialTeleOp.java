@@ -216,10 +216,10 @@ public class AOfficialTeleOp extends BaseRobot {
                         .then(new WaitCommand(0.5))
                         .then(new RunCommand(()->{
                             vertical.setState(VerticalSubsystem.State.BOTTOM);
-                            claw.close();
                         }))
                         .then(new WaitCommand(0.5))
                         .then(new RunCommand(()->{
+                            claw.close();
                             pivot.setState(PivotSubsystem.State.DRIVING);
                             intakeState = State.EXTENDED;
                             claw.setColor(PINK);
