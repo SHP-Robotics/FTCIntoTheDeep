@@ -18,20 +18,13 @@ public class PivotSubsystem extends Subsystem {
     private final CachingServo rElbow;
 
     public enum State {
-        // todo: delete unused states
-//        TRANSITION(0.6,0.3), //0 is down
         DRIVING(0.0, 0.3), //0 is down
-        PREPARE_DRIVING(0, 0.2), //0 is down
-
         PREPARE_INTAKE(0, 0.06),
         PREPARE_INTAKE_HIGHER(0,0.09),
-
         INTAKE(0,0), //  0.63 wrist is level with floor
         PREPARE_PICKUP(0.93,0.325),
         PICKUP(0.93,0.8), //picks up from wall
-        PICKUP2(1,0.6),  //^^^
         SUB_TO_DRIVING(1, 0.1),
-
         OUTTAKE_SPEC(0.275,0.325),
         OUTTAKE_BUCKET(1,0.5),
         HUMAN(1,0.6),
