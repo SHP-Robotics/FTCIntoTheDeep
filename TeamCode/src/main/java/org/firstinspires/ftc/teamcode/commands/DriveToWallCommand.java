@@ -8,22 +8,25 @@ import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
 public class DriveToWallCommand extends Command {
     RotateSubsystem rotate;
     ClawSubsystem claw;
     PivotSubsystem pivot;
     HorizSubsystem horiz;
+    VerticalSubsystem vertical;
     double trigger, startTime, endTime;
 
-    public DriveToWallCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz) {
+    public DriveToWallCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz, VerticalSubsystem vertical) {
         // You MUST call the parent class constructor and pass through any subsystems you use
         super(rotate, claw, pivot, horiz);
         this.rotate = rotate;
         this.claw = claw;
         this.pivot = pivot;
         this.horiz = horiz;
-        endTime = 0.5;
+        this.vertical = vertical;
+        endTime = 1.5;
     }
 
 
@@ -37,8 +40,28 @@ public class DriveToWallCommand extends Command {
     // Called repeatedly until isFinished() returns true
     @Override
     public void execute() {
-        pivot.setState(PivotSubsystem.State.PREPAREPICKUP);
-        horiz.setState(HorizSubsystem.State.INTAKE_WALL);
+        if(vertical.getState() == VerticalSubsystem.State.BOTTOM){
+            endTime = 0.5;
+            pivot.setState(PivotSubsystem.State.PREPAREPICKUP);
+            horiz.setState(HorizSubsystem.State.INTAKE_WALL);
+            return;
+        }
+
+        if(Clock.hasElapsed(startTime,1)){
+            pivot.setState(PivotSubsystem.State.PREPAREPICKUP);
+            horiz.setState(HorizSubsystem.State.INTAKE_WALL);
+        }
+        else if(Clock.hasElapsed(startTime, 0.6)){
+            claw.close();
+            pivot.setState(PivotSubsystem.State.DRIVING);
+        }
+        else if(Clock.hasElapsed(startTime,0.5)){
+            vertical.setState(VerticalSubsystem.State.BOTTOM);
+        }
+        else if (Clock.hasElapsed(startTime, 0)){
+            horiz.setState(HorizSubsystem.State.DRIVING);
+            pivot.setState(PivotSubsystem.State.FINISHPASSIVE);
+        }
     }
 
     // Called once after isFinished() returns true

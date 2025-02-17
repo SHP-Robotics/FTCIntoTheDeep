@@ -19,12 +19,11 @@ public class SubToDriveCommand extends Command {
     ClawSubsystem claw;
     PivotSubsystem pivot;
     HorizSubsystem horiz;
-    AOfficialTeleOp.State cageState;
 
     private double startTime;
     private double endTime;
 
-    public SubToDriveCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz, AOfficialTeleOp.State cageState) {
+    public SubToDriveCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz) {
         // You MUST call the parent class constructor and pass through any subsystems you use
         super(rotate, claw, pivot, horiz);
         this.rotate = rotate;
@@ -50,7 +49,7 @@ public class SubToDriveCommand extends Command {
         if (Clock.hasElapsed(startTime, 0.25)) {
             if (!claw.isBlockInClaw()) {
                 CommandScheduler.getInstance().scheduleCommand(
-                        new DriveToSubCommand(rotate, claw, pivot, horiz, cageState)
+                        new DriveToSubCommand(rotate, claw, pivot, horiz)
                 );
             }
             else {
@@ -59,7 +58,6 @@ public class SubToDriveCommand extends Command {
                         new RunCommand(()->{
                             rotate.setState(RotateSubsystem.State.NEUTRAL);
                             pivot.setState(PivotSubsystem.State.SUBTODRIVING);
-                            cageState = AOfficialTeleOp.State.COMPLETE;
                         })
                                 .then(new WaitCommand(0.05))
                                 .then(new RunCommand(() -> {

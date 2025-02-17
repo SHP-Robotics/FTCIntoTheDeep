@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.teleops;
 
 import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.OFF;
 import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.PINK;
+import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PICKUP;
+import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPAREINTAKE;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.devices.GamepadInterface;
@@ -31,13 +33,6 @@ public class AOfficialTeleOp extends BaseRobot {
     private double driveBias;
     GamepadInterface gamepadInterface1, gamepadInterface2;
 
-    public enum State {
-        EXTENDED,
-        COMPLETE
-    }
-    private State cageState;
-    private State intakeState;
-
     @Override
     public void init(){
         super.init();
@@ -46,9 +41,6 @@ public class AOfficialTeleOp extends BaseRobot {
                         () -> drive.mecanum(-driveBias*gamepad1.left_stick_y, driveBias*gamepad1.left_stick_x, driveBias*gamepad1.right_stick_x)
                 )
         );
-
-        cageState = State.COMPLETE;
-        intakeState = State.COMPLETE;
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
         gamepadInterface2 = new GamepadInterface(gamepad2);
@@ -71,12 +63,12 @@ public class AOfficialTeleOp extends BaseRobot {
         drive.update(gamepad2);
 
         //collect from sub
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && cageState == State.COMPLETE,
-                new DriveToSubCommand(rotate, claw, pivot, horiz, cageState));
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && cageState == State.EXTENDED,
-                new SubToDriveCommand(rotate, claw, pivot, horiz, cageState));
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() != PREPAREINTAKE,
+                new DriveToSubCommand(rotate, claw, pivot, horiz));
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() == PREPAREINTAKE,
+                new SubToDriveCommand(rotate, claw, pivot, horiz));
 
-        if(gamepad1.right_trigger > 0.0 && cageState == State.EXTENDED) horiz.setTriggerPos(gamepad1.right_trigger);
+        if(gamepad1.right_trigger > 0.0 && pivot.getState() == PREPAREINTAKE) horiz.setTriggerPos(gamepad1.right_trigger);
 
         //abort
         if(gamepad1.dpad_up){
@@ -84,30 +76,15 @@ public class AOfficialTeleOp extends BaseRobot {
             rotate.setState(RotateSubsystem.State.NEUTRAL);
             pivot.setState(PivotSubsystem.State.DRIVING);
             horiz.setState(HorizSubsystem.State.DRIVING);
-            cageState = State.COMPLETE;
-            intakeState = State.COMPLETE;
             claw.setColor(OFF);
         };
 
         //intake specimen from wall
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && intakeState == State.COMPLETE,
-                new DriveToWallCommand(rotate, claw, pivot, horiz)
-                .then(new RunCommand(()-> intakeState = State.EXTENDED))
-        );
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && pivot.getState() != PICKUP,
+                new DriveToWallCommand(rotate, claw, pivot, horiz, vertical));
 
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && intakeState == State.EXTENDED,
-                new WallToDriveCommand(rotate, claw, pivot, horiz, vertical)
-                .then(new RunCommand(()-> intakeState = State.COMPLETE)
-        ));
-
-        //deposit specimen
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && vertical.getState() == VerticalSubsystem.State.BOTTOM,
-                new DriveToPassiveCommand(rotate, claw, pivot, horiz, vertical)
-        );
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_TRIGGER) && vertical.getState() != VerticalSubsystem.State.BOTTOM,
-                new PassiveToWallCommand(rotate, claw, pivot, horiz, vertical)
-                        .then(new RunCommand(()-> intakeState = State.EXTENDED))
-        );
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && pivot.getState() == PICKUP,
+                new WallToDriveCommand(rotate, claw, pivot, horiz, vertical));
 
         //deposit bucket
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && vertical.getState() == VerticalSubsystem.State.BOTTOM,

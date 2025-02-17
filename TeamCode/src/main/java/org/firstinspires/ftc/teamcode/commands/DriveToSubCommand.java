@@ -15,11 +15,10 @@ public class DriveToSubCommand extends Command {
     ClawSubsystem claw;
     PivotSubsystem pivot;
     HorizSubsystem horiz;
-    AOfficialTeleOp.State cageState;
 
     double startTime, endTime;
 
-    public DriveToSubCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz, AOfficialTeleOp.State cageState) {
+    public DriveToSubCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz) {
         // You MUST call the parent class constructor and pass through any subsystems you use
         super(rotate, claw, pivot, horiz);
         this.rotate = rotate;
@@ -50,7 +49,6 @@ public class DriveToSubCommand extends Command {
         rotate.setState(RotateSubsystem.State.INTAKE);
         claw.open();
 
-        cageState = AOfficialTeleOp.State.EXTENDED;
         claw.setColor(PINK);
     }
 

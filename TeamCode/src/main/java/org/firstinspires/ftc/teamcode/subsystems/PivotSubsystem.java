@@ -19,8 +19,7 @@ public class PivotSubsystem extends Subsystem {
 
     public enum State {
         // todo: delete unused states
-//        TRANSITION(0.6,0.3), //Rename to some TRANSITION STATE
-        DRIVING(0.0, 0.3), //0 is down TODO 0.325->0.3
+        DRIVING(0.0, 0.3), //0 is down
         PREPAREDRIVING(0, 0.2), //0 is down
 
         PREPAREINTAKE(0, 0.06),
