@@ -222,7 +222,6 @@ public class AOfficialTeleOp extends BaseRobot {
                             claw.close();
                             pivot.setState(PivotSubsystem.State.DRIVING);
                             intakeState = State.EXTENDED;
-                            claw.setColor(PINK);
                         }))
                         .then(new DrivetoWallCommand(rotate, claw, pivot, horizontal))
 

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.autos;
 
+import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.PINK;
+import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WALLPICKUPAUTO;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.pathgen.BezierCurve;
@@ -10,19 +13,35 @@ import com.pedropathing.util.Constants;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.constants.FConstants;
 import org.firstinspires.ftc.teamcode.constants.LConstants;
+import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
+import org.firstinspires.ftc.teamcode.shplib.utility.Clock;
+import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
+import org.firstinspires.ftc.teamcode.teleops.AOfficialTeleOp;
 
 
 @Autonomous(name = "*** Not William's PP ***")
 public class PP extends OpMode {
+    VerticalSubsystem vertical;
+    PivotSubsystem pivot;
+    RotateSubsystem rotate;
+    HorizSubsystem horizontal;
+    ClawSubsystem claw;
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
 
     /** This is the variable where we store the state of our auto.
      * It is used by the pathUpdate method. */
     private int pathState;
+    private ElapsedTime elapsedTime;
+
 
     /* Create and Define Poses + Paths
      * Poses are built with three constructors: x, y, and heading (in Radians).
@@ -143,6 +162,13 @@ public class PP extends OpMode {
         follower.update();
         autonomousPathUpdate();
 
+        try {
+            CommandScheduler.getInstance().run();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
         telemetry.addData("path state", pathState);
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
@@ -169,10 +195,82 @@ public class PP extends OpMode {
     public void start() {
         opmodeTimer.resetTimer();
         setPathState(0);
+
+        Clock.start();
+        CommandScheduler.getInstance().setTelemetry(telemetry);
+
+        elapsedTime = new ElapsedTime();
+        elapsedTime.reset();
     }
 
     @Override
     public void stop() {
+    }
+
+
+    public void updateCommands(){
+        try {
+            CommandScheduler.getInstance().run();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    public void updateCommands(double sec){
+        elapsedTime.reset();
+        while (elapsedTime.seconds() < sec) {
+            autonomousPathUpdate();
+            updateCommands();
+        }
+    }
+    /** Prepares the intake for wall, opens claw, and closes */
+    public void wallIntake(){
+        //prep intake
+        pivot.setState(PivotSubsystem.State.AUTOINTAKE);
+        horizontal.setState(HorizSubsystem.State.DRIVING);
+        updateCommands(0.25);
+        rotate.setState(RotateSubsystem.State.PICKUP);
+        claw.open();
+        updateCommands(0.55);
+
+        horizontal.setState(WALLPICKUPAUTO);
+        updateCommands(0.05);
+
+        claw.close();
+        updateCommands(0.15);
+    }
+
+    /** Prepares passive deposit */
+    public void prepArm(){
+        horizontal.setState(HorizSubsystem.State.PASSIVE);
+        vertical.setState(VerticalSubsystem.State.PASSIVE);
+        updateCommands(0.5);
+
+        pivot.setState(PivotSubsystem.State.PASSIVE);
+        rotate.setState(RotateSubsystem.State.DROPOFF);
+        updateCommands();
+    }
+
+    /** Deposits, and lowers arm */
+    public void lowerArm(){
+        claw.open();
+        horizontal.setState(HorizSubsystem.State.DRIVING);
+        pivot.setState(PivotSubsystem.State.FINISHPASSIVE);
+        updateCommands(0.5);
+
+        vertical.setState(VerticalSubsystem.State.BOTTOM);
+        updateCommands(0.5);
+
+        claw.close();
+        pivot.setState(PivotSubsystem.State.DRIVING);
+        updateCommands();
+
+        pivot.setState(PivotSubsystem.State.PREPAREPICKUP);
+        horizontal.setState(HorizSubsystem.State.INTAKEWALL);
+        updateCommands(0.5);
+        rotate.setState(RotateSubsystem.State.PICKUP);
+        pivot.setState(PivotSubsystem.State.PICKUP);
+        claw.open();
+
     }
 }
 
