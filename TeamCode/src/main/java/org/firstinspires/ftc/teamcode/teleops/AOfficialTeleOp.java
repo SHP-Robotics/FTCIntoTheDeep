@@ -88,7 +88,8 @@ public class AOfficialTeleOp extends BaseRobot {
                 new WallToDriveCommand(rotate, claw, pivot, horiz, vertical)
                     .then(new RunCommand(()-> {
                         if (claw.isBlockInClaw()) {
-                            CommandScheduler.getInstance().scheduleCommand(new DriveToPassiveCommand(rotate, claw, pivot, horiz, vertical));
+                            CommandScheduler.getInstance().scheduleCommand(
+                                    new DriveToPassiveCommand(rotate, claw, pivot, horiz, vertical));
                         }
                     }
         )));

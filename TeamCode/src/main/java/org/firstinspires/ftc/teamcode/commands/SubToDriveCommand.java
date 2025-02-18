@@ -55,7 +55,7 @@ public class SubToDriveCommand extends Command {
                     new DriveToSubCommand(rotate, claw, pivot, horiz)
             );
         }
-        else {
+        if (claw.isBlockInClaw()) {
             claw.setColor(GREEN);
             CommandScheduler.getInstance().scheduleCommand(
                     new RunCommand(()->{

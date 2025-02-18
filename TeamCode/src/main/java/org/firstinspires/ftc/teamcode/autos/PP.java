@@ -50,7 +50,7 @@ public class PP extends OpMode {
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
     private final Pose startPose = new Pose(7, 61);
-    private final Pose scorePose = new Pose(37, 72);
+    private final Pose scorePose = new Pose(36, 72);
 //    private final Pose sample1GrabPose = new Pose(26, 39.5, Math.toRadians(-36));
 //    private final Pose sample1DepositPose = new Pose(26, 39.5, Math.toRadians(-156));
 //    private final Pose sample2GrabPose = new Pose(26, 29.75, Math.toRadians(-36));
@@ -66,10 +66,10 @@ public class PP extends OpMode {
     private final Pose pickup2Pose = new Pose(30, 16);
     private final Pose pickup3Pose = new Pose(10, 10);
     private final Pose pickupPose = new Pose(13, 35);
-    private final Pose deposit1Pose = new Pose(37, 68);
-    private final Pose deposit2Pose = new Pose(37, 68);
-    private final Pose deposit3Pose = new Pose(37, 68);
-    private final Pose deposit4Pose = new Pose(37, 68);
+    private final Pose deposit1Pose = new Pose(36, 68);
+    private final Pose deposit2Pose = new Pose(36, 68);
+    private final Pose deposit3Pose = new Pose(36, 68);
+    private final Pose deposit4Pose = new Pose(36, 68);
 
 
     private static Path scorePreload, pickup1, pickup2, pickup3, grab1, deposit1, grab2, deposit2, grab3, deposit3, grab4, deposit4, park;
@@ -220,7 +220,7 @@ public class PP extends OpMode {
         switch (pathState) {
             case 0:
                 //deposits preload
-                follower.setMaxPower(0.75);
+                follower.setMaxPower(0.7);
                 follower.followPath(scorePreload);
                 prepArm();
                 pathState += 1;
@@ -245,11 +245,11 @@ public class PP extends OpMode {
 //                return;
 
             case 5:
-                follower.setMaxPower(0.8);
+                follower.setMaxPower(0.85);
 //                wallIntake();
                 finishWallIntake();
-                prepArm();
                 follower.followPath(deposit1);
+                prepArm();
                 pathState += 1;
                 return;
             case 6:
@@ -261,10 +261,10 @@ public class PP extends OpMode {
                 pathState += 1;
                 return;
             case 7:
-                follower.setMaxPower(0.8);
+                follower.setMaxPower(0.85);
                 finishWallIntake();
-                prepArm();
                 follower.followPath(deposit2);
+                prepArm();
                 pathState += 1;
                 return;
             case 8:
@@ -276,10 +276,10 @@ public class PP extends OpMode {
                 pathState += 1;
                 return;
             case 9:
-                follower.setMaxPower(0.8);
+                follower.setMaxPower(0.85);
                 finishWallIntake();
-                prepArm();
                 follower.followPath(deposit3);
+                prepArm();
                 pathState += 1;
                 return;
             case 10:
@@ -291,10 +291,10 @@ public class PP extends OpMode {
                 pathState += 1;
                 return;
             case 11:
-                follower.setMaxPower(0.8);
+                follower.setMaxPower(0.85);
                 finishWallIntake();
-                prepArm();
                 follower.followPath(deposit4);
+                prepArm();
                 pathState += 1;
                 return;
             case 12:
