@@ -22,6 +22,7 @@ public class RotateSubsystem extends Subsystem {
         PICKUP,
         SAMPLE,
         DROPOFF_BUCKET,
+        ANTI_SAMPLE,
         NEUTRAL;
     }
     private State state;
@@ -64,6 +65,8 @@ public class RotateSubsystem extends Subsystem {
             rotatePos = kPickup;
         else if (this.state == State.DROPOFF_BUCKET)
             rotatePos = 0.425; //0.625;
+        else if (this.state == State.ANTI_SAMPLE)
+            rotatePos = 0.55;
         else if (this.state == State.SAMPLE)
             rotatePos = 0.9; // 1;
 

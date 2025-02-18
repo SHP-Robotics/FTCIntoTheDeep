@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.autos;
 
-import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WALL_PICKUP_AUTO;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.pathgen.BezierCurve;
@@ -50,27 +48,30 @@ public class PP extends OpMode {
      * Lets assume our robot is 18 by 18 inches
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
-    private final Pose startPose = new Pose(7, 64, Math.toRadians(0));
-    private final Pose scorePose = new Pose(35, 72, Math.toRadians(0));
-    private final Pose sample1GrabPose = new Pose(24, 38, Math.toRadians(-36));
-    private final Pose sample1DepositPose = new Pose(24, 38, Math.toRadians(-126));
-    private final Pose sample2GrabPose = new Pose(24, 28, Math.toRadians(-36));
-    private final Pose sample2DepositPose = new Pose(24, 28, Math.toRadians(-126));
-    private final Pose sample3GrabPose = new Pose(24, 18, Math.toRadians(-36));
-    private final Pose sample3DepositPose = new Pose(24, 18, Math.toRadians(-126));
-    private final Pose grabSamplePose = new Pose(24, 22, Math.toRadians(0));
-    private final Pose score1Pose = new Pose(35, 68, Math.toRadians(0));
+    private final Pose startPose = new Pose(7, 61);
+    private final Pose scorePose = new Pose(37, 72);
+//    private final Pose sample1GrabPose = new Pose(26, 39.5, Math.toRadians(-36));
+//    private final Pose sample1DepositPose = new Pose(26, 39.5, Math.toRadians(-156));
+//    private final Pose sample2GrabPose = new Pose(26, 29.75, Math.toRadians(-36));
+//    private final Pose sample2DepositPose = new Pose(26, 29.75, Math.toRadians(-156));
+//    private final Pose sample3GrabPose = new Pose(26, 22, Math.toRadians(-36));
+//    private final Pose sample3DepositPose = new Pose(26, 22, Math.toRadians(-156));
+//    private final Pose grabSamplePose = new Pose(7, 30);
+//    private final Pose score1Pose = new Pose(35, 68);
 
 
 
-//    private final Pose pickup1Pose = new Pose(61.5, 23.8, Math.toRadians(0));
-//    private final Pose push1Pose = new Pose(7, 24, Math.toRadians(0));
-//    private final Pose pickup2Pose = new Pose(7, 16, Math.toRadians(0));
-//    private final Pose pickup3Pose = new Pose(7, 9, Math.toRadians(0));
-//    private final Pose subPose = new Pose(42, 67, Math.toRadians(0));
-//    private final Pose pickupPose = new Pose(7, 32, Math.toRadians(0));
+    private final Pose pickup1Pose = new Pose(15, 24);
+    private final Pose pickup2Pose = new Pose(15, 16);
+    private final Pose pickup3Pose = new Pose(16, 9);
+    private final Pose pickupPose = new Pose(16, 32);
+    private final Pose deposit1Pose = new Pose(37, 70);
+    private final Pose deposit2Pose = new Pose(37, 70);
+    private final Pose deposit3Pose = new Pose(37, 70);
+    private final Pose deposit4Pose = new Pose(37, 70);
 
-    private static Path scorePreload, pickup1, pickup2, deposit2, pickup3, deposit3, grab1, score1;
+
+    private static Path scorePreload, pickup1, pickup2, pickup3, grab1, deposit1, grab2, deposit2, grab3, deposit3, grab4, deposit4, park;
 
     /** Build the paths for the auto (adds, for example, constant/linear headings while doing paths)
      * It is necessary to do this so that all the paths are built before the auto starts. **/
@@ -78,68 +79,109 @@ public class PP extends OpMode {
         scorePreload = new Path(new BezierLine(new Point(startPose), new Point(scorePose)));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
 
-        pickup1 = new Path(new BezierCurve(new Point(scorePose), new Point(sample1GrabPose)));
-        pickup1.setLinearHeadingInterpolation(scorePose.getHeading(), sample1GrabPose.getHeading());
-
-//        deposit1 = new Path(new BezierLine(new Point(sample1GrabPose), new Point(sample1DepositPose)));
-//        deposit1.setLinearHeadingInterpolation(sample1GrabPose.getHeading(), sample1DepositPose.getHeading());
-
-        pickup2 = new Path(new BezierCurve(new Point(sample1DepositPose), new Point(sample2GrabPose)));
-        pickup2.setLinearHeadingInterpolation(sample1DepositPose.getHeading(), sample2GrabPose.getHeading());
-
-//        deposit2 = new Path(new BezierLine(new Point(sample2GrabPose), new Point(sample2DepositPose)));
-//        deposit2.setLinearHeadingInterpolation(sample2GrabPose.getHeading(), sample2DepositPose.getHeading());
-
-        pickup3 = new Path(new BezierCurve(new Point(sample2DepositPose), new Point(sample3GrabPose)));
-        pickup3.setLinearHeadingInterpolation(sample2DepositPose.getHeading(), sample3GrabPose.getHeading());
-
-//        deposit3 = new Path(new BezierLine(new Point(sample3GrabPose), new Point(sample3DepositPose)));
-//        deposit3.setLinearHeadingInterpolation(sample3GrabPose.getHeading(), sample3DepositPose.getHeading());
-
-        grab1 = new Path(new BezierCurve(
-                        new Point(sample3DepositPose),
-                        new Point(new Pose(17, 30, Math.toRadians(0))),
-                        new Point(grabSamplePose)));
-        grab1.setLinearHeadingInterpolation(sample3DepositPose.getHeading(), grabSamplePose.getHeading());
-
-        score1 = new Path(new BezierCurve(
-                new Point(grabSamplePose),
-                new Point(new Pose(13, 61, Math.toRadians(0))),
-                new Point(score1Pose)));
-        score1.setLinearHeadingInterpolation(grabSamplePose.getHeading(), score1Pose.getHeading());
-
 //        pickup1 = new Path(new BezierCurve(
-//                        new Point(scorePose),
-//                        new Point(new Pose(10, 8, Math.toRadians(0))),
-//                        new Point(new Pose(75, 58, Math.toRadians(0))),
-//                        new Point(pickup1Pose)));
-//        pickup1.setLinearHeadingInterpolation(scorePose.getHeading(), pickup1Pose.getHeading());
-//
-//        pickupToPush1 = new Path(new BezierLine(new Point(pickup1Pose), new Point(push1Pose)));
-//        pickupToPush1.setLinearHeadingInterpolation(pickup1Pose.getHeading(), push1Pose.getHeading());
-//
-//        pickup2 = new Path(new BezierCurve(
-//                new Point(push1Pose),
-//                new Point(new Pose(63, 40.5, Math.toRadians(0))),
-//                new Point(new Pose(78, 16, Math.toRadians(0))),
-//                new Point(new Pose(62, 6, Math.toRadians(0))),
-//                new Point(pickup2Pose)
+//                new Point(scorePose),
+//                new Point(new Pose(15, 72)),
+//                new Point(sample1GrabPose)
 //        ));
-//        pickup2.setLinearHeadingInterpolation(push1Pose.getHeading(), pickup2Pose.getHeading());
+//        pickup1.setLinearHeadingInterpolation(scorePose.getHeading(), sample1GrabPose.getHeading());
 //
-//        pickup3 = new Path(new BezierCurve(
-//                new Point(pickup2Pose),
-//                new Point(new Pose(76.5, 32.5, Math.toRadians(0))),
-//                new Point(new Pose(77.5, 0.4, Math.toRadians(0))),
-//                new Point(pickup3Pose)
-//        ));
-//        pickup3.setLinearHeadingInterpolation(pickup2Pose.getHeading(), pickup3Pose.getHeading());
+////        deposit1 = new Path(new BezierLine(new Point(sample1GrabPose), new Point(sample1DepositPose)));
+////        deposit1.setLinearHeadingInterpolation(sample1GrabPose.getHeading(), sample1DepositPose.getHeading());
 //
-//        sub = new Path(new BezierLine(new Point(pickup3Pose), new Point(subPose)));
-//        sub.setLinearHeadingInterpolation(pickup3Pose.getHeading(), subPose.getHeading());
+//        pickup2 = new Path(new BezierCurve(new Point(sample1DepositPose), new Point(sample2GrabPose)));
+//        pickup2.setLinearHeadingInterpolation(sample1DepositPose.getHeading(), sample2GrabPose.getHeading());
 //
-//        grab = new Path(new BezierLine(new Point(subPose), new Point(pickupPose)));
-//        grab.setLinearHeadingInterpolation(subPose.getHeading(), pickupPose.getHeading());
+////        deposit2 = new Path(new BezierLine(new Point(sample2GrabPose), new Point(sample2DepositPose)));
+////        deposit2.setLinearHeadingInterpolation(sample2GrabPose.getHeading(), sample2DepositPose.getHeading());
+//
+//        pickup3 = new Path(new BezierCurve(new Point(sample2DepositPose), new Point(sample3GrabPose)));
+//        pickup3.setLinearHeadingInterpolation(sample2DepositPose.getHeading(), sample3GrabPose.getHeading());
+//
+////        deposit3 = new Path(new BezierLine(new Point(sample3GrabPose), new Point(sample3DepositPose)));
+////        deposit3.setLinearHeadingInterpolation(sample3GrabPose.getHeading(), sample3DepositPose.getHeading());
+//
+//        grab1 = new Path(new BezierCurve(
+//                        new Point(sample3DepositPose),
+//                        new Point(new Pose(17, 30)),
+//                        new Point(grabSamplePose)));
+//        grab1.setLinearHeadingInterpolation(sample3DepositPose.getHeading(), grabSamplePose.getHeading());
+//
+//        score1 = new Path(new BezierCurve(
+//                new Point(grabSamplePose),
+//                new Point(new Pose(13, 61)),
+//                new Point(score1Pose)));
+//        score1.setLinearHeadingInterpolation(grabSamplePose.getHeading(), score1Pose.getHeading());
+
+        pickup1 = new Path(new BezierCurve(
+                        new Point(scorePose),
+                        new Point(new Pose(16, 4)),
+                        new Point(new Pose(75, 50)),
+                        new Point(new Pose(44, 28)),
+                        new Point(new Pose(76, 16)),
+                        new Point(pickup1Pose)));
+        pickup1.setLinearHeadingInterpolation(scorePose.getHeading(), pickup1Pose.getHeading());
+
+        pickup2 = new Path(new BezierCurve(
+                new Point(pickup1Pose),
+                new Point(new Pose(60, 24)),
+                new Point(new Pose(61, 28)),
+                new Point(new Pose(62, 6)),
+                new Point(pickup2Pose)
+        ));
+        pickup2.setLinearHeadingInterpolation(pickup1Pose.getHeading(), pickup2Pose.getHeading());
+
+        pickup3 = new Path(new BezierCurve(
+                new Point(pickup2Pose),
+                new Point(new Pose(75, 25)),
+                new Point(new Pose(58.5, 21)),
+                new Point(new Pose(57.5, 8)),
+                new Point(new Pose(57.5, 8)),
+                new Point(new Pose(74, 10)),
+                new Point(pickup3Pose)
+        ));
+        pickup3.setLinearHeadingInterpolation(pickup2Pose.getHeading(), pickup3Pose.getHeading());
+
+        deposit1 = new Path(new BezierCurve(new Point(pickup3Pose),
+                new Point(new Pose(21, 66)),
+                new Point(deposit1Pose)));
+        deposit1.setLinearHeadingInterpolation(pickup3Pose.getHeading(), deposit1Pose.getHeading());
+
+        grab2 = new Path(new BezierCurve(new Point(deposit1Pose),
+                new Point(new Pose(24, 68)),
+                new Point(new Pose(28, 29)),
+                new Point(pickupPose)));
+        grab2.setLinearHeadingInterpolation(deposit1Pose.getHeading(), pickupPose.getHeading());
+
+        deposit2 = new Path(new BezierCurve(new Point(pickupPose),
+                new Point(new Pose(21, 66)),
+                new Point(deposit2Pose)));
+        deposit2.setLinearHeadingInterpolation(pickupPose.getHeading(), deposit2Pose.getHeading());
+
+        grab3 = new Path(new BezierCurve(new Point(deposit2Pose),
+                new Point(new Pose(24, 68)),
+                new Point(new Pose(28, 29)),
+                new Point(pickupPose)));
+        grab3.setLinearHeadingInterpolation(deposit2Pose.getHeading(), pickupPose.getHeading());
+
+        deposit3 = new Path(new BezierCurve(new Point(pickupPose),
+                new Point(new Pose(21, 66)),
+                new Point(deposit3Pose)));
+        deposit3.setLinearHeadingInterpolation(pickupPose.getHeading(), deposit3Pose.getHeading());
+
+        grab4 = new Path(new BezierCurve(new Point(deposit3Pose),
+                new Point(new Pose(24, 68)),
+                new Point(new Pose(28, 29)),
+                new Point(pickupPose)));
+        grab4.setLinearHeadingInterpolation(deposit3Pose.getHeading(), pickupPose.getHeading());
+
+        deposit4 = new Path(new BezierCurve(new Point(pickupPose),
+                new Point(new Pose(21, 66)),
+                new Point(deposit4Pose)));
+        deposit4.setLinearHeadingInterpolation(pickupPose.getHeading(), deposit4Pose.getHeading());
+
+        park = new Path(new BezierCurve(new Point(deposit4Pose), new Point(pickupPose)));
+        park.setLinearHeadingInterpolation(deposit4Pose.getHeading(), pickupPose.getHeading());
     }
 
     public void autonomousPathUpdate() {
@@ -148,61 +190,117 @@ public class PP extends OpMode {
 
         switch (pathState) {
             case 0:
+                //deposits preload
+                follower.setMaxPower(0.6);
                 follower.followPath(scorePreload);
                 prepArm();
                 pathState += 1;
-                break;
+                return;
             case 1:
+                //finishes deposit and pushes to sample 1
+//                follower.setMaxPower(1.0);
                 claw.open();
                 follower.followPath(pickup1);
                 lowerArm();
-                prepToGrabSample();
-                startIntake();
                 pathState += 1;
-                break;
+                return;
             case 2:
-                follower.turnTo(sample1DepositPose.getHeading());
-                returnToDriveMode();
-                dropSample();
-                pathState += 1;
-                break;
-            case 3:
+                //pushes sample 2
                 follower.followPath(pickup2);
-                prepToGrabSample();
-                startIntake();
                 pathState += 1;
-                break;
-            case 4:
-                follower.turnTo(sample2DepositPose.getHeading());
-                returnToDriveMode();
-                dropSample();
-                pathState += 1;
-                break;
-            case 5:
+                return;
+            case 3:
+                //pushes sample 3
                 follower.followPath(pickup3);
-                prepToGrabSample();
-                startIntake();
                 pathState += 1;
-                break;
-            case 6:
-                follower.turnTo(sample3DepositPose.getHeading());
-                returnToDriveMode();
-                dropSample();
-                pathState += 1;
-                break;
-            case 7:
-                follower.followPath(grab1);
+                return;
+            case 4:
+                //grabs spec
                 wallIntake();
                 pathState += 1;
-                break;
-            case 8:
-                follower.followPath(score1);
+                return;
+            case 5:
+                finishWallIntake();
                 prepArm();
-                pathState = 9;
-                break;
-            case 9:
+                follower.followPath(deposit1);
+                pathState += 1;
+                return;
+            case 6:
+                claw.open();
+                follower.followPath(grab2);
                 lowerArm();
-                break;
+                wallIntake();
+                pathState += 1;
+                return;
+            case 7:
+                finishWallIntake();
+                prepArm();
+                follower.followPath(deposit2);
+                pathState += 1;
+                return;
+            case 8:
+                claw.open();
+                follower.followPath(grab3);
+                lowerArm();
+                wallIntake();
+                pathState += 1;
+                return;
+            case 9:
+                finishWallIntake();
+                prepArm();
+                follower.followPath(deposit3);
+                pathState += 1;
+                return;
+            case 10:
+                claw.open();
+                follower.followPath(grab4);
+                lowerArm();
+                wallIntake();
+                pathState += 1;
+                return;
+            case 11:
+                finishWallIntake();
+                prepArm();
+                follower.followPath(deposit4);
+                pathState += 1;
+                return;
+            case 12:
+                claw.open();
+                follower.followPath(park);
+                lowerArm();
+                pathState = -1;
+                return;
+//            case 4:
+//                follower.turnTo(sample2DepositPose.getHeading());
+//                returnToDriveMode();
+//                dropSample();
+//                pathState += 1;
+//                return;
+//            case 5:
+//                follower.followPath(pickup3);
+//                prepToGrabSample();
+//                startIntake();
+//                pathState += 1;
+//                return;
+//            case 6:
+//                follower.turnTo(sample3DepositPose.getHeading());
+//                returnToDriveMode();
+//                dropSample();
+//                pathState += 1;
+//                return;
+//            case 7:
+//                follower.followPath(grab1);
+//                wallIntake();
+//                pathState += 1;
+//                return;
+//            case 8:
+//                follower.followPath(score1);
+//                prepArm();
+//                pathState = 9;
+//                return;
+//            case 9:
+//                lowerArm();
+//                return;
         }
     }
 
@@ -232,6 +330,8 @@ public class PP extends OpMode {
 
     @Override
     public void init() {
+        CommandScheduler.resetInstance();
+
         // Initialize your subsystems and devices
         vertical = new VerticalSubsystem(hardwareMap);
         rotate = new RotateSubsystem(hardwareMap);
@@ -290,63 +390,20 @@ public class PP extends OpMode {
             follower.update();
             updateCommands();
         }
-
-
     }
 
-    /** Prepares the intake sample */
-    public void prepToGrabSample(){
-        updateCommands(1.5);
-        horiz.setState(HorizSubsystem.State.PREP_AUTO_INTAKE);
-        pivot.setState(PivotSubsystem.State.PREPARE_INTAKE); //PREPARE_INTAKE_HIGHER
-        rotate.setState(RotateSubsystem.State.INTAKE);
-        updateCommands(0.25);
-        claw.open();
-        horiz.setState(HorizSubsystem.State.INTAKING_EXTENDED);
-        rotate.setState(RotateSubsystem.State.SAMPLE);
-        updateCommands(0.25);
-    }
-    /** Grabs sample */
-    public void startIntake(){
-        pivot.setState(PivotSubsystem.State.INTAKE);
-        updateCommands(0.25);
-        claw.close();
-        updateCommands(0.25);
-
-        //reattempt if fail
-        if(!claw.isBlockInClaw()){
-            claw.setColor(ClawSubsystem.ColorState.RED);
-
-            pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
-            claw.open();
-            updateCommands(0.25);
-
-            pivot.setState(PivotSubsystem.State.INTAKE);
-            updateCommands(0.25);
-            claw.close();
-            updateCommands(0.25);
-
-            if(claw.isBlockInClaw()) {
-                claw.setColor(ClawSubsystem.ColorState.GREEN);
-                updateCommands();
-            }
-        }
-
-    }
     /** Returns to driving mode */
     public void returnToDriveMode(){
         rotate.setState(RotateSubsystem.State.NEUTRAL);
         pivot.setState(PivotSubsystem.State.DRIVING);
         horiz.setState(HorizSubsystem.State.DRIVING);
-        updateCommands(0.25); //removed wait
-        claw.setColor(ClawSubsystem.ColorState.OFF);
         updateCommands();
     }
 
     /** Drops sample at human **/
 
     public void dropSample(){
-        horiz.setState(HorizSubsystem.State.INTAKING_EXTENDED);
+        horiz.setState(HorizSubsystem.State.SPECIMEN_DEPOSIT);
         pivot.setState(PivotSubsystem.State.PREPARE_INTAKE); //PREPARE_INTAKE_HIGHER
         updateCommands(0.25);
         claw.open();
@@ -356,25 +413,28 @@ public class PP extends OpMode {
     /** Prepares the intake for wall, opens claw, and closes */
     public void wallIntake(){
         //prep intake
-        pivot.setState(PivotSubsystem.State.AUTO_INTAKE);
-        horiz.setState(HorizSubsystem.State.DRIVING);
+        pivot.setState(PivotSubsystem.State.PICKUP);
+        horiz.setState(HorizSubsystem.State.WALL_PICKUP_AUTO);
         updateCommands(0.25);
         rotate.setState(RotateSubsystem.State.PICKUP);
         claw.open();
-        updateCommands(0.55);
-
-        horiz.setState(WALL_PICKUP_AUTO);
-        updateCommands(0.05);
+        updateCommands(0.25);
+    }
+    public void finishWallIntake(){
+        horiz.setState(HorizSubsystem.State.DRIVING);
+        updateCommands(0.15);
 
         claw.close();
         updateCommands(0.15);
+        pivot.setState(PivotSubsystem.State.PASSIVE);
+        updateCommands(0);
     }
 
     /** Prepares passive deposit */
     public void prepArm(){
         horiz.setState(HorizSubsystem.State.PASSIVE);
         vertical.setState(VerticalSubsystem.State.PASSIVE);
-        updateCommands(1);
+        updateCommands(0.75);
 
         pivot.setState(PivotSubsystem.State.PASSIVE);
         rotate.setState(RotateSubsystem.State.DROPOFF);
@@ -393,14 +453,16 @@ public class PP extends OpMode {
 
         claw.close();
         pivot.setState(PivotSubsystem.State.DRIVING);
+        rotate.setState(RotateSubsystem.State.NEUTRAL);
         updateCommands();
 
-        pivot.setState(PivotSubsystem.State.PREPARE_PICKUP);
-        horiz.setState(HorizSubsystem.State.INTAKE_WALL);
-        updateCommands(0.5);
-        rotate.setState(RotateSubsystem.State.PICKUP);
-        pivot.setState(PivotSubsystem.State.PICKUP);
-        claw.open();
+
+//        pivot.setState(PREPARE_INTAKE_HIGHER);
+//        horiz.setState(HorizSubsystem.State.INTAKE_WALL);
+//        updateCommands(0.5);
+//        rotate.setState(RotateSubsystem.State.ANTI_SAMPLE);
+//        pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
+//        claw.open();
 
     }
 }

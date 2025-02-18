@@ -51,8 +51,6 @@ public class WallToDriveCommand extends Command {
         else {
             claw.setColor(GREEN);
             claw.setColor(OFF);
-//            CommandScheduler.getInstance().scheduleCommand(
-//                    new DriveToPassiveCommand(rotate, claw, pivot, horiz, vertical)); //TODO TEST THAT THIS WORKS
         }
     }
 
