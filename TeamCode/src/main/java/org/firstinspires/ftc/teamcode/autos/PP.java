@@ -65,7 +65,7 @@ public class PP extends OpMode {
     private final Pose pickup1Pose = new Pose(30, 24);
     private final Pose pickup2Pose = new Pose(30, 16);
     private final Pose pickup3Pose = new Pose(10, 10);
-    private final Pose pickupPose = new Pose(13, 35);
+    private final Pose pickupPose = new Pose(13, 37);
     private final Pose deposit1Pose = new Pose(36, 68);
     private final Pose deposit2Pose = new Pose(36, 68);
     private final Pose deposit3Pose = new Pose(36, 68);
@@ -245,8 +245,7 @@ public class PP extends OpMode {
 //                return;
 
             case 5:
-                follower.setMaxPower(0.85);
-//                wallIntake();
+                follower.setMaxPower(0.9);
                 finishWallIntake();
                 follower.followPath(deposit1);
                 prepArm();
@@ -257,11 +256,10 @@ public class PP extends OpMode {
                 claw.open();
                 follower.followPath(grab2);
                 lowerArm();
-//                wallIntake();
                 pathState += 1;
                 return;
             case 7:
-                follower.setMaxPower(0.85);
+                follower.setMaxPower(0.9);
                 finishWallIntake();
                 follower.followPath(deposit2);
                 prepArm();
@@ -272,11 +270,10 @@ public class PP extends OpMode {
                 claw.open();
                 follower.followPath(grab3);
                 lowerArm();
-//                wallIntake();
                 pathState += 1;
                 return;
             case 9:
-                follower.setMaxPower(0.85);
+                follower.setMaxPower(0.9);
                 finishWallIntake();
                 follower.followPath(deposit3);
                 prepArm();
@@ -287,11 +284,10 @@ public class PP extends OpMode {
                 claw.open();
                 follower.followPath(grab4);
                 lowerArm();
-//                wallIntake();
                 pathState += 1;
                 return;
             case 11:
-                follower.setMaxPower(0.85);
+                follower.setMaxPower(0.9);
                 finishWallIntake();
                 follower.followPath(deposit4);
                 prepArm();
@@ -426,24 +422,6 @@ public class PP extends OpMode {
         }
     }
 
-    /** Returns to driving mode */
-    public void returnToDriveMode(){
-        rotate.setState(RotateSubsystem.State.NEUTRAL);
-        pivot.setState(PivotSubsystem.State.DRIVING);
-        horiz.setState(HorizSubsystem.State.DRIVING);
-        updateCommands();
-    }
-
-    /** Drops sample at human **/
-
-    public void dropSample(){
-        horiz.setState(HorizSubsystem.State.SPECIMEN_DEPOSIT);
-        pivot.setState(PivotSubsystem.State.PREPARE_INTAKE); //PREPARE_INTAKE_HIGHER
-        updateCommands(0.25);
-        claw.open();
-        updateCommands();
-    }
-
     /** Prepares the intake for wall, opens claw, and closes */
     public void wallIntake(){
         //prep intake
@@ -485,27 +463,12 @@ public class PP extends OpMode {
         vertical.setState(VerticalSubsystem.State.BOTTOM);
         updateCommands(0.5);
 
-
         pivot.setState(PivotSubsystem.State.PICKUP);
         horiz.setState(HorizSubsystem.State.WALL_PICKUP_AUTO);
         updateCommands(0.15);
         rotate.setState(RotateSubsystem.State.PICKUP);
         claw.open();
         updateCommands();
-
-//        claw.close();
-//        pivot.setState(PivotSubsystem.State.DRIVING);
-//        rotate.setState(RotateSubsystem.State.NEUTRAL);
-//        updateCommands();
-
-
-//        pivot.setState(PREPARE_INTAKE_HIGHER);
-//        horiz.setState(HorizSubsystem.State.INTAKE_WALL);
-//        updateCommands(0.5);
-//        rotate.setState(RotateSubsystem.State.ANTI_SAMPLE);
-//        pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
-//        claw.open();
-
     }
 }
 
