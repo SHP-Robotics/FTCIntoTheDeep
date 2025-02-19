@@ -25,7 +25,7 @@ public class PivotSubsystem extends Subsystem {
         PREPARE_INTAKE_HIGHEST(0,0.30),
         INTAKE(0,0), //  0.63 wrist is level with floor
         PREPARE_PICKUP(0.93,0.325),
-        PICKUP(0.93,0.8), //picks up from wall
+        PICKUP(0.93,0.825), //picks up from wall
         SUB_TO_DRIVING(1, 0.1),
         OUTTAKE_SPEC(0.275,0.325),
         OUTTAKE_BUCKET(1,0.5),

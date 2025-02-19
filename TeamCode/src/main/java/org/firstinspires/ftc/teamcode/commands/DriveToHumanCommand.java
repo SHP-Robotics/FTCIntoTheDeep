@@ -37,11 +37,8 @@ public class DriveToHumanCommand extends Command {
     @Override
     public void execute() {
         horiz.setState(HorizSubsystem.State.DRIVING);
-//        pivot.setState(PivotSubsystem.State.HUMAN1);
-//        if(Clock.hasElapsed(startTime, 0.5)){
             pivot.setState(PivotSubsystem.State.HUMAN2);
-//        }
-        if(Clock.hasElapsed(startTime, 0.75)){
+        if(Clock.hasElapsed(startTime, 0.65)){
             claw.open();
         }
     }
