@@ -4,6 +4,8 @@ import static org.firstinspires.ftc.teamcode.shplib.Constants.Rotate.kNeutral;
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Rotate.kPickup;
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Rotate.kRotateName;
 
+import static java.lang.Math.PI;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -14,7 +16,8 @@ import dev.frozenmilk.dairy.cachinghardware.CachingServo;
 
 public class RotateSubsystem extends Subsystem {
     private final CachingServo rotate;
-    private double rotatePos;
+    public double rotatePos;
+    public boolean aligned;
 
     public enum State {
         DROPOFF,
@@ -31,6 +34,7 @@ public class RotateSubsystem extends Subsystem {
         rotate = new CachingServo((Servo) hardwareMap.get(kRotateName));
         rotate.setDirection(Servo.Direction.REVERSE);
         rotatePos = kNeutral;
+        aligned = false;
         setState(State.NEUTRAL);
     }
 
@@ -58,6 +62,18 @@ public class RotateSubsystem extends Subsystem {
         rotatePos -= 0.2;
        // }
     }
+
+    public void turn(double radians){
+        this.state = State.INTAKE;
+        double prevPos = rotatePos;
+
+//        rotatePos = rotatePos*0.5 + ((radians*0.6/PI)+0.4)*0.5;
+        rotatePos = (radians*0.6/PI)+0.4;
+
+        aligned = Math.abs(prevPos - rotatePos) < 0.15;
+
+    }
+
     public void processState() {
         if (this.state == State.NEUTRAL || this.state == State.DROPOFF)
             rotatePos = kNeutral;

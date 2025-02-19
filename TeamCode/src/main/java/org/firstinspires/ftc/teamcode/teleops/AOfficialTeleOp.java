@@ -7,9 +7,13 @@ import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PRE
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPARE_INTAKE_HIGHER;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.shprobotics.pestocore.devices.GamepadInterface;
 import com.shprobotics.pestocore.devices.GamepadKey;
+import com.shprobotics.pestocore.geometries.Pose2D;
+import com.shprobotics.pestocore.geometries.Vector2D;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.commands.BlockInBotCommand;
 import org.firstinspires.ftc.teamcode.commands.BucketToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToBucketCommand;
@@ -19,17 +23,29 @@ import org.firstinspires.ftc.teamcode.commands.DriveToWallCommand;
 import org.firstinspires.ftc.teamcode.commands.SubToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.WallToDriveCommand;
 import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
+import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.commands.RunCommand;
 import org.firstinspires.ftc.teamcode.shplib.commands.Trigger;
+import org.firstinspires.ftc.teamcode.subsystems.DetectSample;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+
+import java.util.ArrayList;
 
 @TeleOp(name = "A Official Teleop")
 public class AOfficialTeleOp extends BaseRobot {
     private double driveBias;
     private boolean bucketExtended;
     GamepadInterface gamepadInterface1, gamepadInterface2;
+    ArrayList<Pose2D> positions;
+    OpenCvCamera camera;
+    int cameraMonitorViewId;
+    DetectSample detectSample;
+    Pose2D lastDetection = new Pose2D(0,0,0);
+    ElapsedTime clawAlignment;
 
     @Override
     public void init(){
@@ -39,6 +55,11 @@ public class AOfficialTeleOp extends BaseRobot {
                         () -> drive.mecanum(-driveBias*gamepad1.left_stick_y, driveBias*gamepad1.left_stick_x, driveBias*gamepad1.right_stick_x)
                 )
         );
+
+        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        detectSample = new DetectSample(telemetry);
+        clawAlignment = new ElapsedTime();
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
         gamepadInterface2 = new GamepadInterface(gamepad2);
@@ -64,10 +85,35 @@ public class AOfficialTeleOp extends BaseRobot {
 
         //collect from sub
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() != PREPARE_INTAKE,
-                new DriveToSubCommand(rotate, claw, pivot, horiz));
+                new DriveToSubCommand(rotate, claw, pivot, horiz)
+                        .then(new RunCommand(()-> clawAlignment.reset())));
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() == PREPARE_INTAKE,
                 new SubToDriveCommand(rotate, claw, pivot, horiz)
         );
+
+        //rotation detection
+        positions = detectSample.getPositions();
+        if(!positions.isEmpty()) {
+            lastDetection = selectPos(positions);
+        }
+
+        if(pivot.getState() == PREPARE_INTAKE){
+            rotate.turn(lastDetection.getHeadingRadians());
+            rotate.processState();
+        }
+
+        //rotation movement
+        new Trigger(pivot.getState() == PREPARE_INTAKE, new RunCommand(()->{
+            if(!rotate.aligned) {
+                clawAlignment.reset();
+                claw.open();
+            }
+            else if(clawAlignment.seconds() > 2){
+                CommandScheduler.getInstance().scheduleCommand(
+                        new SubToDriveCommand(rotate, claw, pivot, horiz)
+                                .then(new RunCommand(()->clawAlignment.reset())));
+            }
+        }));
 
         if(gamepad1.right_trigger >= 0.0 && (pivot.getState() == PREPARE_INTAKE || pivot.getState() == INTAKE))
             horiz.setTriggerPos(gamepad1.right_trigger);
@@ -106,6 +152,7 @@ public class AOfficialTeleOp extends BaseRobot {
         //give sample to human player
         new Trigger(gamepad1.square, new DriveToHumanCommand(rotate, claw, pivot, horiz));
 
+        //send rails out to park
         new Trigger(gamepad1.circle, new RunCommand(()->{
             horiz.setState(HorizSubsystem.State.INTAKING_EXTENDED);
             pivot.setState(PREPARE_INTAKE_HIGHER);
@@ -127,4 +174,20 @@ public class AOfficialTeleOp extends BaseRobot {
 
 
     }
+
+
+    public Pose2D selectPos(ArrayList<Pose2D> positions){
+        double shortest = Double.POSITIVE_INFINITY;
+        Pose2D result = new Pose2D(0,0,0);
+        for(Pose2D position : positions) {
+            double dist = Vector2D.dist(position.asVector(),lastDetection.asVector());
+            if (dist < shortest){
+                shortest = dist;
+                result = position;
+            }
+        }
+
+        return result;
+    }
+
 }

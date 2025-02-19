@@ -55,7 +55,7 @@ public class PP extends OpMode {
     private final Pose pickup3Pose = new Pose(24, 131, Math.toRadians(200));
     private final Pose pickupSubPose = new Pose(12, 35, Math.toRadians(90));
     private final Pose parkPose = new Pose(34, 70, Math.toRadians(90));
-    
+
     private static Path scorePreload,
             deposit1, deposit2, deposit3, deposit4,
             grab1, grab2, grab3, grab4,
