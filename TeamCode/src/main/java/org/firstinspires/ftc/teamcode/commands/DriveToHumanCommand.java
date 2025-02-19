@@ -22,7 +22,7 @@ public class DriveToHumanCommand extends Command {
         this.claw = claw;
         this.pivot = pivot;
         this.horiz = horiz;
-        endTime = 1.25;
+        endTime = 1;
     }
 
 
@@ -37,7 +37,10 @@ public class DriveToHumanCommand extends Command {
     @Override
     public void execute() {
         horiz.setState(HorizSubsystem.State.DRIVING);
-        pivot.setState(PivotSubsystem.State.HUMAN);
+//        pivot.setState(PivotSubsystem.State.HUMAN1);
+//        if(Clock.hasElapsed(startTime, 0.5)){
+            pivot.setState(PivotSubsystem.State.HUMAN2);
+//        }
         if(Clock.hasElapsed(startTime, 0.75)){
             claw.open();
         }

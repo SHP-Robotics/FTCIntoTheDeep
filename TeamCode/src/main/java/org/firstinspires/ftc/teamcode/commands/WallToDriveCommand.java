@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState
 import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.OFF;
 
 import org.firstinspires.ftc.teamcode.shplib.commands.Command;
+import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.utility.Clock;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
@@ -51,6 +52,8 @@ public class WallToDriveCommand extends Command {
         else {
             claw.setColor(GREEN);
             claw.setColor(OFF);
+            CommandScheduler.getInstance().scheduleCommand(
+                    new DriveToPassiveCommand(rotate, claw, pivot, horiz, vertical));
         }
     }
 

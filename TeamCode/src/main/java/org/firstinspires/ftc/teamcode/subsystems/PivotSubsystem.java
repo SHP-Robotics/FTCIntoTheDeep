@@ -18,7 +18,7 @@ public class PivotSubsystem extends Subsystem {
     private final CachingServo rElbow;
 
     public enum State {
-        DRIVING(0.0, 0.3), //0 is down
+        DRIVING(0.15, 0.3), //0 is down
         PREPARE_INTAKE(0, 0.06),
         PREPARE_INTAKE_HIGHER(0,0.09),
         PREPARE_INTAKE_HIGH(0,0.20),
@@ -29,7 +29,8 @@ public class PivotSubsystem extends Subsystem {
         SUB_TO_DRIVING(1, 0.1),
         OUTTAKE_SPEC(0.275,0.325),
         OUTTAKE_BUCKET(1,0.5),
-        HUMAN(1,0.6),
+        HUMAN1(1,0.3),
+        HUMAN2(1,0.8),
         PARK(0.7, 0.355),
         AUTO_SPEC(0.915, 0.5),
         AUTO_INTAKE(0.275,0.325),

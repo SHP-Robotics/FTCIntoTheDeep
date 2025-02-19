@@ -43,7 +43,7 @@ public class Constants {
         public static final String kClawName = "clawServo";
         public static final String kLedName = "led";
 
-        public static final double kOpen = 0.45;
-        public static final double kClose = 0.0;
+        public static final double kOpen = 0.55;
+        public static final double kClose = 0.07;
     }
 }

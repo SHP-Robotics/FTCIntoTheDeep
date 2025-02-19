@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.INTAKE;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PICKUP;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPARE_INTAKE;
+import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPARE_INTAKE_HIGHER;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.devices.GamepadInterface;
@@ -13,13 +14,11 @@ import org.firstinspires.ftc.teamcode.commands.BlockInBotCommand;
 import org.firstinspires.ftc.teamcode.commands.BucketToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToBucketCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToHumanCommand;
-import org.firstinspires.ftc.teamcode.commands.DriveToPassiveCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToSubCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToWallCommand;
 import org.firstinspires.ftc.teamcode.commands.SubToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.WallToDriveCommand;
 import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
-import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.commands.RunCommand;
 import org.firstinspires.ftc.teamcode.shplib.commands.Trigger;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
@@ -45,6 +44,7 @@ public class AOfficialTeleOp extends BaseRobot {
         gamepadInterface2 = new GamepadInterface(gamepad2);
 //        vision.limelight.start();
         bucketExtended = false;
+        vertical.setSlidePower(false);
     }
     @Override
     public void start(){
@@ -66,7 +66,8 @@ public class AOfficialTeleOp extends BaseRobot {
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() != PREPARE_INTAKE,
                 new DriveToSubCommand(rotate, claw, pivot, horiz));
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() == PREPARE_INTAKE,
-                new SubToDriveCommand(rotate, claw, pivot, horiz));
+                new SubToDriveCommand(rotate, claw, pivot, horiz)
+        );
 
         if(gamepad1.right_trigger >= 0.0 && (pivot.getState() == PREPARE_INTAKE || pivot.getState() == INTAKE))
             horiz.setTriggerPos(gamepad1.right_trigger);
@@ -80,19 +81,12 @@ public class AOfficialTeleOp extends BaseRobot {
             claw.setColor(OFF);
         };
 
-        //intake specimen from wall
+        //intake prepare to intake spec from wall
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && pivot.getState() != PICKUP,
                 new DriveToWallCommand(rotate, claw, pivot, horiz, vertical));
-        //
+        //attempt to grab spec from wall
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.LEFT_BUMPER) && pivot.getState() == PICKUP,
-                new WallToDriveCommand(rotate, claw, pivot, horiz, vertical)
-                    .then(new RunCommand(()-> {
-                        if (claw.isBlockInClaw()) {
-                            CommandScheduler.getInstance().scheduleCommand(
-                                    new DriveToPassiveCommand(rotate, claw, pivot, horiz, vertical));
-                        }
-                    }
-        )));
+                new WallToDriveCommand(rotate, claw, pivot, horiz, vertical));
 
         //deposit bucket
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && !bucketExtended,
@@ -112,19 +106,25 @@ public class AOfficialTeleOp extends BaseRobot {
         //give sample to human player
         new Trigger(gamepad1.square, new DriveToHumanCommand(rotate, claw, pivot, horiz));
 
+        new Trigger(gamepad1.circle, new RunCommand(()->{
+            horiz.setState(HorizSubsystem.State.INTAKING_EXTENDED);
+            pivot.setState(PREPARE_INTAKE_HIGHER);
+        }));
+
         //resetIMU
         if(gamepad1.triangle) drive.resetIMUAngle();
-
-        //reset Slide Zero Pos
-        if(gamepad2.square) vertical.resetZeroPosition();
 
         //Reset encoders
         if(gamepadInterface2.isKeyDown(GamepadKey.DPAD_UP)) vertical.incrementSlide();
         if(gamepadInterface2.isKeyDown(GamepadKey.DPAD_DOWN)) vertical.emergencyDecrementSlide();
-        if(gamepadInterface2.isKeyDown(GamepadKey.DPAD_LEFT)) vertical.endReset();
 
         //EMERGENCY BLOCK IN BOT
         if(gamepadInterface2.isKeyDown(GamepadKey.A)) new BlockInBotCommand(horiz); //CROSS?
         if(gamepadInterface2.isKeyDown(GamepadKey.Y)) drive.toggleIMU(); //TRIANGLE
+
+        //TODO disable break beam
+        if(gamepadInterface2.isKeyDown(GamepadKey.X)) claw.toggleBreakBeam(); //SQUARE
+
+
     }
 }

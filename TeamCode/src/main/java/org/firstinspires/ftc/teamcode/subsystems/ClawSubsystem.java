@@ -20,6 +20,7 @@ public class ClawSubsystem extends Subsystem {
     private final CachingServo ledLight;
     private final DigitalChannel breakBeam;
     boolean blockInClaw;
+    boolean disableBreakBeam;
 
     public enum ColorState {
         OFF(0.0),
@@ -51,6 +52,8 @@ public class ClawSubsystem extends Subsystem {
         breakBeam = hardwareMap.digitalChannel.get("breakBeam");
         blockInClaw = false;
         setState(State.CLOSE);
+
+        disableBreakBeam = false;
     }
 
     public boolean isBlockInClaw() {
@@ -89,6 +92,9 @@ public class ClawSubsystem extends Subsystem {
         claw.setPosition(kClose);
     }
 
+    public void toggleBreakBeam(){
+        disableBreakBeam = !disableBreakBeam;
+    }
 
     private void processState() {
         if (this.state == State.CLOSE)
@@ -107,10 +113,9 @@ public class ClawSubsystem extends Subsystem {
         else if(colorState == ColorState.GREEN)
             ledLight.setPosition(ColorState.GREEN.color);
     }
-
     private void updateBreakBeam(){
-        //true is not broken/nothing in, false is broken
-        blockInClaw = state == State.CLOSE && !breakBeam.getState();
+        //true is block in claw, false is no block
+        blockInClaw = (state == State.CLOSE && !breakBeam.getState()) || disableBreakBeam;
     }
 
     @Override

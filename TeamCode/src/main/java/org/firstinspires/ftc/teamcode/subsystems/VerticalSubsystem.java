@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.shplib.Constants.Vertical.kIncremen
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Vertical.kLeftSlideName;
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Vertical.kMaxHeight;
 import static org.firstinspires.ftc.teamcode.shplib.Constants.Vertical.kRightSlideName;
+import static org.firstinspires.ftc.teamcode.shplib.Constants.Vertical.kRunPower;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -12,7 +13,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.shprobotics.pestocore.algorithms.LowPassFilter;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.shplib.Constants;
 import org.firstinspires.ftc.teamcode.shplib.commands.Subsystem;
 
 import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
@@ -21,7 +21,7 @@ public class VerticalSubsystem extends Subsystem {
     private final CachingDcMotorEx leftSlide;
     private final CachingDcMotorEx rightSlide;
     private int slidePos;
-    private int offset;
+    private double slidePower;
     private double slideVelocity;
     private boolean slideBottom;
     private final LowPassFilter lowPassFilter;
@@ -53,7 +53,7 @@ public class VerticalSubsystem extends Subsystem {
     public VerticalSubsystem(HardwareMap hardwareMap) {
         slideBottom = false;
         slidePos = 0;
-        offset = 0;
+        slidePower = kRunPower;
         slideVelocity = 0;
 
         lowPassFilter = new LowPassFilter(0.5);
@@ -107,10 +107,6 @@ public class VerticalSubsystem extends Subsystem {
         slidePos -= kIncrement;
     }
 
-    public void endReset() {
-        offset = (leftSlide.getCurrentPosition() + rightSlide.getCurrentPosition()) / 2;
-        slidePos = 0;
-    }
 
     public void resetZeroPosition() {
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -119,14 +115,21 @@ public class VerticalSubsystem extends Subsystem {
         leftSlide.setTargetPosition(0);
         rightSlide.setTargetPosition(0);
 
-        rightSlide.setPower(Constants.Vertical.kRunPower);
-        leftSlide.setPower(Constants.Vertical.kRunPower);
+        rightSlide.setPower(slidePower);
+        leftSlide.setPower(slidePower);
 
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void updateSlidePower() {
+    public void setSlidePower(boolean auto){
+        if(auto)
+            slidePower = 1.0;
+        else
+            slidePower = kRunPower;
+    }
+
+    private void updateSlidePower( ) {
         if (state == State.BOTTOM
                 && (depositState == State.HIGH_BUCKET || depositState == State.LOW_BUCKET)
                     && slideVelocity > 250.0 && getSlidePosition() > 100){
@@ -138,8 +141,8 @@ public class VerticalSubsystem extends Subsystem {
             leftSlide.setPower(0.4);
         }
         else {
-            rightSlide.setPower(Constants.Vertical.kRunPower);
-            leftSlide.setPower(Constants.Vertical.kRunPower);
+            rightSlide.setPower(slidePower);
+            leftSlide.setPower(slidePower);
         }
 
         if (getSlidePosition() < 5)
@@ -164,11 +167,11 @@ public class VerticalSubsystem extends Subsystem {
         updateSlidePower();
 
         if (this.state == State.PASSIVE)
-            this.setPosition(this.state.position+slidePos);
+            this.setPosition(this.state.position + slidePos);
         else if (this.state == State.DEPOSITING)
-            this.setPosition(this.depositState.position+slidePos);
+            this.setPosition(this.depositState.position + slidePos);
         else if (this.state == State.BOTTOM)
-            this.setPosition(this.state.position);
+            this.setPosition(this.state.position + slidePos);
         else
             this.setPosition(this.state.position + slidePos);
 
