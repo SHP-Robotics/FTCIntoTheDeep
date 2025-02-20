@@ -13,7 +13,6 @@ import com.shprobotics.pestocore.devices.GamepadKey;
 import com.shprobotics.pestocore.geometries.Pose2D;
 import com.shprobotics.pestocore.geometries.Vector2D;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.commands.BlockInBotCommand;
 import org.firstinspires.ftc.teamcode.commands.BucketToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToBucketCommand;
@@ -26,13 +25,9 @@ import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
 import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.commands.RunCommand;
 import org.firstinspires.ftc.teamcode.shplib.commands.Trigger;
-import org.firstinspires.ftc.teamcode.subsystems.DetectSample;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
@@ -41,10 +36,7 @@ public class AOfficialTeleOp extends BaseRobot {
     private double driveBias;
     private boolean bucketExtended;
     GamepadInterface gamepadInterface1, gamepadInterface2;
-    ArrayList<Pose2D> positions;
-    OpenCvCamera camera;
-    int cameraMonitorViewId;
-    DetectSample detectSample;
+
     Pose2D lastDetection = new Pose2D(0,0,0);
     ElapsedTime clawAlignment;
 
@@ -57,22 +49,7 @@ public class AOfficialTeleOp extends BaseRobot {
                 )
         );
 
-        detectSample = new DetectSample(telemetry);
 
-        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        camera.setPipeline(detectSample);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-
-            }
-        });
 
         clawAlignment = new ElapsedTime();
 
@@ -107,18 +84,7 @@ public class AOfficialTeleOp extends BaseRobot {
         );
 
         //rotation detection
-        positions = detectSample.getPositions();
-        lastDetection = selectPos(positions);
-        if (lastDetection == null) {
-            lastDetection = new Pose2D(0, 0, 0);
-            clawAlignment.reset();
-        }
-
-        if(pivot.getState() == PREPARE_INTAKE){
-            telemetry.addData("Detected rotation", lastDetection.getHeadingRadians());
-            rotate.turn(lastDetection.getHeadingRadians());
-            rotate.processState();
-        }
+        detectSamples();
 
         //rotation movement
         new Trigger(pivot.getState() == PREPARE_INTAKE, new RunCommand(()->{
@@ -126,7 +92,7 @@ public class AOfficialTeleOp extends BaseRobot {
                 clawAlignment.reset();
                 claw.open();
             }
-            else if(clawAlignment.seconds() > 1){
+            else if(clawAlignment.seconds() > 1 && sampleCentered()){
                 CommandScheduler.getInstance().scheduleCommand(
                         new SubToDriveCommand(rotate, claw, pivot, horiz)
                                 .then(new RunCommand(()->clawAlignment.reset())));
@@ -201,8 +167,26 @@ public class AOfficialTeleOp extends BaseRobot {
                 result = position;
             }
         }
-
         return result;
+    }
+
+    public void detectSamples(){
+        positions = detectSample.getPositions();
+        lastDetection = selectPos(positions);
+        if (lastDetection == null) {
+            lastDetection = new Pose2D(0, 0, 0);
+            clawAlignment.reset();
+        }
+
+        if(pivot.getState() == PREPARE_INTAKE){
+            telemetry.addData("Detected rotation", lastDetection.getHeadingRadians());
+            rotate.turn(lastDetection.getHeadingRadians());
+            rotate.processState();
+        }
+    }
+
+    public boolean sampleCentered(){
+        return Math.abs(lastDetection.getY()) < 100 && Math.abs(lastDetection.getX()) < 100;
     }
 
 }

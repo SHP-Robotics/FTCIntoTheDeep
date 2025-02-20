@@ -28,7 +28,7 @@ public class SubToDriveCommand extends Command {
         this.claw = claw;
         this.pivot = pivot;
         this.horiz = horiz;
-        endTime = 0.5;
+        endTime = 0.75;
     }
 
 
@@ -43,7 +43,7 @@ public class SubToDriveCommand extends Command {
     public void execute() {
         pivot.setState(PivotSubsystem.State.INTAKE);
 
-        if(Clock.hasElapsed(startTime, 0.35))
+        if(Clock.hasElapsed(startTime, 0.25))
             claw.close();
     }
 

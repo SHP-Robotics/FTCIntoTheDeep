@@ -2,15 +2,23 @@ package org.firstinspires.ftc.teamcode.shplib;
 
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.shprobotics.pestocore.geometries.Pose2D;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.utility.Clock;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.DetectSample;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+
+import java.util.ArrayList;
 //import org.firstinspires.ftc.teamcode.subsystems.VisionSubsystem;
 
 /**
@@ -37,6 +45,11 @@ public class BaseRobot extends OpMode {
     public double previousTime = 0;
     public double andrewWompWomp = 0;
 
+    public ArrayList<Pose2D> positions;
+    OpenCvCamera camera;
+    int cameraMonitorViewId;
+    public DetectSample detectSample;
+
     // Called when you press the init button
     @Override
     public void init() {
@@ -55,6 +68,23 @@ public class BaseRobot extends OpMode {
 //        vision = new VisionSubsystem(hardwareMap);
         claw = new ClawSubsystem(hardwareMap);
         horiz = new HorizSubsystem(hardwareMap);
+
+        detectSample = new DetectSample(telemetry);
+
+        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        camera.setPipeline(detectSample);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+
+            }
+        });
     }
 
     // Called when you press the start button
