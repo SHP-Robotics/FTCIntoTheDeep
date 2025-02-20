@@ -70,7 +70,7 @@ public class RotateSubsystem extends Subsystem {
 //        rotatePos = rotatePos*0.5 + ((radians*0.6/PI)+0.4)*0.5;
         rotatePos = (radians*0.6/PI)+0.4;
 
-        aligned = Math.abs(prevPos - rotatePos) < 0.15;
+        aligned = Math.abs(prevPos - rotatePos) < 0.1;
 
     }
 

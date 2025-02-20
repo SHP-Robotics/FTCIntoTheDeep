@@ -43,7 +43,7 @@ public class SubToDriveCommand extends Command {
     public void execute() {
         pivot.setState(PivotSubsystem.State.INTAKE);
 
-        if(Clock.hasElapsed(startTime, 0.25))
+        if(Clock.hasElapsed(startTime, 0.35))
             claw.close();
     }
 

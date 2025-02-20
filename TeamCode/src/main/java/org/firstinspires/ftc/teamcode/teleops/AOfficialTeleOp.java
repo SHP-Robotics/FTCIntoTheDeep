@@ -61,12 +61,10 @@ public class AOfficialTeleOp extends BaseRobot {
 
         cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-
+        camera.setPipeline(detectSample);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                // todo: get limelight resolution and camera orientation
-//                camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
                 camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
             }
 
@@ -117,6 +115,7 @@ public class AOfficialTeleOp extends BaseRobot {
         }
 
         if(pivot.getState() == PREPARE_INTAKE){
+            telemetry.addData("Detected rotation", lastDetection.getHeadingRadians());
             rotate.turn(lastDetection.getHeadingRadians());
             rotate.processState();
         }
@@ -127,7 +126,7 @@ public class AOfficialTeleOp extends BaseRobot {
                 clawAlignment.reset();
                 claw.open();
             }
-            else if(clawAlignment.seconds() > 0.5){
+            else if(clawAlignment.seconds() > 1){
                 CommandScheduler.getInstance().scheduleCommand(
                         new SubToDriveCommand(rotate, claw, pivot, horiz)
                                 .then(new RunCommand(()->clawAlignment.reset())));
@@ -188,12 +187,9 @@ public class AOfficialTeleOp extends BaseRobot {
         if(gamepadInterface2.isKeyDown(GamepadKey.A)) new BlockInBotCommand(horiz); //CROSS?
         if(gamepadInterface2.isKeyDown(GamepadKey.Y)) drive.toggleIMU(); //TRIANGLE
 
-        //TODO disable break beam
+        //disables break beam
         if(gamepadInterface2.isKeyDown(GamepadKey.X)) claw.toggleBreakBeam(); //SQUARE
-
-
     }
-
 
     public Pose2D selectPos(ArrayList<Pose2D> positions){
         double shortest = Double.POSITIVE_INFINITY;
