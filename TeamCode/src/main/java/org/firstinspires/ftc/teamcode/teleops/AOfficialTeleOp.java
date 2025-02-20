@@ -32,6 +32,7 @@ import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
@@ -56,9 +57,25 @@ public class AOfficialTeleOp extends BaseRobot {
                 )
         );
 
+        detectSample = new DetectSample(telemetry);
+
         cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        detectSample = new DetectSample(telemetry);
+
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                // todo: get limelight resolution and camera orientation
+//                camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+
+            }
+        });
+
         clawAlignment = new ElapsedTime();
 
         gamepadInterface1 = new GamepadInterface(gamepad1);
@@ -93,8 +110,10 @@ public class AOfficialTeleOp extends BaseRobot {
 
         //rotation detection
         positions = detectSample.getPositions();
-        if(!positions.isEmpty()) {
-            lastDetection = selectPos(positions);
+        lastDetection = selectPos(positions);
+        if (lastDetection == null) {
+            lastDetection = new Pose2D(0, 0, 0);
+            clawAlignment.reset();
         }
 
         if(pivot.getState() == PREPARE_INTAKE){
@@ -108,7 +127,7 @@ public class AOfficialTeleOp extends BaseRobot {
                 clawAlignment.reset();
                 claw.open();
             }
-            else if(clawAlignment.seconds() > 2){
+            else if(clawAlignment.seconds() > 0.5){
                 CommandScheduler.getInstance().scheduleCommand(
                         new SubToDriveCommand(rotate, claw, pivot, horiz)
                                 .then(new RunCommand(()->clawAlignment.reset())));
@@ -178,7 +197,7 @@ public class AOfficialTeleOp extends BaseRobot {
 
     public Pose2D selectPos(ArrayList<Pose2D> positions){
         double shortest = Double.POSITIVE_INFINITY;
-        Pose2D result = new Pose2D(0,0,0);
+        Pose2D result = null;
         for(Pose2D position : positions) {
             double dist = Vector2D.dist(position.asVector(),lastDetection.asVector());
             if (dist < shortest){
