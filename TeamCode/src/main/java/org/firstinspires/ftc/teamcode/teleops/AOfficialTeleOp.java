@@ -34,7 +34,7 @@ import java.util.ArrayList;
 @TeleOp(name = "A Official Teleop")
 public class AOfficialTeleOp extends BaseRobot {
     private double driveBias;
-    private boolean bucketExtended;
+    private boolean bucketExtended, autoRotation;
     GamepadInterface gamepadInterface1, gamepadInterface2;
 
     Pose2D lastDetection = new Pose2D(0,0,0);
@@ -58,6 +58,8 @@ public class AOfficialTeleOp extends BaseRobot {
 //        vision.limelight.start();
         bucketExtended = false;
         vertical.setSlidePower(false);
+
+        autoRotation = true;
     }
     @Override
     public void start(){
@@ -83,27 +85,35 @@ public class AOfficialTeleOp extends BaseRobot {
                 new SubToDriveCommand(rotate, claw, pivot, horiz)
         );
 
-        //rotation detection
-        detectSamples();
-
-        //rotation movement
-        new Trigger(pivot.getState() == PREPARE_INTAKE, new RunCommand(()->{
-            if(!rotate.aligned) {
-                clawAlignment.reset();
-                claw.open();
-            }
-            else if(clawAlignment.seconds() > 1 && sampleCentered()){
-                CommandScheduler.getInstance().scheduleCommand(
-                        new SubToDriveCommand(rotate, claw, pivot, horiz)
-                                .then(new RunCommand(()->clawAlignment.reset())));
-            }
-        }));
-
-        telemetry.addData("clawAlignment", clawAlignment.seconds());
-        telemetry.addData("CENTERED?", sampleCentered());
-
+        //extend horizontal slides
         if(gamepad1.right_trigger >= 0.0 && (pivot.getState() == PREPARE_INTAKE || pivot.getState() == INTAKE))
             horiz.setTriggerPos(gamepad1.right_trigger);
+
+
+        if(autoRotation) {
+            //rotation detection
+            detectSamples();
+
+            //rotation movement
+            new Trigger(pivot.getState() == PREPARE_INTAKE, new RunCommand(() -> {
+                if (!rotate.aligned) {
+                    clawAlignment.reset();
+                    claw.open();
+                } else if (clawAlignment.seconds() > 1 && sampleCentered()) {
+                    CommandScheduler.getInstance().scheduleCommand(
+                            new SubToDriveCommand(rotate, claw, pivot, horiz)
+                                    .then(new RunCommand(() -> clawAlignment.reset())));
+                }
+            }));
+
+            telemetry.addData("clawAlignment", clawAlignment.seconds());
+            telemetry.addData("CENTERED?", sampleCentered());
+        }
+        
+        //turn off auto rotation
+        if(gamepadInterface1.isKeyDown(GamepadKey.DPAD_DOWN)){
+            autoRotation = !autoRotation;
+        }
 
         //abort
         if(gamepad1.dpad_up){
