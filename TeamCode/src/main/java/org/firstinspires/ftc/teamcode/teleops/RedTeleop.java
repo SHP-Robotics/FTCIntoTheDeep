@@ -38,6 +38,7 @@ public class RedTeleop extends BaseRobot {
     private double driveBias;
     private boolean bucketExtended, autoRotation;
     GamepadInterface gamepadInterface1, gamepadInterface2;
+    private int r, g, b;
 
     Pose2D lastDetection = new Pose2D(0,0,0);
     ElapsedTime clawAlignment;
@@ -50,7 +51,9 @@ public class RedTeleop extends BaseRobot {
                         () -> drive.mecanum(-driveBias*gamepad1.left_stick_y, driveBias*gamepad1.left_stick_x, driveBias*gamepad1.right_stick_x)
                 )
         );
-
+        r = 0;
+        g = 0;
+        b = 0;
 
 
         clawAlignment = new ElapsedTime();
@@ -118,11 +121,18 @@ public class RedTeleop extends BaseRobot {
                 .then(new FlashCommand(claw, BLUE)));
 
         if(gamepad1.touchpad){
-            if(detectSample.cycleColorsRed())
-                gamepad1.setLedColor(255,255,0,1000);
-            else
-                gamepad1.setLedColor(255,0,0,1000);
+            if(detectSample.cycleColorsRed()){
+                r = 255;
+                g = 255;
+                b = 0;
+            }
+            else{
+                r = 255;
+                g = 0;
+                b = 0;
+            }
         }
+        gamepad1.setLedColor(r,g,b,1000);
 
         //abort
         if(gamepad1.dpad_up){

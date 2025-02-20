@@ -105,14 +105,8 @@ public class ClawSubsystem extends Subsystem {
 
         updateBreakBeam();
 
-        if(colorState == ColorState.OFF)
-            ledLight.setPosition(ColorState.OFF.color);
-        else if(colorState == ColorState.RED)
-            ledLight.setPosition(colorState.color);
-        else if(colorState == ColorState.PINK)
-            ledLight.setPosition(ColorState.PINK.color);
-        else if(colorState == ColorState.GREEN)
-            ledLight.setPosition(ColorState.GREEN.color);
+        ledLight.setPosition(colorState.color);
+
     }
     private void updateBreakBeam(){
         //true is block in claw, false is no block
