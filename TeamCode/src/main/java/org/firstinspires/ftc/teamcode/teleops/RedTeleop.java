@@ -132,7 +132,8 @@ public class RedTeleop extends BaseRobot {
                 b = 0;
             }
         }
-        gamepad1.setLedColor(r,g,b,1000);
+
+        gamepad1.setLedColor(r,g,b,10000);
 
         //abort
         if(gamepad1.dpad_up){

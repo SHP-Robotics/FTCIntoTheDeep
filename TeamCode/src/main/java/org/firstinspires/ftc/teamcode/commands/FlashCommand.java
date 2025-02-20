@@ -13,6 +13,7 @@ public class FlashCommand extends Command {
     public FlashCommand(ClawSubsystem claw, ClawSubsystem.ColorState color) {
         // You MUST call the parent class constructor and pass through any subsystems you use
         super(claw);
+        this.claw = claw;
         this.color = color;
         endTime = 1;
     }

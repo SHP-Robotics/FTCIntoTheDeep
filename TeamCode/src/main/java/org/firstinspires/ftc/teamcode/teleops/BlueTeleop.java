@@ -127,12 +127,12 @@ public class BlueTeleop extends BaseRobot {
                 b = 0;
             }
             else{
-                r = 255;
+                r = 0;
                 g = 0;
-                b = 0;
+                b = 255;
             }
         }
-        gamepad1.setLedColor(r,g,b,1000);
+        gamepad1.setLedColor(r,g,b,10000);
 
         //abort
         if(gamepad1.dpad_up){
