@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
-import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.BLUE;
 import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.OFF;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.INTAKE;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PICKUP;
@@ -20,7 +19,6 @@ import org.firstinspires.ftc.teamcode.commands.DriveToBucketCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToHumanCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToSubCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToWallCommand;
-import org.firstinspires.ftc.teamcode.commands.FlashCommand;
 import org.firstinspires.ftc.teamcode.commands.SubToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.WallToDriveCommand;
 import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
@@ -36,7 +34,7 @@ import java.util.ArrayList;
 @TeleOp(name = "*** Red Teleop ***")
 public class RedTeleop extends BaseRobot {
     private double driveBias;
-    private boolean bucketExtended, autoRotation;
+    private boolean bucketExtended;
     GamepadInterface gamepadInterface1, gamepadInterface2;
     private int r, g, b;
 
@@ -64,7 +62,6 @@ public class RedTeleop extends BaseRobot {
         bucketExtended = false;
         vertical.setSlidePower(false);
 
-        autoRotation = true;
     }
     @Override
     public void start(){
@@ -95,7 +92,7 @@ public class RedTeleop extends BaseRobot {
             horiz.setTriggerPos(gamepad1.right_trigger);
 
 
-        if(autoRotation) {
+        if(claw.getRotationToggle()) {
             //rotation detection
             detectSamples();
 
@@ -116,9 +113,8 @@ public class RedTeleop extends BaseRobot {
 
         //turn off auto rotation
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.DPAD_DOWN), new RunCommand(()->{
-            autoRotation = !autoRotation;
-            })
-                .then(new FlashCommand(claw, BLUE)));
+            claw.toggleRotation();
+            }));
 
         if(gamepad1.touchpad){
             if(detectSample.cycleColorsRed()){
@@ -188,8 +184,6 @@ public class RedTeleop extends BaseRobot {
 
         //disables break beam
         if(gamepadInterface2.isKeyDown(GamepadKey.X)) claw.toggleBreakBeam(); //SQUARE
-
-        telemetry.addData("AUTO ROTATION ON? ", autoRotation);
 
     }
 

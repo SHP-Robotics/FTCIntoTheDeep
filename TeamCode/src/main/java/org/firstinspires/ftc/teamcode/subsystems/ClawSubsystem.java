@@ -20,6 +20,7 @@ public class ClawSubsystem extends Subsystem {
     private final CachingServo ledLight;
     private final DigitalChannel breakBeam;
     boolean blockInClaw;
+    boolean autoRotation;
     boolean disableBreakBeam;
 
     public enum ColorState {
@@ -54,6 +55,7 @@ public class ClawSubsystem extends Subsystem {
         blockInClaw = false;
         setState(State.CLOSE);
 
+        autoRotation = true;
         disableBreakBeam = false;
     }
 
@@ -97,6 +99,21 @@ public class ClawSubsystem extends Subsystem {
         disableBreakBeam = !disableBreakBeam;
     }
 
+    public void toggleRotation(){
+        autoRotation = !autoRotation;
+    }
+
+    public boolean getRotationToggle(){
+        return autoRotation;
+    }
+
+    public void rotationColor(){
+        if(autoRotation)
+            colorState = ColorState.PINK;
+        else
+            colorState = ColorState.BLUE;
+    }
+
     private void processState() {
         if (this.state == State.CLOSE)
             claw.setPosition(kClose);
@@ -118,7 +135,7 @@ public class ClawSubsystem extends Subsystem {
 
         telemetry.addData("Break Beam: ", breakBeam.getState());
         telemetry.addData("Claw State: ", state);
-        telemetry.addData("BREAKBEAM ON? ", !disableBreakBeam);
-
+        telemetry.addData("BREAK BEAM ON? ", !disableBreakBeam);
+        telemetry.addData("AUTO ROTATION ON? ", autoRotation);
     }
 }

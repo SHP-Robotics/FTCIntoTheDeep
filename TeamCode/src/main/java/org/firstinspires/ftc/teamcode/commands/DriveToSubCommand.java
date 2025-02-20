@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.PINK;
-
 import org.firstinspires.ftc.teamcode.shplib.commands.Command;
 import org.firstinspires.ftc.teamcode.shplib.utility.Clock;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
@@ -14,7 +12,6 @@ public class DriveToSubCommand extends Command {
     ClawSubsystem claw;
     PivotSubsystem pivot;
     HorizSubsystem horiz;
-
     double startTime, endTime;
 
     public DriveToSubCommand(RotateSubsystem rotate, ClawSubsystem claw, PivotSubsystem pivot, HorizSubsystem horiz) {
@@ -48,7 +45,7 @@ public class DriveToSubCommand extends Command {
         rotate.setState(RotateSubsystem.State.INTAKE);
         claw.open();
 
-        claw.setColor(PINK);
+        claw.rotationColor();
     }
 
     // Specifies whether or not the command has finished
