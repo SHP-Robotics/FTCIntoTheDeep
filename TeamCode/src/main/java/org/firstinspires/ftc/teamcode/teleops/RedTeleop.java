@@ -114,7 +114,7 @@ public class RedTeleop extends BaseRobot {
         //turn off auto rotation
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.DPAD_DOWN), new RunCommand(()->{
             claw.toggleRotation();
-            }));
+        }));
 
         if(gamepad1.touchpad){
             if(detectSample.cycleColorsRed()){

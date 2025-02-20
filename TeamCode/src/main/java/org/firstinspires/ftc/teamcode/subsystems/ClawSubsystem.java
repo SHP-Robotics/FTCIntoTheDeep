@@ -99,9 +99,10 @@ public class ClawSubsystem extends Subsystem {
         disableBreakBeam = !disableBreakBeam;
     }
 
-    public void toggleRotation(){
+    public void toggleRotation(boolean change){
         autoRotation = !autoRotation;
-        rotationColor();
+        if(change)
+            rotationColor();
     }
 
     public boolean getRotationToggle(){
