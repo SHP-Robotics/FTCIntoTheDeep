@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
+import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.BLUE;
 import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.OFF;
+import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.PINK;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.INTAKE;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PICKUP;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPARE_INTAKE;
@@ -19,6 +21,7 @@ import org.firstinspires.ftc.teamcode.commands.DriveToBucketCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToHumanCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToSubCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToWallCommand;
+import org.firstinspires.ftc.teamcode.commands.FlashCommand;
 import org.firstinspires.ftc.teamcode.commands.SubToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.WallToDriveCommand;
 import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
@@ -114,8 +117,12 @@ public class BlueTeleop extends BaseRobot {
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.DPAD_DOWN), new RunCommand(()->{
             if(pivot.getState() == PREPARE_INTAKE || pivot.getState() == INTAKE)
                 claw.toggleRotation(true);
-            else
+            else {
                 claw.toggleRotation(false);
+                CommandScheduler.getInstance().scheduleCommand(
+                        new FlashCommand(claw, claw.getRotationToggle() ? PINK : BLUE)
+                );
+            }
         }));
 
         if(gamepad1.touchpad){
