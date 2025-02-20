@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
+import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.BLUE;
 import static org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem.ColorState.OFF;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.INTAKE;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PICKUP;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.commands.DriveToBucketCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToHumanCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToSubCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveToWallCommand;
+import org.firstinspires.ftc.teamcode.commands.FlashCommand;
 import org.firstinspires.ftc.teamcode.commands.SubToDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.WallToDriveCommand;
 import org.firstinspires.ftc.teamcode.shplib.BaseRobot;
@@ -31,8 +33,8 @@ import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 
 import java.util.ArrayList;
 
-@TeleOp(name = "A Official Teleop")
-public class AOfficialTeleOp extends BaseRobot {
+@TeleOp(name = "*** Blue Teleop ***")
+public class BlueTeleop extends BaseRobot {
     private double driveBias;
     private boolean bucketExtended, autoRotation;
     GamepadInterface gamepadInterface1, gamepadInterface2;
@@ -105,14 +107,21 @@ public class AOfficialTeleOp extends BaseRobot {
                                     .then(new RunCommand(() -> clawAlignment.reset())));
                 }
             }));
-
-            telemetry.addData("clawAlignment", clawAlignment.seconds());
-            telemetry.addData("CENTERED?", sampleCentered());
+//            telemetry.addData("clawAlignment", clawAlignment.seconds());
+//            telemetry.addData("CENTERED?", sampleCentered());
         }
-        
+
         //turn off auto rotation
-        if(gamepadInterface1.isKeyDown(GamepadKey.DPAD_DOWN)){
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.DPAD_DOWN), new RunCommand(()->{
             autoRotation = !autoRotation;
+        })
+                .then(new FlashCommand(claw, BLUE)));
+
+        if(gamepad1.touchpad){
+            if(detectSample.cycleColorsBlue())
+                gamepad1.setLedColor(255,255,0,1000);
+            else
+                gamepad1.setLedColor(0,0,255,1000);
         }
 
         //abort
@@ -168,6 +177,9 @@ public class AOfficialTeleOp extends BaseRobot {
 
         //disables break beam
         if(gamepadInterface2.isKeyDown(GamepadKey.X)) claw.toggleBreakBeam(); //SQUARE
+
+        telemetry.addData("AUTO ROTATION ON? ", autoRotation);
+
     }
 
     public Pose2D selectPos(ArrayList<Pose2D> positions){
@@ -192,7 +204,7 @@ public class AOfficialTeleOp extends BaseRobot {
         }
 
         if(pivot.getState() == PREPARE_INTAKE){
-            telemetry.addData("Detected rotation", lastDetection.getHeadingRadians());
+//            telemetry.addData("Detected rotation", lastDetection.getHeadingRadians());
             rotate.turn(lastDetection.getHeadingRadians());
             rotate.processState();
         }

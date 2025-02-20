@@ -25,6 +25,7 @@ public class ClawSubsystem extends Subsystem {
     public enum ColorState {
         OFF(0.0),
         RED(0.279),
+        BLUE(0.5858),
         PINK(0.7),
         GREEN(0.5);
         final double color;
@@ -124,5 +125,7 @@ public class ClawSubsystem extends Subsystem {
 
         telemetry.addData("Break Beam: ", breakBeam.getState());
         telemetry.addData("Claw State: ", state);
+        telemetry.addData("BREAKBEAM ON? ", !disableBreakBeam);
+
     }
 }

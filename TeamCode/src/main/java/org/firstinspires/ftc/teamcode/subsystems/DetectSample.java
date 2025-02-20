@@ -29,13 +29,59 @@ public class DetectSample extends OpenCvPipeline {
     public static double highS = 255;
     public static double lowV = 150;
     public static double highV = 255;
-//    public static double blur = 1; //TODO TUNE ALL OF THESE
+
+    public static Scalar lowYellow = new Scalar(20, 0, 150);
+    public static Scalar highYellow = new Scalar(40, 255, 255);
+    public static Scalar lowRed = new Scalar(20, 0, 150); //TODO TUNE BLUE AND RED
+    public static Scalar highRed = new Scalar(40, 255, 255);
+    public static Scalar lowBlue = new Scalar(20, 0, 150);
+    public static Scalar highBlue = new Scalar(40, 255, 255);
+
+    public static Scalar lowHSV = lowYellow;
+    public static Scalar highHSV = highYellow;
+
+    public enum ColorState{
+        YELLOW, RED, BLUE;
+    }
+
+    //    public static double blur = 1;
     ArrayList<Pose2D> positions = new ArrayList<>();
     Telemetry telemetry;
+    ColorState colorState = ColorState.YELLOW;
 
     public DetectSample(Telemetry telemetry) {
         this.telemetry = telemetry;
         this.frameList = new ArrayList<>();
+    }
+
+    public boolean cycleColorsRed(){
+        if(colorState == ColorState.YELLOW){
+            colorState = ColorState.RED;
+            lowHSV = lowRed;
+            highHSV = highRed;
+            return false;
+        }
+        else{
+            colorState = ColorState.YELLOW;
+            lowHSV = lowYellow;
+            highHSV = highYellow;
+            return true;
+        }
+    }
+
+    public boolean cycleColorsBlue(){
+        if(colorState == ColorState.YELLOW){
+            colorState = ColorState.BLUE;
+            lowHSV = lowBlue;
+            highHSV = highBlue;
+            return false;
+        }
+        else {
+            colorState = ColorState.YELLOW;
+            lowHSV = lowYellow;
+            highHSV = highYellow;
+            return true;
+        }
     }
 
     @Override
@@ -43,7 +89,7 @@ public class DetectSample extends OpenCvPipeline {
         ArrayList<Pose2D> positions = new ArrayList<>();
 
         Mat mat = ComputerVision.convertColor(input, Imgproc.COLOR_RGB2HSV);
-        Mat scaledThresh = ComputerVision.filterColor(mat, new Scalar(lowH, lowS, lowV), new Scalar(highH, highS, highV));
+        Mat scaledThresh = ComputerVision.filterColor(mat, lowHSV, highHSV);
 //        Mat blurred = ComputerVision.blur(scaledThresh, new Size(blur, blur)); //TODO ENP THIS IS A CNN
 
         ArrayList<MatOfPoint> contours = new ArrayList<>();
