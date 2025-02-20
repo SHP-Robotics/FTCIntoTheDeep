@@ -101,6 +101,7 @@ public class ClawSubsystem extends Subsystem {
 
     public void toggleRotation(){
         autoRotation = !autoRotation;
+        rotationColor();
     }
 
     public boolean getRotationToggle(){
