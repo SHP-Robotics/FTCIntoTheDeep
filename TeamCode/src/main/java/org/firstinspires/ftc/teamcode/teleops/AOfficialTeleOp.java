@@ -186,7 +186,7 @@ public class AOfficialTeleOp extends BaseRobot {
     }
 
     public boolean sampleCentered(){
-        return Math.abs(lastDetection.getY()) < 100 && Math.abs(lastDetection.getX()) < 100;
+        return Math.abs(lastDetection.getY()) < 300 && Math.abs(lastDetection.getX()) < 200;
     }
 
 }

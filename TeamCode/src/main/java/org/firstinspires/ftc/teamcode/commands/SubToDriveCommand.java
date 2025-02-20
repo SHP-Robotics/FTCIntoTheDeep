@@ -28,7 +28,7 @@ public class SubToDriveCommand extends Command {
         this.claw = claw;
         this.pivot = pivot;
         this.horiz = horiz;
-        endTime = 0.75;
+        endTime = 0.65;
     }
 
 
