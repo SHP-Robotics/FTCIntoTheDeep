@@ -99,6 +99,9 @@ public class AOfficialTeleOp extends BaseRobot {
             }
         }));
 
+        telemetry.addData("clawAlignment", clawAlignment.seconds());
+        telemetry.addData("CENTERED?", sampleCentered());
+
         if(gamepad1.right_trigger >= 0.0 && (pivot.getState() == PREPARE_INTAKE || pivot.getState() == INTAKE))
             horiz.setTriggerPos(gamepad1.right_trigger);
 
