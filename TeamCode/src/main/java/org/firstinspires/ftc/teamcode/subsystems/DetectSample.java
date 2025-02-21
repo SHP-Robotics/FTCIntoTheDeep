@@ -7,6 +7,7 @@ import com.shprobotics.pestocore.vision.ComputerVision;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
@@ -87,6 +88,15 @@ public class DetectSample extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input){
         ArrayList<Pose2D> positions = new ArrayList<>();
+
+        Mat transformMatrix = new Mat(3, 3, CvType.CV_32F);
+        transformMatrix.put(0, 0,
+                1.01150794e+00, 7.90240575e-03, -1.01150794e+01,
+                -1.27794308e-17, 5.81546506e-01, 9.75715091e-16
+                        -6.29340278e-04, 2.64534810e-05, 1.00000000e+00);
+
+        Mat perspective = new Mat();
+        Core.perspectiveTransform(input, perspective, transformMatrix);
 
         Mat mat = ComputerVision.convertColor(input, Imgproc.COLOR_RGB2HSV);
         Mat scaledThresh;
