@@ -137,6 +137,7 @@ public class ClawSubsystem extends Subsystem {
 
         telemetry.addData("Break Beam: ", breakBeam.getState());
         telemetry.addData("Claw State: ", state);
+        telemetry.addData("Claw : ", claw.getPosition());
         telemetry.addData("BREAK BEAM ON? ", !disableBreakBeam);
         telemetry.addData("AUTO ROTATION ON? ", autoRotation);
     }

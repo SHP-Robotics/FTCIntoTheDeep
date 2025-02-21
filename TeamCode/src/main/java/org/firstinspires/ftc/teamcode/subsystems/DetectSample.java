@@ -27,23 +27,47 @@ public class DetectSample extends OpenCvPipeline {
 
     // todo: tune values in FTC Dashboard
 
-    public static Scalar lowYellow = new Scalar(20, 0, 150);
-    public static Scalar highYellow = new Scalar(40, 255, 255);
-    public static Scalar lowRed = new Scalar(10, 0, 0); //TODO TUNE BLUE AND RED
-    public static Scalar highRed = new Scalar(225, 225, 225);
-    public static Scalar lowBlue = new Scalar(40, 45, 25);
-    public static Scalar highBlue = new Scalar(180, 255, 255);
+    public static Scalar lowHSV = ColorState.YELLOW.low;
+    public static Scalar highHSV = ColorState.YELLOW.high;
+//    public static double trapizoidWidth = 700;
+    public static double blur = ColorState.YELLOW.blur;
+    public static int lowThresh = ColorState.YELLOW.thresh;
+    public static boolean inverted = ColorState.YELLOW.inverted;
 
-    public static Scalar lowHSV = lowYellow;
-    public static Scalar highHSV = highYellow;
-    public static double trapizoidWidth = 700;
-    public static boolean inverted = false;
 
     public enum ColorState{
-        YELLOW, RED, BLUE;
+        YELLOW(
+                new Scalar(14, 50, 150),
+                new Scalar(35, 255, 255),
+                1, 1, false
+        ),
+
+        RED(
+                new Scalar(14, 0, 0),
+                new Scalar(255, 255, 255),
+                30, 200, true
+        ),
+
+        BLUE(
+                new Scalar(110, 60, 25),
+                new Scalar(125, 255, 255),
+                10, 100, false
+        );
+
+        ColorState(Scalar low, Scalar high, double blur, int thresh, boolean inverted) {
+            this.low = low;
+            this.high = high;
+            this.blur = blur;
+            this.thresh = thresh;
+            this.inverted = inverted;
+        }
+
+        public final Scalar low, high;
+        public final double blur;
+        public final int thresh;
+        public final boolean inverted;
     }
 
-    public static double blur = 1;
     ArrayList<Pose2D> positions = new ArrayList<>();
     Telemetry telemetry;
     ColorState colorState = ColorState.YELLOW;
@@ -54,35 +78,30 @@ public class DetectSample extends OpenCvPipeline {
     }
 
     public boolean cycleColorsRed(){
-        if(colorState == ColorState.YELLOW){
+        if(colorState == ColorState.YELLOW)
             colorState = ColorState.RED;
-            lowHSV = lowRed;
-            highHSV = highRed;
-            inverted = true;
-            return false;
-        }
-        else{
+        else
             colorState = ColorState.YELLOW;
-            lowHSV = lowYellow;
-            highHSV = highYellow;
-            inverted = false;
-            return true;
-        }
+        updateColorValues();
+        return colorState == ColorState.YELLOW;
+
     }
 
     public boolean cycleColorsBlue(){
-        if(colorState == ColorState.YELLOW){
+        if(colorState == ColorState.YELLOW)
             colorState = ColorState.BLUE;
-            lowHSV = lowBlue;
-            highHSV = highBlue;
-            return false;
-        }
-        else {
+        else
             colorState = ColorState.YELLOW;
-            lowHSV = lowYellow;
-            highHSV = highYellow;
-            return true;
-        }
+        updateColorValues();
+        return colorState == ColorState.YELLOW;
+    }
+
+    private void updateColorValues(){
+        lowHSV = colorState.low;
+        highHSV = colorState.high;
+        blur = colorState.blur;
+        lowThresh = colorState.thresh;
+        inverted = colorState.inverted;
     }
 
     @Override
@@ -91,14 +110,14 @@ public class DetectSample extends OpenCvPipeline {
 
         Mat transformMatrix = new Mat(3, 3, CvType.CV_32F);
         transformMatrix.put(0, 0,
-                1.01150794e+00, 7.90240575e-03, -1.01150794e+01,
-                -1.27794308e-17, 5.81546506e-01, 9.75715091e-16
-                        -6.29340278e-04, 2.64534810e-05, 1.00000000e+00);
+                 +1.83e+00, +7.37e-01, -5.30e+02,
+                        +1.68e-16, +1.83e+00, +0.00e+00,
+                        +0.00e+00, +1.15e-03, +1.00e+00);
 
         Mat perspective = new Mat();
-        Core.perspectiveTransform(input, perspective, transformMatrix);
+        Imgproc.warpPerspective(input, perspective, transformMatrix, input.size());
 
-        Mat mat = ComputerVision.convertColor(input, Imgproc.COLOR_RGB2HSV);
+        Mat mat = ComputerVision.convertColor(perspective, Imgproc.COLOR_RGB2HSV);
         Mat scaledThresh;
 
         if(inverted){
@@ -111,11 +130,14 @@ public class DetectSample extends OpenCvPipeline {
             scaledThresh = ComputerVision.filterColor(mat, lowHSV, highHSV);
 
         Mat blurred = ComputerVision.blur(scaledThresh, new Size(blur, blur)); //TODO ENP THIS IS A CNN
-//        Mat sharp = Imgproc.threshold(blurred, sharp, 0.5,)
+        Mat thresh = new Mat();
+        Imgproc.threshold(blurred, thresh, lowThresh, 255, Imgproc.THRESH_BINARY);
+
+
         telemetry.addData("Sample Color State", colorState);
         
         ArrayList<MatOfPoint> contours = new ArrayList<>();
-        Imgproc.findContours(scaledThresh, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
+        Imgproc.findContours(thresh, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
 
         for (MatOfPoint contour: contours) {
             Point[] points = contour.toArray();
@@ -130,7 +152,7 @@ public class DetectSample extends OpenCvPipeline {
 
             // todo: delete telemetry after tuning
 //            telemetry.addLine("h" + rotatedRect.size.height + " w" + rotatedRect.size.width);
-//            drawRotatedRect(rotatedRect, blurred, new Scalar(255, 255, 0)); //TODO TRY TO MAKE COLORED
+            drawRotatedRect(rotatedRect, thresh, new Scalar(255, 255, 0)); //TODO TRY TO MAKE COLORED
 
             Pose2D position = ComputerVision.getPose(contour);
             position.add(new Vector2D(-640, -360));
@@ -154,12 +176,16 @@ public class DetectSample extends OpenCvPipeline {
 
         // RELEASE EVERYTHING
         mat.release();
+        transformMatrix.release();
+        perspective.release();
+        input.release();
 
-        Imgproc.line(blurred, new Point(0,720), new Point((1280-trapizoidWidth)/2, 0), new Scalar(255, 255, 0), 3);
-        Imgproc.line(blurred, new Point(1280,720), new Point((1280+trapizoidWidth)/2, 0), new Scalar(255, 255, 0), 3);
 
-        blurred.copyTo(input);
+//        Imgproc.line(blurred, new Point(0,720), new Point((1280-trapizoidWidth)/2, 0), new Scalar(255, 255, 0), 3);
+//        Imgproc.line(blurred, new Point(1280,720), new Point((1280+trapizoidWidth)/2, 0), new Scalar(255, 255, 0), 3);
 
+        thresh.copyTo(input);
+        thresh.release();
         scaledThresh.release();
         blurred.release();
 

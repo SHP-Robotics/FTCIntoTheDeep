@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.devices.GamepadInterface;
 import com.shprobotics.pestocore.devices.GamepadKey;
 
 import org.firstinspires.ftc.teamcode.shplib.TestBaseBot;
 
-@Disabled
+
 @TeleOp
 public class ClawTeleOp extends TestBaseBot {
     private double driveBias;

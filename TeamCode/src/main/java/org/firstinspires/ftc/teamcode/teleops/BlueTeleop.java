@@ -7,9 +7,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.INT
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PICKUP;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPARE_INTAKE;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPARE_INTAKE_HIGHER;
-
 import static java.lang.Math.abs;
-import static java.lang.Math.sin;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -102,16 +100,16 @@ public class BlueTeleop extends BaseRobot {
             detectSamples();
 
             //rotation movement
-            new Trigger(pivot.getState() == PREPARE_INTAKE, new RunCommand(() -> {
-                if (!rotate.aligned) {
-                    clawAlignment.reset();
-                    claw.open();
-                } else if (clawAlignment.seconds() > 0.5 && sampleCentered()) {
-                    CommandScheduler.getInstance().scheduleCommand(
-                            new SubToDriveCommand(rotate, claw, pivot, horiz)
-                                    .then(new RunCommand(() -> clawAlignment.reset())));
-                }
-            }));
+//            new Trigger(pivot.getState() == PREPARE_INTAKE, new RunCommand(() -> {
+//                if (!rotate.aligned) {
+//                    clawAlignment.reset();
+//                    claw.open();
+//                } else if (clawAlignment.seconds() > 0.5 && sampleCentered()) {
+//                    CommandScheduler.getInstance().scheduleCommand(
+//                            new SubToDriveCommand(rotate, claw, pivot, horiz)
+//                                    .then(new RunCommand(() -> clawAlignment.reset())));
+//                }
+//            }));
 //            telemetry.addData("clawAlignment", clawAlignment.seconds());
 //            telemetry.addData("CENTERED?", sampleCentered());
         }
@@ -202,7 +200,7 @@ public class BlueTeleop extends BaseRobot {
         double shortest = Double.POSITIVE_INFINITY;
         Pose2D result = null;
         for(Pose2D position : positions) {
-            double dist = Vector2D.dist(position.asVector(),lastDetection.asVector());
+            double dist = Vector2D.dist(position.asVector(), new Vector2D(0, 0));
             if (dist < shortest){
                 shortest = dist;
                 result = position;
@@ -228,18 +226,22 @@ public class BlueTeleop extends BaseRobot {
 
     public boolean sampleCentered(){
         double rotation = lastDetection.getHeadingRadians();
-        double x = 49.11059 * sin(2.11383 * (rotation - 1.30238)) -6.39344;
-        double y = 83.88397 * sin(3.61363 * (rotation + 0.171685)) - 66.27907;
-        double x_tolerance = 79.43963 * sin(1.27117 * (rotation - 0.261354)) + 100.90909;
-        double y_tolerance = 37.52779 * sin(2.66 * (rotation + 0.574)) + 70;
+//        double x = 49.11059 * sin(2.11383 * (rotation - 1.30238)) -6.39344;
+//        double y = 83.88397 * sin(3.61363 * (rotation + 0.171685)) - 66.27907;
+//        double x_tolerance = 79.43963 * sin(1.27117 * (rotation - 0.261354)) + 100.90909;
+//        double y_tolerance = 37.52779 * sin(2.66 * (rotation + 0.574)) + 70;
 
-        telemetry.addData("x tol", x_tolerance);
-        telemetry.addData("y tol", y_tolerance);
-        telemetry.addData("x", x);
-        telemetry.addData("x", y);
+//        telemetry.addData("x tol", x_tolerance);
+//        telemetry.addData("y tol", y_tolerance);
+//        telemetry.addData("x", x);
+//        telemetry.addData("x", y);
+
+        telemetry.addData("X", lastDetection.getX());
+        telemetry.addData("Y", lastDetection.getY());
+        telemetry.addData("rotation", rotation);
 
 
-        return abs(lastDetection.getX()-x) < x_tolerance && abs(lastDetection.getY()-y) < y_tolerance;
+        return abs(lastDetection.getX()-22) < 50 && abs(lastDetection.getY()-0) < 150;
     }
 
 }
