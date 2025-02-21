@@ -159,7 +159,7 @@ public class BlueTeleop extends BaseRobot {
                 new WallToDriveCommand(rotate, claw, pivot, horiz, vertical));
 
         //deposit bucket
-        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && !bucketExtended,
+        new Trigger(gamepadInterface1.isKeyDown(GamepadKey.A) && !bucketExtended, //CROSS
                 new DriveToBucketCommand(rotate, claw, pivot, horiz, vertical)
                         .then(new RunCommand(()->bucketExtended = true))
         );

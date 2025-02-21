@@ -35,6 +35,7 @@ public class DetectSample extends OpenCvPipeline {
 
     public static Scalar lowHSV = lowYellow;
     public static Scalar highHSV = highYellow;
+    public static double trapizoidWidth = 700;
     public static boolean inverted = false;
 
     public enum ColorState{
@@ -100,6 +101,7 @@ public class DetectSample extends OpenCvPipeline {
             scaledThresh = ComputerVision.filterColor(mat, lowHSV, highHSV);
 
         Mat blurred = ComputerVision.blur(scaledThresh, new Size(blur, blur)); //TODO ENP THIS IS A CNN
+//        Mat sharp = Imgproc.threshold(blurred, sharp, 0.5,)
         telemetry.addData("Sample Color State", colorState);
         
         ArrayList<MatOfPoint> contours = new ArrayList<>();
@@ -118,7 +120,7 @@ public class DetectSample extends OpenCvPipeline {
 
             // todo: delete telemetry after tuning
 //            telemetry.addLine("h" + rotatedRect.size.height + " w" + rotatedRect.size.width);
-            drawRotatedRect(rotatedRect, blurred, new Scalar(255, 255, 0));
+//            drawRotatedRect(rotatedRect, blurred, new Scalar(255, 255, 0)); //TODO TRY TO MAKE COLORED
 
             Pose2D position = ComputerVision.getPose(contour);
             position.add(new Vector2D(-640, -360));
@@ -140,11 +142,14 @@ public class DetectSample extends OpenCvPipeline {
             frameList.remove(0);
         }
 
-
         // RELEASE EVERYTHING
-        input.release();
         mat.release();
+
+        Imgproc.line(blurred, new Point(0,720), new Point((1280-trapizoidWidth)/2, 0), new Scalar(255, 255, 0), 3);
+        Imgproc.line(blurred, new Point(1280,720), new Point((1280+trapizoidWidth)/2, 0), new Scalar(255, 255, 0), 3);
+
         blurred.copyTo(input);
+
         scaledThresh.release();
         blurred.release();
 
