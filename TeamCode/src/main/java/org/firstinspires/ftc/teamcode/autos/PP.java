@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.autos;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.sin;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -77,11 +76,11 @@ public class PP extends OpMode {
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
     private final Pose startPose = new Pose(7, 103, Math.toRadians(270));
-    private final Pose scorePose = new Pose(14, 130, Math.toRadians(315));
-    private final Pose pickup1Pose = new Pose(21, 121, Math.toRadians(0));
+    private final Pose scorePose = new Pose(14.5, 131, Math.toRadians(315));
+    private final Pose pickup1Pose = new Pose(21, 122, Math.toRadians(0));
     private final Pose pickup2Pose = new Pose(21, 130, Math.toRadians(0));
-    private final Pose pickup3Pose = new Pose(23, 132, Math.toRadians(20));
-    private final Pose pickupSubPose = new Pose(60, 88, Math.toRadians(270));
+    private final Pose pickup3Pose = new Pose(23.5, 132, Math.toRadians(20));
+    private final Pose pickupSubPose = new Pose(60, 98, Math.toRadians(270));
     private final Pose parkPose = new Pose(65, 92, Math.toRadians(270));
 
     private static Path scorePreload,
@@ -104,13 +103,19 @@ public class PP extends OpMode {
         grab2 = new Path(new BezierCurve(new Point(scorePose), new Point(pickup2Pose)));
         grab2.setLinearHeadingInterpolation(scorePose.getHeading(), pickup2Pose.getHeading());
 
-        deposit2 = new Path(new BezierCurve(new Point(pickup2Pose), new Point(scorePose)));
+        deposit2 = new Path(new BezierCurve(
+                new Point(pickup2Pose),
+                new Point(16, 125),
+                new Point(scorePose)));
         deposit2.setLinearHeadingInterpolation(pickup2Pose.getHeading(), scorePose.getHeading());
 
         grab3 = new Path(new BezierCurve(new Point(scorePose), new Point(pickup3Pose)));
         grab3.setLinearHeadingInterpolation(scorePose.getHeading(), pickup3Pose.getHeading());
 
-        deposit3 = new Path(new BezierCurve(new Point(pickup3Pose), new Point(scorePose)));
+        deposit3 = new Path(new BezierCurve(
+                new Point(pickup3Pose),
+                new Point(12, 122),
+                new Point(scorePose)));
         deposit3.setLinearHeadingInterpolation(pickup3Pose.getHeading(), scorePose.getHeading());
 
         grab4 = new Path(new BezierCurve(
@@ -143,80 +148,104 @@ public class PP extends OpMode {
                 vertical.setSlidePower(true);
                 follower.setMaxPower(0.8);
 
-                follower.followPath(scorePreload);
                 prepArm();
+                follower.followPath(scorePreload);
+
                 pathState += 1;
                 return;
             case 1:
-                if(vertical.getSlidePosition() > 3000) {
+                if(vertical.getSlidePosition() > 2700) {
                     lowerArm();
                     follower.followPath(grab1);
+                    updateCommands(0.75);
+                    prepIntake(false);
                     pathState += 1;
                 }
                 return;
             case 2:
             case 5:
             case 8:
-                prepIntake();
                 finishIntake();
                 pathState += 1;
                 return;
             case 3: //deposit 1
-                follower.followPath(deposit1);
                 prepArm();
+                follower.followPath(deposit1);
+
                 pathState += 1;
                 return;
             case 4:
-                if(vertical.getSlidePosition() > 3000) {
+                if(vertical.getSlidePosition() > 2700) {
                     lowerArm();
                     follower.followPath(grab2);
+                    updateCommands(0.75);
+                    prepIntake(false);
                     pathState += 1;
                 }
                 return;
             case 6: //deposit 2
-                follower.followPath(deposit2);
+                follower.setMaxPower(0.7);
                 prepArm();
+                follower.followPath(deposit2);
+
                 pathState += 1;
                 return;
             case 7:
-                if(vertical.getSlidePosition() > 3000) {
+                if(vertical.getSlidePosition() > 2700) {
+                    follower.setMaxPower(0.8);
                     lowerArm();
                     follower.followPath(grab3);
                     rotateIntake();
+                    updateCommands(0.75);
+                    prepIntake(false);
                     pathState += 1;
                 }
                 return;
             case 9:
-                follower.followPath(deposit3);
-                rotateIntake();
+                follower.setMaxPower(0.7);
                 prepArm();
+                follower.followPath(deposit3);
+
                 pathState += 1;
                 return;
             case 10:
-                if(vertical.getSlidePosition() > 3000) {
+                if(vertical.getSlidePosition() > 2700) {
                     follower.setMaxPower(1.0);
                     lowerArm();
+                    rotateIntake();
                     follower.followPath(grab4);
-                    pathState += 1;
+                    updateCommands(1);
+                    prepIntake(true);
+                    pathState += 2;
                 }
                 return;
-            case 11:
-                prepIntake();
-                pathState += 1;
             case 12:
                 while(!autoRotateIntake()) {
+                    if(rotate.aligned)
+                        claw.setColor(ClawSubsystem.ColorState.GREEN);
+                    else
+                        claw.setColor(ClawSubsystem.ColorState.RED);
+
+                    if(opmodeTimer.getElapsedTime() > 29) {
+                        pathState = 15;
+                        return;
+                    }
                 }
                 finishIntake();
                 pathState += 1;
                 return;
             case 13:
-                follower.followPath(deposit4);
-                updateCommands(1.5);
-                prepArm();
                 pathState += 1;
+                follower.followPath(deposit4);
                 return;
             case 14:
-                if(vertical.getSlidePosition() > 3000) {
+                updateCommands(1.5);
+                if(opmodeTimer.getElapsedTime() < 26)
+                    prepArm();
+                pathState += 1;
+                return;
+            case 15:
+                if(vertical.getSlidePosition() > 2700) {
                     lowerArm();
                     follower.followPath(park);
                     parkArm();
@@ -345,14 +374,19 @@ public class PP extends OpMode {
         }
     }
     /** Prepares the intake sample */
-    public void prepIntake(){
+    public void prepIntake(boolean sub){
         horiz.setState(HorizSubsystem.State.PREP_AUTO_INTAKE);
         updateCommands(0.1);
         pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
         rotate.setState(RotateSubsystem.State.INTAKE);
         updateCommands(0.25);
         claw.open();
-        horiz.setState(HorizSubsystem.State.INTAKING_EXTENDED);
+        if(!sub) {
+            horiz.setState(HorizSubsystem.State.INTAKING_EXTENDED);
+        }
+        else{
+            horiz.setState(HorizSubsystem.State.SUB_AUTO_INTAKE);
+        }
         updateCommands(0.4);
     }
 
@@ -394,7 +428,7 @@ public class PP extends OpMode {
     public void lowerArm(){
         pivot.setState(PivotSubsystem.State.OUTTAKE_BUCKET);
         rotate.setState(RotateSubsystem.State.DROPOFF_BUCKET);
-        updateCommands(0.75);
+        updateCommands(0.5);
         claw.open();
         updateCommands(0.25);
         rotate.setState(RotateSubsystem.State.DROPOFF);
@@ -414,7 +448,7 @@ public class PP extends OpMode {
         //rotation detection
         positions = detectSample.getPositions();
         if(positions.isEmpty()) {
-            mecanumController.drive(0,0, 0); //TODO do something... maybe follow path until something found
+            mecanumController.drive(0.1,0, 0); //TODO do something... maybe follow path until something found
             return false;
         }
 
@@ -427,15 +461,16 @@ public class PP extends OpMode {
 
         tracker.update();
 
-        double x;
+        double x, y;
         x = transPID.update(-lastDetection.getX(), 200*tracker.getRobotVelocity().getX());
-
-        mecanumController.drive(0.1, x, 0);
+        y = transPID.update(lastDetection.getY(), 200*tracker.getRobotVelocity().getY());
+        mecanumController.drive(y/3, x/3, 0);
 
 //        horiz.setAutoPos(lastDetection.getY()-360);
 
         rotate.turn(lastDetection.getHeadingRadians());
         rotate.processState();
+        updateCommands();
 
         //rotation movement
         if (!rotate.aligned) {
@@ -445,7 +480,6 @@ public class PP extends OpMode {
             claw.setColor(ClawSubsystem.ColorState.GREEN);
         }
 
-        // && sampleCentered()
         return clawAlignment.seconds() > 0.5 && sampleCentered();
     }
 
@@ -464,18 +498,13 @@ public class PP extends OpMode {
 
     public boolean sampleCentered(){
         double rotation = lastDetection.getHeadingRadians();
-        double x = 49.11059 * sin(2.11383 * (rotation - 1.30238)) -6.39344;
-        double y = 83.88397 * sin(3.61363 * (rotation + 0.171685)) - 66.27907;
-        double x_tolerance = 79.43963 * sin(1.27117 * (rotation - 0.261354)) + 100.90909;
-        double y_tolerance = 37.52779 * sin(2.66 * (rotation + 0.574)) + 70;
 
-        telemetry.addData("x tol", x_tolerance);
-        telemetry.addData("y tol", y_tolerance);
-        telemetry.addData("x", x);
-        telemetry.addData("x", y);
+        telemetry.addData("X", lastDetection.getX());
+        telemetry.addData("Y", lastDetection.getY());
+        telemetry.addData("rotation", rotation);
 
 
-        return abs(lastDetection.getX()-x) < x_tolerance && abs(lastDetection.getY()-y) < y_tolerance;
+        return abs(lastDetection.getX()-22) < 50 && abs(lastDetection.getY()-0) < 150;
     }
 }
 

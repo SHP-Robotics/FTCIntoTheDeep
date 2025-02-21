@@ -84,7 +84,7 @@ public class RotateSubsystem extends Subsystem {
         else if (this.state == State.ANTI_SAMPLE)
             rotatePos = 0.55;
         else if (this.state == State.SAMPLE)
-            rotatePos = 0.9; // 1;
+            rotatePos = 0.85; // 1;
 
         rotate.setPosition(rotatePos);
     }

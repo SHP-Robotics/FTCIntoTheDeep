@@ -31,7 +31,7 @@ public class PivotSubsystem extends Subsystem {
         OUTTAKE_BUCKET(1,0.5),
         HUMAN1(1,0.3),
         HUMAN2(1,0.8),
-        PARK(0.7, 0.355),
+        PARK(0.8, 0.4),
         AUTO_SPEC(0.915, 0.5),
         AUTO_INTAKE(0.275,0.325),
         PASSIVE(0.55,0.12),
