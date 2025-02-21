@@ -108,6 +108,17 @@ public class HorizSubsystem extends Subsystem {
 
     }
 
+    public void setAutoPos(double pos) {
+        state = State.MANUAL;
+        if(pos > 100){
+            manualHorizPos -= 0.0005;
+        }
+        else if (pos < -100){
+            manualHorizPos += 0.0005;
+        }
+
+    }
+
     public void setTriggerPos(double trigger) {
         state = State.MANUAL;
         if(trigger < 0.15){

@@ -94,7 +94,7 @@ public class TestAuto extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(6, -31),
+                                        new Vector2D(6, -15),
                                         new Vector2D(-35, -12),
                                         new Vector2D(-35, -12),
                                         new Vector2D(-35, -12),

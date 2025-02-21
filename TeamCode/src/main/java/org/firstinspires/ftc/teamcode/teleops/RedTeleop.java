@@ -127,7 +127,7 @@ public class RedTeleop extends BaseRobot {
 
         }));
 
-        if(gamepad1.touchpad){
+        if(gamepadInterface1.isKeyDown(GamepadKey.TOUCHPAD)){
             if(detectSample.cycleColorsRed()){
                 r = 255;
                 g = 255;

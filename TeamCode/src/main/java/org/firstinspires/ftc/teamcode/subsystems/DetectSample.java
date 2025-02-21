@@ -6,12 +6,14 @@ import com.shprobotics.pestocore.geometries.Vector2D;
 import com.shprobotics.pestocore.vision.ComputerVision;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 import org.openftc.easyopencv.OpenCvPipeline;
@@ -23,28 +25,23 @@ public class DetectSample extends OpenCvPipeline {
     ArrayList<double[]> frameList;
 
     // todo: tune values in FTC Dashboard
-    public static double lowH = 20;
-    public static double highH = 40;
-    public static double lowS = 0;
-    public static double highS = 255;
-    public static double lowV = 150;
-    public static double highV = 255;
 
     public static Scalar lowYellow = new Scalar(20, 0, 150);
     public static Scalar highYellow = new Scalar(40, 255, 255);
-    public static Scalar lowRed = new Scalar(20, 0, 150); //TODO TUNE BLUE AND RED
-    public static Scalar highRed = new Scalar(40, 255, 255);
-    public static Scalar lowBlue = new Scalar(20, 0, 150);
-    public static Scalar highBlue = new Scalar(40, 255, 255);
+    public static Scalar lowRed = new Scalar(10, 0, 0); //TODO TUNE BLUE AND RED
+    public static Scalar highRed = new Scalar(225, 225, 225);
+    public static Scalar lowBlue = new Scalar(40, 45, 25);
+    public static Scalar highBlue = new Scalar(180, 255, 255);
 
     public static Scalar lowHSV = lowYellow;
     public static Scalar highHSV = highYellow;
+    public static boolean inverted = false;
 
     public enum ColorState{
         YELLOW, RED, BLUE;
     }
 
-    //    public static double blur = 1;
+    public static double blur = 1;
     ArrayList<Pose2D> positions = new ArrayList<>();
     Telemetry telemetry;
     ColorState colorState = ColorState.YELLOW;
@@ -59,12 +56,14 @@ public class DetectSample extends OpenCvPipeline {
             colorState = ColorState.RED;
             lowHSV = lowRed;
             highHSV = highRed;
+            inverted = true;
             return false;
         }
         else{
             colorState = ColorState.YELLOW;
             lowHSV = lowYellow;
             highHSV = highYellow;
+            inverted = false;
             return true;
         }
     }
@@ -89,8 +88,18 @@ public class DetectSample extends OpenCvPipeline {
         ArrayList<Pose2D> positions = new ArrayList<>();
 
         Mat mat = ComputerVision.convertColor(input, Imgproc.COLOR_RGB2HSV);
-        Mat scaledThresh = ComputerVision.filterColor(mat, lowHSV, highHSV);
-//        Mat blurred = ComputerVision.blur(scaledThresh, new Size(blur, blur)); //TODO ENP THIS IS A CNN
+        Mat scaledThresh;
+
+        if(inverted){
+            Mat notScaledThresh = ComputerVision.filterColor(mat, lowHSV, highHSV);
+            scaledThresh = new Mat();
+            Core.bitwise_not(notScaledThresh, scaledThresh);
+            notScaledThresh.release();
+        }
+        else
+            scaledThresh = ComputerVision.filterColor(mat, lowHSV, highHSV);
+
+        Mat blurred = ComputerVision.blur(scaledThresh, new Size(blur, blur)); //TODO ENP THIS IS A CNN
         telemetry.addData("Sample Color State", colorState);
         
         ArrayList<MatOfPoint> contours = new ArrayList<>();
@@ -109,7 +118,7 @@ public class DetectSample extends OpenCvPipeline {
 
             // todo: delete telemetry after tuning
 //            telemetry.addLine("h" + rotatedRect.size.height + " w" + rotatedRect.size.width);
-            drawRotatedRect(rotatedRect, scaledThresh, new Scalar(255, 255, 0));
+            drawRotatedRect(rotatedRect, blurred, new Scalar(255, 255, 0));
 
             Pose2D position = ComputerVision.getPose(contour);
             position.add(new Vector2D(-640, -360));
@@ -135,9 +144,9 @@ public class DetectSample extends OpenCvPipeline {
         // RELEASE EVERYTHING
         input.release();
         mat.release();
-        scaledThresh.copyTo(input);
+        blurred.copyTo(input);
         scaledThresh.release();
-//        blurred.release();
+        blurred.release();
 
         return input;
     }

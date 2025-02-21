@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
@@ -64,6 +65,7 @@ public class ComputerVision extends LinearOpMode {
 //        OpenCvWebcam webcam = new OpenCvWebcamImpl(hardwareMap.get(WebcamName.class, "Webcam 1"));
         // todo: tune pipeline
         camera.setPipeline(detectSample);
+        FtcDashboard.getInstance().startCameraStream(camera, 0);
 
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
@@ -105,30 +107,33 @@ public class ComputerVision extends LinearOpMode {
             rotate.turn(lastDetection.getHeadingRadians());
             rotate.processState();
             if(!rotate.aligned) {
+                claw.setColor(ClawSubsystem.ColorState.RED);
                 clawAlignment.reset();
                 pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
-                updateCommands(0.25);
                 claw.open();
                 updateCommands();
             }
-            else if(clawAlignment.seconds() > 2){
-                pivot.setState(PivotSubsystem.State.INTAKE);
-                updateCommands(0.25);
-                claw.close();
-                updateCommands(0.25);
+            else if(clawAlignment.seconds() > 1){
+                claw.setColor(ClawSubsystem.ColorState.GREEN);
+                updateCommands();
             }
+
+
+//            else if(clawAlignment.seconds() > 2){
+//                pivot.setState(PivotSubsystem.State.INTAKE);
+//                updateCommands(0.25);
+//                claw.close();
+//                updateCommands(0.25);
+//            }
 
 
 //            mecanumController.drive(y, x, 0);
 
-
-
-
-//            for (Pose2D position: positions){
-//                telemetry.addData("X", position.getX());
-//                telemetry.addData("Y", position.getY());
-//                telemetry.addData("Theta", position.getHeadingRadians());
-//            }
+            for (Pose2D position: positions){
+                telemetry.addData("X", position.getX());
+                telemetry.addData("Y", position.getY());
+                telemetry.addData("Theta", position.getHeadingRadians());
+            }
             telemetry.addData("System nano ", System.nanoTime());
             telemetry.addData("Alignment Timer", clawAlignment.seconds());
             telemetry.update();

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.shplib;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.shprobotics.pestocore.geometries.Pose2D;
@@ -74,6 +75,7 @@ public class BaseRobot extends OpMode {
         cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         camera.setPipeline(detectSample);
+        FtcDashboard.getInstance().startCameraStream(camera, 0);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {

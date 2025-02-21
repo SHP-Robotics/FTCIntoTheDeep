@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
 @Config
-@Autonomous(name = "0 + 4 SAMPLE")
+@Autonomous(name = "***0 + 4 SAMPLE***")
 public class FourSample extends LinearOpMode {
     private MecanumController mecanumController;
     private DeterministicTracker tracker;
@@ -79,21 +79,21 @@ public class FourSample extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-9, -29),
-                                        new Vector2D(-12, -19.5), //-19.5?
-                                        new Vector2D(-12, -19.5),
-                                        new Vector2D(-12, -19.5),
-                                        new Vector2D(-12, -19.5)
+                                        new Vector2D(-9, -28),
+                                        new Vector2D(-12, -20), //-19.5?
+                                        new Vector2D(-12, -20),
+                                        new Vector2D(-12, -20),
+                                        new Vector2D(-12, -20)
                                 }
                         ),
                         new ParametricHeading(new double[]{
                                 Math.toRadians(45),
-                                Math.toRadians(90),
-                                Math.toRadians(90),
-                                Math.toRadians(90),
-                                Math.toRadians(90),
-                                Math.toRadians(90),
-                                Math.toRadians(90) //150
+                                Math.toRadians(92),
+                                Math.toRadians(92),
+                                Math.toRadians(92),
+                                Math.toRadians(92),
+                                Math.toRadians(92),
+                                Math.toRadians(92) //150
                         })
                 )
 
@@ -104,12 +104,12 @@ public class FourSample extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-12, -19.5),
+                                        new Vector2D(-12, -20),
                                         new Vector2D(-8, -29)
                                 }
                         ),
                         new ParametricHeading(new double[]{
-                                Math.toRadians(90),
+                                Math.toRadians(92),
                                 Math.toRadians(45),
                                 Math.toRadians(45),
                                 Math.toRadians(45)
@@ -123,10 +123,10 @@ public class FourSample extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-7, -29),
-                                        new Vector2D(-12, -30.25),
-                                        new Vector2D(-12, -30.25),
-                                        new Vector2D(-12, -30.25)
+                                        new Vector2D(-8, -29),
+                                        new Vector2D(-13, -29.5),
+                                        new Vector2D(-13, -29.5),
+                                        new Vector2D(-13, -29.5)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -146,7 +146,7 @@ public class FourSample extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-12, -30.25),
+                                        new Vector2D(-13, -29.5),
                                         new Vector2D(-8, -29)
                                 }
                         ),
@@ -167,11 +167,11 @@ public class FourSample extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-7, -29),
-                                        new Vector2D(-15, -27.5),
-                                        new Vector2D(-15, -27.5),
-                                        new Vector2D(-15, -27.5),
-                                        new Vector2D(-15, -27.5)
+                                        new Vector2D(-8, -29),
+                                        new Vector2D(-14, -27.5),
+                                        new Vector2D(-14, -27.5),
+                                        new Vector2D(-14, -27.5),
+                                        new Vector2D(-14, -27.5)
                                 }
                         ),
                         new ParametricHeading(new double[]{
@@ -191,7 +191,7 @@ public class FourSample extends LinearOpMode {
                 .addCurve(
                         new BezierCurve(
                                 new Vector2D[]{
-                                        new Vector2D(-15, -29),
+                                        new Vector2D(-14, -27.5),
                                         new Vector2D(-8, -27.5)
                                 }
                         ),
@@ -390,7 +390,7 @@ public class FourSample extends LinearOpMode {
         pivot.setState(PivotSubsystem.State.INTAKE);
         updateCommands(0.25);
         claw.close();
-        updateCommands(0.25);
+        updateCommands(0.35);
 
         //reattempt if fail
         if(!claw.isBlockInClaw()){
@@ -449,7 +449,7 @@ public class FourSample extends LinearOpMode {
         pivot.setState(PivotSubsystem.State.DRIVING);
         claw.close();
         vertical.setState(VerticalSubsystem.State.BOTTOM);
-        updateCommands(0.5); //removed wait
+        updateCommands(); //removed wait
     }
 
     public void parkArm(){

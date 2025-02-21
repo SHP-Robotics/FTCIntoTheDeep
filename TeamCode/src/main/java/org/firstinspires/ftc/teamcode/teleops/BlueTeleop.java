@@ -8,6 +8,9 @@ import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PIC
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPARE_INTAKE;
 import static org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem.State.PREPARE_INTAKE_HIGHER;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.sin;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.shprobotics.pestocore.devices.GamepadInterface;
@@ -103,7 +106,7 @@ public class BlueTeleop extends BaseRobot {
                 if (!rotate.aligned) {
                     clawAlignment.reset();
                     claw.open();
-                } else if (clawAlignment.seconds() > 1 && sampleCentered()) {
+                } else if (clawAlignment.seconds() > 0.5 && sampleCentered()) {
                     CommandScheduler.getInstance().scheduleCommand(
                             new SubToDriveCommand(rotate, claw, pivot, horiz)
                                     .then(new RunCommand(() -> clawAlignment.reset())));
@@ -125,8 +128,8 @@ public class BlueTeleop extends BaseRobot {
             }
         }));
 
-        if(gamepad1.touchpad){
-            if(detectSample.cycleColorsRed()){
+        if(gamepadInterface1.isKeyDown(GamepadKey.TOUCHPAD)){
+            if(detectSample.cycleColorsBlue()){
                 r = 255;
                 g = 255;
                 b = 0;
@@ -187,7 +190,8 @@ public class BlueTeleop extends BaseRobot {
         if(gamepadInterface2.isKeyDown(GamepadKey.DPAD_DOWN)) vertical.emergencyDecrementSlide();
 
         //EMERGENCY BLOCK IN BOT
-        if(gamepadInterface2.isKeyDown(GamepadKey.A)) new BlockInBotCommand(horiz); //CROSS?
+        new Trigger(gamepadInterface2.isKeyDown(GamepadKey.A), new BlockInBotCommand(horiz)); //CROSS?
+
         if(gamepadInterface2.isKeyDown(GamepadKey.Y)) drive.toggleIMU(); //TRIANGLE
 
         //disables break beam
@@ -223,7 +227,19 @@ public class BlueTeleop extends BaseRobot {
     }
 
     public boolean sampleCentered(){
-        return Math.abs(lastDetection.getY()) < 300 && Math.abs(lastDetection.getX()) < 200;
+        double rotation = lastDetection.getHeadingRadians();
+        double x = 49.11059 * sin(2.11383 * (rotation - 1.30238)) -6.39344;
+        double y = 83.88397 * sin(3.61363 * (rotation + 0.171685)) - 66.27907;
+        double x_tolerance = 79.43963 * sin(1.27117 * (rotation - 0.261354)) + 100.90909;
+        double y_tolerance = 37.52779 * sin(2.66 * (rotation + 0.574)) + 70;
+
+        telemetry.addData("x tol", x_tolerance);
+        telemetry.addData("y tol", y_tolerance);
+        telemetry.addData("x", x);
+        telemetry.addData("x", y);
+
+
+        return abs(lastDetection.getX()-x) < x_tolerance && abs(lastDetection.getY()-y) < y_tolerance;
     }
 
 }

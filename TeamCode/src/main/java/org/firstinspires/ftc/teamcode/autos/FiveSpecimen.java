@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
 
-@Autonomous(name = "*** 5 + 0 ***")
+@Autonomous(name = "*** 5 + 0 SPECIMEN***")
 public class FiveSpecimen extends OpMode {
     VerticalSubsystem vertical;
     PivotSubsystem pivot;
@@ -90,10 +90,10 @@ public class FiveSpecimen extends OpMode {
                 .setPathEndTimeoutConstraint(0)
                 .addPath(new BezierCurve(
                         new Point(pickup2Pose),
-                        new Point(new Pose(60, 16)),
+                        new Point(new Pose(68, 14)),
                         new Point(new Pose(58.5, 21)),
-                        new Point(new Pose(57, 10)),
-                        new Point(new Pose(57, 10)),
+                        new Point(new Pose(64, 10)),
+                        new Point(new Pose(64, 10)),
                         new Point(new Pose(63, 8)),
                         new Point(new Pose(44, 11)),
                         new Point(pickup3Pose)))
@@ -327,9 +327,9 @@ public class FiveSpecimen extends OpMode {
 
     public void finishWallIntake(){
         horiz.setState(HorizSubsystem.State.DRIVING);
-        updateCommands(0.25);
-        claw.close();
         updateCommands(0.15);
+        claw.close();
+        updateCommands(0.25);
         if(!claw.isBlockInClaw()){
             claw.open();
             horiz.setState(HorizSubsystem.State.WALL_PICKUP_AUTO);
