@@ -17,10 +17,13 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.shprobotics.pestocore.drivebases.DeterministicTracker;
+import com.shprobotics.pestocore.drivebases.MecanumController;
 import com.shprobotics.pestocore.geometries.Pose2D;
 import com.shprobotics.pestocore.geometries.Vector2D;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 import org.firstinspires.ftc.teamcode.constants.FConstants;
 import org.firstinspires.ftc.teamcode.constants.LConstants;
 import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
@@ -55,8 +58,8 @@ public class PP extends OpMode {
     PIDFController transPID;
     public static double kp = 0.0015;
     public static double kd = 0;
-//    MecanumController mecanumController = PestoFTCConfig.getMecanumController(hardwareMap);
-//    ThreeWheelOdometryTracker tracker = (ThreeWheelOdometryTracker) PestoFTCConfig.getTracker(hardwareMap);
+    MecanumController mecanumController;
+    DeterministicTracker tracker;
 
     /** This is the variable where we store the state of our auto.
      * It is used by the pathUpdate method. */
@@ -77,9 +80,9 @@ public class PP extends OpMode {
     private final Pose scorePose = new Pose(14, 130, Math.toRadians(315));
     private final Pose pickup1Pose = new Pose(21, 121, Math.toRadians(0));
     private final Pose pickup2Pose = new Pose(21, 130, Math.toRadians(0));
-    private final Pose pickup3Pose = new Pose(22.5, 132, Math.toRadians(20));
-    private final Pose pickupSubPose = new Pose(60, 94, Math.toRadians(270));
-    private final Pose parkPose = new Pose(65, 94, Math.toRadians(270));
+    private final Pose pickup3Pose = new Pose(23, 132, Math.toRadians(20));
+    private final Pose pickupSubPose = new Pose(60, 88, Math.toRadians(270));
+    private final Pose parkPose = new Pose(65, 92, Math.toRadians(270));
 
     private static Path scorePreload,
             deposit1, deposit2, deposit3, deposit4,
@@ -126,8 +129,7 @@ public class PP extends OpMode {
 
         park = new Path(new BezierCurve(
                 new Point(scorePose),
-                new Point(55, 104),
-                new Point(65, 100),
+                new Point(62, 114),
                 new Point(parkPose)));
         park.setLinearHeadingInterpolation(scorePose.getHeading(), parkPose.getHeading());
     }
@@ -202,13 +204,14 @@ public class PP extends OpMode {
                 prepIntake();
                 pathState += 1;
             case 12:
-                if(autoRotateIntake()) {
-                    finishIntake();
-                    pathState += 1;
+                while(!autoRotateIntake()) {
                 }
+                finishIntake();
+                pathState += 1;
                 return;
             case 13:
                 follower.followPath(deposit4);
+                updateCommands(1.5);
                 prepArm();
                 pathState += 1;
                 return;
@@ -277,6 +280,8 @@ public class PP extends OpMode {
 
         detectSample = new DetectSample(telemetry);
 
+        mecanumController = PestoFTCConfig.getMecanumController(hardwareMap);
+        tracker = PestoFTCConfig.getTracker(hardwareMap);
         cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         camera.setPipeline(detectSample);
@@ -365,7 +370,7 @@ public class PP extends OpMode {
         if(!claw.isBlockInClaw()){
             pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
             claw.open();
-            updateCommands(0.25);
+            updateCommands(0.35);
             pivot.setState(PivotSubsystem.State.INTAKE);
             updateCommands(0.25);
             claw.close();
@@ -396,7 +401,7 @@ public class PP extends OpMode {
         pivot.setState(PivotSubsystem.State.DRIVING);
         claw.close();
         vertical.setState(VerticalSubsystem.State.BOTTOM);
-        updateCommands(0);
+        updateCommands();
     }
 
     public void parkArm(){
@@ -409,7 +414,7 @@ public class PP extends OpMode {
         //rotation detection
         positions = detectSample.getPositions();
         if(positions.isEmpty()) {
-//            mecanumController.drive(0,0, 0);
+            mecanumController.drive(0,0, 0); //TODO do something... maybe follow path until something found
             return false;
         }
 
@@ -420,13 +425,15 @@ public class PP extends OpMode {
             clawAlignment.reset();
         }
 
-//        tracker.update();
+        tracker.update();
 
-        double y;
-//        y = transPID.update(lastDetection.getY(), 200*tracker.getRobotVelocity().getY());
+        double x;
+        x = transPID.update(-lastDetection.getX(), 200*tracker.getRobotVelocity().getX());
 
-//        mecanumController.drive(0, y, 0);
+        mecanumController.drive(0.1, x, 0);
+
 //        horiz.setAutoPos(lastDetection.getY()-360);
+
         rotate.turn(lastDetection.getHeadingRadians());
         rotate.processState();
 
@@ -438,11 +445,8 @@ public class PP extends OpMode {
             claw.setColor(ClawSubsystem.ColorState.GREEN);
         }
 
-        if (clawAlignment.seconds() > 0.5 && sampleCentered()) {
-            return true;
-        }
-
-        return false;
+        // && sampleCentered()
+        return clawAlignment.seconds() > 0.5 && sampleCentered();
     }
 
     public Pose2D selectPos(ArrayList<Pose2D> positions){
