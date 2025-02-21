@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.autos;
 
-import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WALL_PICKUP_AUTO;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -48,7 +46,7 @@ public class TestAuto extends LinearOpMode {
     PathFollower pathFollower;
 
     private ElapsedTime elapsedTime;
-    public static double kp = 0.0;
+//    public static double kp = 0.0;
 
     public PathFollower generatePathFollower(PathContainer pathContainer, double deceleration, double speed) {
         return new PathFollower.PathFollowerBuilder(mecanumController, tracker, pathContainer)
@@ -719,11 +717,7 @@ public class TestAuto extends LinearOpMode {
     }
 
     public void loopOpMode() {
-        try {
-            CommandScheduler.getInstance().run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        CommandScheduler.updateCommands();
 
         tracker.update();
         pathFollower.update();
@@ -736,18 +730,11 @@ public class TestAuto extends LinearOpMode {
         telemetry.update();
     }
 
-    public void updateCommands(){
-        try {
-            CommandScheduler.getInstance().run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
     public void updateCommands(double sec){
         elapsedTime.reset();
         while (elapsedTime.seconds() < sec) {
             tracker.update();
-            updateCommands();
+            CommandScheduler.updateCommands();
             if (isStopRequested()) return;
         }
     }
@@ -795,29 +782,29 @@ public class TestAuto extends LinearOpMode {
 //        updateCommands(0.25);
 //    }
 
-    /** Prepares the intake for wall, opens claw */
-    public void prepIntake(){
-        //prep intake
-        pivot.setState(PivotSubsystem.State.AUTO_INTAKE);
-        horizontal.setState(HorizSubsystem.State.DRIVING);
-        updateCommands(0.25);
-        rotate.setState(RotateSubsystem.State.PICKUP);
-        claw.open();
-        updateCommands();
-    }
-    /** Grabs specimen and returns to driving mode */
-    public void finishIntake(){
-        updateCommands(0.55);
-        horizontal.setState(WALL_PICKUP_AUTO);
-        updateCommands(0.05);
-
-        claw.close();
-        updateCommands(0.15);
-
-        pivot.setState(PivotSubsystem.State.DRIVING);
-        rotate.setState(RotateSubsystem.State.NEUTRAL);
-        updateCommands(0.2);
-    }
+//    /** Prepares the intake for wall, opens claw */
+//    public void prepIntake(){
+//        //prep intake
+//        pivot.setState(PivotSubsystem.State.AUTO_INTAKE);
+//        horizontal.setState(HorizSubsystem.State.DRIVING);
+//        updateCommands(0.25);
+//        rotate.setState(RotateSubsystem.State.PICKUP);
+//        claw.open();
+//        CommandScheduler.updateCommands();
+//    }
+//    /** Grabs specimen and returns to driving mode */
+//    public void finishIntake(){
+//        updateCommands(0.55);
+//        horizontal.setState(WALL_PICKUP_AUTO);
+//        updateCommands(0.05);
+//
+//        claw.close();
+//        updateCommands(0.15);
+//
+//        pivot.setState(PivotSubsystem.State.DRIVING);
+//        rotate.setState(RotateSubsystem.State.NEUTRAL);
+//        updateCommands(0.2);
+//    }
 
     /** Raises the pivot */
     public void prepArm(){
@@ -826,7 +813,7 @@ public class TestAuto extends LinearOpMode {
         updateCommands(0.1);
 
         rotate.setState(RotateSubsystem.State.NEUTRAL);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
     /** Raises the Vertical */
     public void raiseArm(){
@@ -846,62 +833,62 @@ public class TestAuto extends LinearOpMode {
         claw.close();
         vertical.setState(VerticalSubsystem.State.BOTTOM);
         pivot.setState(PivotSubsystem.State.DRIVING);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
 
 
-    /** Prepares the intake sample */
-    public void prepNewIntake(){
-        //prep intake
-        horizontal.setState(HorizSubsystem.State.PREP_AUTO_INTAKE);
-        pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
-        rotate.setState(RotateSubsystem.State.INTAKE);
-        updateCommands(0.25);
-        claw.open();
-        horizontal.setState(HorizSubsystem.State.INTAKING_EXTENDED);
-        updateCommands(1);
-    }
+//    /** Prepares the intake sample */
+//    public void prepNewIntake(){
+//        //prep intake
+//        horizontal.setState(HorizSubsystem.State.PREP_AUTO_INTAKE);
+//        pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
+//        rotate.setState(RotateSubsystem.State.INTAKE);
+//        updateCommands(0.25);
+//        claw.open();
+//        horizontal.setState(HorizSubsystem.State.INTAKING_EXTENDED);
+//        updateCommands(1);
+//    }
 
-    /** Prepares the intake sample */
-    public void rotateNewIntake(){
-        //prep intake
-        rotate.setState(RotateSubsystem.State.SAMPLE);
-        updateCommands();
-    }
-    /** Grabs sample */
-    public void startNewIntake(){
-        pivot.setState(PivotSubsystem.State.INTAKE);
-        updateCommands(0.25);
-        claw.close();
-        updateCommands(0.25);
-
-        //reattempt if fail
-        if(!claw.isBlockInClaw()){
-            claw.setColor(ClawSubsystem.ColorState.RED);
-
-            pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
-            claw.open();
-            updateCommands(0.25);
-
-            pivot.setState(PivotSubsystem.State.INTAKE);
-            updateCommands(0.25);
-            claw.close();
-            updateCommands(0.25);
-
-            if(claw.isBlockInClaw()) {
-                claw.setColor(ClawSubsystem.ColorState.GREEN);
-                updateCommands();
-            }
-        }
-
-    }
-    /** Returns to driving mode */
-    public void finishNewIntake(){
-        rotate.setState(RotateSubsystem.State.NEUTRAL);
-        pivot.setState(PivotSubsystem.State.DRIVING);
-        horizontal.setState(HorizSubsystem.State.DRIVING);
-        updateCommands(0.25); //removed wait
-        claw.setColor(ClawSubsystem.ColorState.OFF);
-        updateCommands();
-    }
+//    /** Prepares the intake sample */
+//    public void rotateNewIntake(){
+//        //prep intake
+//        rotate.setState(RotateSubsystem.State.SAMPLE);
+//        CommandScheduler.updateCommands();
+//    }
+//    /** Grabs sample */
+//    public void startNewIntake(){
+//        pivot.setState(PivotSubsystem.State.INTAKE);
+//        updateCommands(0.25);
+//        claw.close();
+//        updateCommands(0.25);
+//
+//        //reattempt if fail
+//        if(!claw.isBlockInClaw()){
+//            claw.setColor(ClawSubsystem.ColorState.RED);
+//
+//            pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
+//            claw.open();
+//            updateCommands(0.25);
+//
+//            pivot.setState(PivotSubsystem.State.INTAKE);
+//            updateCommands(0.25);
+//            claw.close();
+//            updateCommands(0.25);
+//
+//            if(claw.isBlockInClaw()) {
+//                claw.setColor(ClawSubsystem.ColorState.GREEN);
+//                CommandScheduler.updateCommands();
+//            }
+//        }
+//
+//    }
+//    /** Returns to driving mode */
+//    public void finishNewIntake(){
+//        rotate.setState(RotateSubsystem.State.NEUTRAL);
+//        pivot.setState(PivotSubsystem.State.DRIVING);
+//        horizontal.setState(HorizSubsystem.State.DRIVING);
+//        updateCommands(0.25); //removed wait
+//        claw.setColor(ClawSubsystem.ColorState.OFF);
+//        CommandScheduler.updateCommands();
+//    }
 }

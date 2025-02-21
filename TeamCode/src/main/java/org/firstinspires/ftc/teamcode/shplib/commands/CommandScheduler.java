@@ -68,7 +68,7 @@ public final class CommandScheduler {
 
     private void scheduleNextCommands(Command command) {
         ArrayList<Command> nextCommands = command.getNextCommands();
-        if (nextCommands.size() == 0) return;
+        if (nextCommands.isEmpty()) return;
         Command nextCommand = nextCommands.remove(0);
         nextCommand.then(nextCommands);
         scheduleCommand(nextCommand);
@@ -79,13 +79,21 @@ public final class CommandScheduler {
             scheduleCommand(withCommand);
     }
 
+    public static void updateCommands() {
+        CommandScheduler.getInstance().run();
+    }
+
     // probably not the most efficient way of scheduling, but works pretty well for what we need
-    public void run() throws InterruptedException {
+    public void run() {
         ArrayList<Subsystem> idleSubsystems = new ArrayList<>(subsystems);
 
         // run subsystem periodic
         for (Subsystem subsystem : subsystems) {
-            subsystem.periodic(telemetry);
+            try {
+                subsystem.periodic(telemetry);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         for (int i = 0; i < commands.size(); i++) {

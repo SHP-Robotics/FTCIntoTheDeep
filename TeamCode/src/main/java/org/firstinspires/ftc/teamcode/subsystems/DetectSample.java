@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.shprobotics.pestocore.geometries.Pose2D;
 import com.shprobotics.pestocore.geometries.Vector2D;
 import com.shprobotics.pestocore.vision.ComputerVision;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -17,6 +20,9 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
@@ -72,7 +78,24 @@ public class DetectSample extends OpenCvPipeline {
     Telemetry telemetry;
     ColorState colorState = ColorState.YELLOW;
 
-    public DetectSample(Telemetry telemetry) {
+    public DetectSample(HardwareMap hardwareMap, Telemetry telemetry) {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        OpenCvCamera camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        camera.setPipeline(this);
+        FtcDashboard.getInstance().startCameraStream(camera, 0);
+
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+
+            }
+        });
+        
         this.telemetry = telemetry;
         this.frameList = new ArrayList<>();
     }

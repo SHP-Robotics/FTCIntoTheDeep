@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.shplib;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.shprobotics.pestocore.geometries.Pose2D;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.utility.Clock;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
@@ -15,23 +13,8 @@ import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
-//import org.firstinspires.ftc.teamcode.subsystems.VisionSubsystem;
-
-/**
- * Template created by Ayaan Govil on 8/21/2021.
- *
- * FTC Java Documentation: http://ftctechnh.github.io/ftc_app/doc/javadoc/index.html
- *
- * Helpful Shortcuts:
- * - Ctrl/Command + / = Comment/Uncomment line (can highlight multiple lines)
- * - Ctrl/Command + B = Go to declaration (for any variable, class, or method)
- * - Ctrl/Command + Alt/Option + L = Auto format code
- */
 
 public class BaseRobot extends OpMode {
     // Declare subsystems and devices
@@ -40,15 +23,12 @@ public class BaseRobot extends OpMode {
     public VerticalSubsystem vertical;
     public PivotSubsystem pivot;
     public RotateSubsystem rotate;
-//    public VisionSubsystem vision;
     public ClawSubsystem claw;
 
     public double previousTime = 0;
     public double andrewWompWomp = 0;
 
     public ArrayList<Pose2D> positions;
-    OpenCvCamera camera;
-    int cameraMonitorViewId;
     public DetectSample detectSample;
 
     // Called when you press the init button
@@ -65,28 +45,10 @@ public class BaseRobot extends OpMode {
         pivot = new PivotSubsystem(hardwareMap);
         pivot.setState(PivotSubsystem.State.DRIVING);
         pivot.periodic(telemetry);
-
-//        vision = new VisionSubsystem(hardwareMap);
         claw = new ClawSubsystem(hardwareMap);
         horiz = new HorizSubsystem(hardwareMap);
 
-        detectSample = new DetectSample(telemetry);
-
-        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        camera.setPipeline(detectSample);
-        FtcDashboard.getInstance().startCameraStream(camera, 0);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-
-            }
-        });
+        detectSample = new DetectSample(hardwareMap, telemetry);
     }
 
     // Called when you press the start button
@@ -97,20 +59,12 @@ public class BaseRobot extends OpMode {
     // Called repeatedly while an OpMode is running
     @Override
     public void loop() {
-//        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
-//            module.clearBulkCache();
-//        }
-
         telemetry.addData("Loop Time (ms): ", Clock.elapsed(previousTime) * 1000);
         previousTime = Clock.now();
         telemetry.addData("ANDREW WOMP WOMP", andrewWompWomp);
 
         // Handles all subsystem and command execution - DO NOT DELETE!
-        try {
-            CommandScheduler.getInstance().run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        CommandScheduler.updateCommands();
     }
 
     // Called when you press the stop button
@@ -128,7 +82,6 @@ public class BaseRobot extends OpMode {
         // Turn on bulk reads to help optimize loop times
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-//            module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
     }
 }

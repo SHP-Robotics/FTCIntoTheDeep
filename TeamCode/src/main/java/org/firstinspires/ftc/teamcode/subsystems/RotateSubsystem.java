@@ -26,7 +26,7 @@ public class RotateSubsystem extends Subsystem {
         SAMPLE,
         DROPOFF_BUCKET,
         ANTI_SAMPLE,
-        NEUTRAL;
+        NEUTRAL
     }
     private State state;
 
@@ -46,9 +46,9 @@ public class RotateSubsystem extends Subsystem {
         return state;
     }
 
-    public void setPos(double pos) {
-        rotate.setPosition(pos);
-    }
+//    public void setPos(double pos) {
+//        rotate.setPosition(pos);
+//    }
 
     public void rotateCW() {
         //if(state == State.INTAKE){

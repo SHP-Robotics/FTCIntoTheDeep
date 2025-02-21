@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autos;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.shprobotics.pestocore.algorithms.PID;
@@ -22,6 +23,7 @@ import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
+@Disabled
 @Config
 @Autonomous(name = "***0 + 4 SAMPLE***")
 public class FourSample extends LinearOpMode {
@@ -44,11 +46,6 @@ public class FourSample extends LinearOpMode {
                 .setHeadingPID(new PID(3.0, 0, 0.02))
                 .setDeceleration(2.0)
                 .setSpeed(speed)
-//                .setDecelerationFunction(PathFollower.SQUID_DECELERATION)
-                //^^^ combats static friction
-                // takes the square root of PID. PID controls drive speed
-                // call this "SQUID"
-                //.setCheckFinishedFunction()
                 .setEndTolerance(0.4, Math.toRadians(0))
                 .setEndVelocityTolerance(4)
                 .setTimeAfterDeceleration(deceleration)
@@ -307,20 +304,15 @@ public class FourSample extends LinearOpMode {
 
         //just for good measure
         vertical.setState(VerticalSubsystem.State.BOTTOM);
-        updateCommands();
+        CommandScheduler.updateCommands();
 
         parkArm();
         followPath(park, 1, 0.6);
-        updateCommands();
-
+        CommandScheduler.updateCommands();
     }
 
     public void loopOpMode() {
-        try {
-            CommandScheduler.getInstance().run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        CommandScheduler.updateCommands();
 
         tracker.update();
         pathFollower.update();
@@ -333,21 +325,15 @@ public class FourSample extends LinearOpMode {
         telemetry.update();
     }
 
-    public void updateCommands(){
-        try {
-            CommandScheduler.getInstance().run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
     public void updateCommands(double sec){
         elapsedTime.reset();
         while (elapsedTime.seconds() < sec) {
             tracker.update();
-            updateCommands();
+            CommandScheduler.updateCommands();
             if (isStopRequested()) return;
         }
     }
+
     public void followPath(PathContainer path, double deceleration, double speed){
         if (isStopRequested()) return;
 
@@ -367,8 +353,9 @@ public class FourSample extends LinearOpMode {
         updateCommands(0.25);
         claw.open();
         horizontal.setState(HorizSubsystem.State.INTAKING_EXTENDED);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
+
     public void prepBlock2Intake(){
         //prep intake
         horizontal.setState(HorizSubsystem.State.PREP_AUTO_INTAKE);
@@ -377,14 +364,16 @@ public class FourSample extends LinearOpMode {
         updateCommands(0.25);
         claw.open();
         horizontal.setState(HorizSubsystem.State.INTAKING_EXTENDED);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
+
     /** Prepares the intake sample */
     public void rotateIntake(){
         //prep intake
         rotate.setState(RotateSubsystem.State.SAMPLE);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
+
     /** Grabs sample */
     public void startIntake(){
         pivot.setState(PivotSubsystem.State.INTAKE);
@@ -407,11 +396,11 @@ public class FourSample extends LinearOpMode {
 
             if(claw.isBlockInClaw()) {
                 claw.setColor(ClawSubsystem.ColorState.GREEN);
-                updateCommands();
+                CommandScheduler.updateCommands();
             }
         }
-
     }
+
     /** Returns to driving mode */
     public void finishIntake(){
         rotate.setState(RotateSubsystem.State.NEUTRAL);
@@ -419,7 +408,7 @@ public class FourSample extends LinearOpMode {
         horizontal.setState(HorizSubsystem.State.DRIVING);
         updateCommands(0.25); //removed wait
         claw.setColor(ClawSubsystem.ColorState.OFF);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
 
     /** Raises the Vertical */
@@ -427,7 +416,7 @@ public class FourSample extends LinearOpMode {
         claw.setColor(ClawSubsystem.ColorState.OFF);
         vertical.setDepositState(VerticalSubsystem.State.HIGH_BUCKET);
         vertical.setState(VerticalSubsystem.State.DEPOSITING);
-        updateCommands();
+        CommandScheduler.updateCommands();
 
         horizontal.setState(HorizSubsystem.State.DRIVING);
         updateCommands(1);
@@ -439,17 +428,14 @@ public class FourSample extends LinearOpMode {
 
     /** Deposits, and lowers arm */
     public void lowerArm(){
-//        updateCommands(0.5);
-
         claw.open();
-//        updateCommands(0.5);
 
         rotate.setState(RotateSubsystem.State.DROPOFF);
         updateCommands(0.25);
         pivot.setState(PivotSubsystem.State.DRIVING);
         claw.close();
         vertical.setState(VerticalSubsystem.State.BOTTOM);
-        updateCommands(); //removed wait
+        CommandScheduler.updateCommands();
     }
 
     public void parkArm(){
@@ -458,6 +444,6 @@ public class FourSample extends LinearOpMode {
         //mgn: 0.725
         pivot.setState(PivotSubsystem.State.PARK);
         horizontal.setState(HorizSubsystem.State.PARK);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
 }

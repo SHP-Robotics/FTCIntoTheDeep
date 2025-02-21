@@ -21,15 +21,15 @@ public class PivotSubsystem extends Subsystem {
         DRIVING(0.15, 0.3), //0 is down
         PREPARE_INTAKE(0, 0.08),
         PREPARE_INTAKE_HIGHER(0,0.09),
-        PREPARE_INTAKE_HIGH(0,0.20),
-        PREPARE_INTAKE_HIGHEST(0,0.30),
+//        PREPARE_INTAKE_HIGH(0,0.20),
+//        PREPARE_INTAKE_HIGHEST(0,0.30),
         INTAKE(0,0), //  0.63 wrist is level with floor
         PREPARE_PICKUP(0.93,0.325),
         PICKUP(0.93,0.825), //picks up from wall
         SUB_TO_DRIVING(1, 0.1),
         OUTTAKE_SPEC(0.275,0.325),
         OUTTAKE_BUCKET(1,0.5),
-        HUMAN1(1,0.3),
+//        HUMAN1(1,0.3),
         HUMAN2(1,0.8),
         PARK(0.8, 0.4),
         AUTO_SPEC(0.915, 0.5),

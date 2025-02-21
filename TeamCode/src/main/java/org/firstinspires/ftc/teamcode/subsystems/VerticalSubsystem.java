@@ -32,14 +32,14 @@ public class VerticalSubsystem extends Subsystem {
         DEPOSITING(750),
         PASSIVE(1580),
         DOWN(100),
-        DOWN_AUTO(50),
-        LOW_BAR(0),
+//        DOWN_AUTO(50),
+//        LOW_BAR(0),
         HIGH_BAR(1500),
         AUTO_HIGH_BAR(1050),
         LOW_BUCKET(800),
         HIGH_BUCKET(3250),
-        MANUAL(0),
-        NO_POWER(0);
+        MANUAL(0);
+//        NO_POWER(0);
 
         final double position;
 

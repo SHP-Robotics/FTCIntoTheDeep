@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
@@ -12,13 +11,9 @@ import com.shprobotics.pestocore.drivebases.ThreeWheelOdometryTracker;
 import com.shprobotics.pestocore.geometries.Pose2D;
 import com.shprobotics.pestocore.geometries.Vector2D;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.utility.Clock;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
@@ -41,7 +36,7 @@ public class ComputerVision extends LinearOpMode {
         Clock.start();
         CommandScheduler.getInstance().setTelemetry(telemetry);
 
-        DetectSample detectSample = new DetectSample(telemetry);
+        DetectSample detectSample = new DetectSample(hardwareMap, telemetry);
 
         MecanumController mecanumController = PestoFTCConfig.getMecanumController(hardwareMap);
         ThreeWheelOdometryTracker tracker = (ThreeWheelOdometryTracker) PestoFTCConfig.getTracker(hardwareMap);
@@ -59,28 +54,6 @@ public class ComputerVision extends LinearOpMode {
         clawAlignment = new ElapsedTime();
         elapsedTime = new ElapsedTime();
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        // todo: get limelight device name in configuration
-        OpenCvCamera camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-//        OpenCvWebcam webcam = new OpenCvWebcamImpl(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        // todo: tune pipeline
-        camera.setPipeline(detectSample);
-        FtcDashboard.getInstance().startCameraStream(camera, 0);
-
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                // todo: get limelight resolution and camera orientation
-//                camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
-                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-
-            }
-        });
-
         waitForStart();
         clawAlignment.reset();
         elapsedTime.reset();
@@ -95,12 +68,12 @@ public class ComputerVision extends LinearOpMode {
             lastDetection = selectPos(positions);
             tracker.update();
 
-            double y, y_sign, x, x_sign;
-            y = transPID.update(lastDetection.getY(), 200*tracker.getRobotVelocity().getY());
+//            double y, y_sign, x, x_sign;
+//            y = transPID.update(lastDetection.getY(), 200*tracker.getRobotVelocity().getY());
 //            y_sign = Math.signum(y);
 //            y = Math.abs(y);
 
-            x = transPID.update(-lastDetection.getX(), 200*tracker.getRobotVelocity().getX());
+//            x = transPID.update(-lastDetection.getX(), 200*tracker.getRobotVelocity().getX());
 //            x_sign = Math.signum(x);
 //            x = Math.abs(x);
 
@@ -111,11 +84,11 @@ public class ComputerVision extends LinearOpMode {
                 clawAlignment.reset();
                 pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
                 claw.open();
-                updateCommands();
+                CommandScheduler.updateCommands();
             }
             else if(clawAlignment.seconds() > 1){
                 claw.setColor(ClawSubsystem.ColorState.GREEN);
-                updateCommands();
+                CommandScheduler.updateCommands();
             }
 
 
@@ -140,17 +113,10 @@ public class ComputerVision extends LinearOpMode {
         }
     }
 
-    public void updateCommands(){
-        try {
-            CommandScheduler.getInstance().run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
     public void updateCommands(double sec){
         elapsedTime.reset();
         while (elapsedTime.seconds() < sec) {
-            updateCommands();
+            CommandScheduler.updateCommands();
             if (isStopRequested()) return;
         }
     }

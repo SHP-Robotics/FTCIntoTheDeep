@@ -8,7 +8,6 @@ import com.pedropathing.pathgen.Path;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 import com.pedropathing.util.Constants;
-import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -24,30 +23,20 @@ import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
 
-@Autonomous(name = "*** 5 + 0 SPECIMEN***")
+@Autonomous(name = "*** 5 + 0 SPECIMEN ***")
 public class FiveSpecimen extends OpMode {
     VerticalSubsystem vertical;
     PivotSubsystem pivot;
     RotateSubsystem rotate;
     HorizSubsystem horiz;
     ClawSubsystem claw;
-    private Follower follower;
-    private Timer pathTimer, opmodeTimer;
 
-    /** This is the variable where we store the state of our auto.
-     * It is used by the pathUpdate method. */
+    private Follower follower;
     private int pathState;
+
     private ElapsedTime elapsedTime, autoTime;
 
-
-    /* Create and Define Poses + Paths
-     * Poses are built with three constructors: x, y, and heading (in Radians).
-     * Pedro uses 0 - 144 for x and y, with 0, 0 being on the bottom left.
-     * (For Into the Deep, this would be Blue Observation Zone (0,0) to Red Observation Zone (144,144).)
-     * Even though Pedro uses a different coordinate system than RR, you can convert any roadrunner pose by adding +72 both the x and y.
-     * This visualizer is very easy to use to find and create paths/pathchains/poses: <https://pedro-path-generator.vercel.app/>
-     * Lets assume our robot is 18 by 18 inches
-     * Lets assume the Robot is facing the human player and we want to score in the bucket */
+    // Create and Define Poses + Paths
 
     private final Pose startPose = new Pose(7, 61);
     private final Pose scorePose = new Pose(35, 72);
@@ -60,7 +49,6 @@ public class FiveSpecimen extends OpMode {
     private final Pose deposit2Pose = new Pose(34, 69);
     private final Pose deposit3Pose = new Pose(34, 68);
     private final Pose deposit4Pose = new Pose(34, 67);
-
 
     private static Path scorePreload, deposit1, deposit2, deposit3, deposit4, park;
     private static PathChain pushChain, grab2, grab3, grab4;
@@ -236,7 +224,6 @@ public class FiveSpecimen extends OpMode {
 
     public void setPathState(int pState) {
         pathState = pState;
-        pathTimer.resetTimer();
     }
 
     @Override
@@ -244,12 +231,7 @@ public class FiveSpecimen extends OpMode {
         follower.update();
         autonomousPathUpdate();
 
-        try {
-            CommandScheduler.getInstance().run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        CommandScheduler.updateCommands();
 
         telemetry.addData("path state", pathState);
         telemetry.addData("x", follower.getPose().getX());
@@ -276,10 +258,6 @@ public class FiveSpecimen extends OpMode {
         rotate.setState(RotateSubsystem.State.DROPOFF);
         rotate.processState();
 
-        pathTimer = new Timer();
-        opmodeTimer = new Timer();
-        opmodeTimer.resetTimer();
-
         Constants.setConstants(FConstants.class, LConstants.class);
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
@@ -288,11 +266,7 @@ public class FiveSpecimen extends OpMode {
     }
 
     @Override
-    public void init_loop() {}
-
-    @Override
     public void start() {
-        opmodeTimer.resetTimer();
         setPathState(0);
 
         Clock.start();
@@ -305,23 +279,11 @@ public class FiveSpecimen extends OpMode {
         autoTime.reset();
     }
 
-    @Override
-    public void stop() {
-    }
-
-
-    public void updateCommands(){
-        try {
-            CommandScheduler.getInstance().run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
     public void updateCommands(double sec){
         elapsedTime.reset();
         while (elapsedTime.seconds() < sec) {
             follower.update();
-            updateCommands();
+            CommandScheduler.updateCommands();
         }
     }
 
@@ -338,7 +300,7 @@ public class FiveSpecimen extends OpMode {
             finishWallIntake();
         }
         pivot.setState(PivotSubsystem.State.PASSIVE);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
 
     /** Prepares passive deposit */
@@ -349,7 +311,7 @@ public class FiveSpecimen extends OpMode {
 
         pivot.setState(PivotSubsystem.State.PASSIVE);
         rotate.setState(RotateSubsystem.State.DROPOFF);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
 
     /** Deposits, and lowers arm */
@@ -368,12 +330,12 @@ public class FiveSpecimen extends OpMode {
             updateCommands(0.05);
             rotate.setState(RotateSubsystem.State.PICKUP);
             claw.open();
-            updateCommands();
+            CommandScheduler.updateCommands();
         }
         else{
             pivot.setState(PivotSubsystem.State.DRIVING);
             horiz.setState(HorizSubsystem.State.DRIVING);
-            updateCommands();
+            CommandScheduler.updateCommands();
         }
     }
 }

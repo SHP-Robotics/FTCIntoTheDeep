@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem.State.WAL
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.shprobotics.pestocore.algorithms.PID;
@@ -24,6 +25,7 @@ import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
+@Disabled
 @Config
 @Autonomous(name = "4 + 0 SPECIMEN")
 public class FourSpecimen extends LinearOpMode {
@@ -730,11 +732,7 @@ public class FourSpecimen extends LinearOpMode {
     }
 
     public void loopOpMode() {
-        try {
-            CommandScheduler.getInstance().run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        CommandScheduler.updateCommands();
 
         tracker.update();
         pathFollower.update();
@@ -747,18 +745,11 @@ public class FourSpecimen extends LinearOpMode {
         telemetry.update();
     }
 
-    public void updateCommands(){
-        try {
-            CommandScheduler.getInstance().run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
     public void updateCommands(double sec){
         elapsedTime.reset();
         while (elapsedTime.seconds() < sec) {
             tracker.update();
-            updateCommands();
+            CommandScheduler.updateCommands();
             if (isStopRequested()) return;
         }
     }
@@ -814,7 +805,7 @@ public class FourSpecimen extends LinearOpMode {
         updateCommands(0.25);
         rotate.setState(RotateSubsystem.State.PICKUP);
         claw.open();
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
     /** Grabs specimen and returns to driving mode */
     public void finishIntake(){
@@ -837,7 +828,7 @@ public class FourSpecimen extends LinearOpMode {
         updateCommands(0.1);
 
         rotate.setState(RotateSubsystem.State.NEUTRAL);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
     /** Raises the Vertical */
     public void raiseArm(){
@@ -857,6 +848,6 @@ public class FourSpecimen extends LinearOpMode {
         claw.close();
         vertical.setState(VerticalSubsystem.State.BOTTOM);
         pivot.setState(PivotSubsystem.State.DRIVING);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
 }

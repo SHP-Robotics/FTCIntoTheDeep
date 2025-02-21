@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.autos;
 
 import static java.lang.Math.abs;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.pedropathing.follower.Follower;
@@ -21,7 +20,6 @@ import com.shprobotics.pestocore.drivebases.MecanumController;
 import com.shprobotics.pestocore.geometries.Pose2D;
 import com.shprobotics.pestocore.geometries.Vector2D;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.PestoFTCConfig;
 import org.firstinspires.ftc.teamcode.constants.FConstants;
 import org.firstinspires.ftc.teamcode.constants.LConstants;
@@ -33,13 +31,10 @@ import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "*** Not William's PP ***")
+@Autonomous(name = "*** 0 + 5 Sample ***")
 public class PP extends OpMode {
     VerticalSubsystem vertical;
     PivotSubsystem pivot;
@@ -50,8 +45,6 @@ public class PP extends OpMode {
     private Timer pathTimer, opmodeTimer;
 
     public ArrayList<Pose2D> positions;
-    OpenCvCamera camera;
-    int cameraMonitorViewId;
     public DetectSample detectSample;
     Pose2D lastDetection;
     PIDFController transPID;
@@ -63,7 +56,8 @@ public class PP extends OpMode {
     /** This is the variable where we store the state of our auto.
      * It is used by the pathUpdate method. */
     private int pathState;
-    private ElapsedTime elapsedTime, autoTime, clawAlignment;
+    private ElapsedTime elapsedTime;
+    private ElapsedTime clawAlignment;
 
 
     /* Create and Define Poses + Paths
@@ -265,12 +259,7 @@ public class PP extends OpMode {
         follower.update();
         autonomousPathUpdate();
 
-        try {
-            CommandScheduler.getInstance().run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        CommandScheduler.updateCommands();
 
         telemetry.addData("path state", pathState);
         telemetry.addData("x", follower.getPose().getX());
@@ -307,25 +296,10 @@ public class PP extends OpMode {
         follower.setHeadingOffset(Math.toRadians(0));
         buildPaths();
 
-        detectSample = new DetectSample(telemetry);
+        detectSample = new DetectSample(hardwareMap, telemetry);
 
         mecanumController = PestoFTCConfig.getMecanumController(hardwareMap);
         tracker = PestoFTCConfig.getTracker(hardwareMap);
-        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        camera.setPipeline(detectSample);
-        FtcDashboard.getInstance().startCameraStream(camera, 0);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-
-            }
-        });
 
         lastDetection = new Pose2D(0,0,0);
         clawAlignment = new ElapsedTime();
@@ -337,9 +311,6 @@ public class PP extends OpMode {
     }
 
     @Override
-    public void init_loop() {}
-
-    @Override
     public void start() {
         opmodeTimer.resetTimer();
         setPathState(0);
@@ -349,28 +320,13 @@ public class PP extends OpMode {
 
         elapsedTime = new ElapsedTime();
         elapsedTime.reset();
-
-        autoTime = new ElapsedTime();
-        autoTime.reset();
     }
 
-    @Override
-    public void stop() {
-    }
-
-
-    public void updateCommands(){
-        try {
-            CommandScheduler.getInstance().run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
     public void updateCommands(double sec){
         elapsedTime.reset();
         while (elapsedTime.seconds() < sec) {
             follower.update();
-            updateCommands();
+            CommandScheduler.updateCommands();
         }
     }
     /** Prepares the intake sample */
@@ -393,7 +349,7 @@ public class PP extends OpMode {
     /** Rotates for third sample */
     public void rotateIntake(){
         rotate.setState(RotateSubsystem.State.SAMPLE);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
     /** Grabs sample */
     public void finishIntake(){
@@ -421,7 +377,7 @@ public class PP extends OpMode {
         vertical.setDepositState(VerticalSubsystem.State.HIGH_BUCKET);
         vertical.setState(VerticalSubsystem.State.DEPOSITING);
         horiz.setState(HorizSubsystem.State.DRIVING);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
 
     /** Deposits, and lowers arm */
@@ -435,13 +391,13 @@ public class PP extends OpMode {
         pivot.setState(PivotSubsystem.State.DRIVING);
         claw.close();
         vertical.setState(VerticalSubsystem.State.BOTTOM);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
 
     public void parkArm(){
         pivot.setState(PivotSubsystem.State.PARK);
         horiz.setState(HorizSubsystem.State.PARK);
-        updateCommands();
+        CommandScheduler.updateCommands();
     }
 
     public boolean autoRotateIntake(){
@@ -470,7 +426,7 @@ public class PP extends OpMode {
 
         rotate.turn(lastDetection.getHeadingRadians());
         rotate.processState();
-        updateCommands();
+        CommandScheduler.updateCommands();
 
         //rotation movement
         if (!rotate.aligned) {
