@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.devices.GamepadKey;
 
 @TeleOp(name = "Blue Tele Op")
-class BlueTeleop extends BaseTeleOp {
+public class BlueTeleop extends BaseTeleOp {
     @Override
     public void init() {
         super.init();
