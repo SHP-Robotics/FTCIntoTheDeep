@@ -6,6 +6,16 @@ import com.shprobotics.pestocore.devices.GamepadKey;
 @TeleOp(name = "Red Tele Op")
 class RedTeleop extends BaseTeleOp {
     @Override
+    public void init() {
+        super.init();
+    }
+
+    @Override
+    public void start() {
+        super.start();
+    }
+    
+    @Override
     public void loop() {
         super.loop();
 
