@@ -121,6 +121,7 @@ public class ComputerVision extends LinearOpMode {
         }
     }
 
+
     public Pose2D selectPos(ArrayList<Pose2D> positions){
         double shortest = Double.POSITIVE_INFINITY;
         Pose2D result = new Pose2D(0,0,0);
@@ -131,7 +132,6 @@ public class ComputerVision extends LinearOpMode {
                 result = position;
             }
         }
-
         return result;
     }
 }

@@ -70,11 +70,13 @@ public class PP extends OpMode {
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
     private final Pose startPose = new Pose(7, 103, Math.toRadians(270));
+    private final Pose preloadScorePose = new Pose(11.5, 130, Math.toRadians(315));
+
     private final Pose scorePose = new Pose(14.5, 131, Math.toRadians(315));
-    private final Pose pickup1Pose = new Pose(21, 122, Math.toRadians(0));
-    private final Pose pickup2Pose = new Pose(21, 130, Math.toRadians(0));
-    private final Pose pickup3Pose = new Pose(23.5, 132, Math.toRadians(20));
-    private final Pose pickupSubPose = new Pose(60, 98, Math.toRadians(270));
+    private final Pose pickup1Pose = new Pose(21, 121, Math.toRadians(0));
+    private final Pose pickup2Pose = new Pose(21, 131, Math.toRadians(0));
+    private final Pose pickup3Pose = new Pose(23.5, 132, Math.toRadians(22.5));
+    private final Pose pickupSubPose = new Pose(60, 100, Math.toRadians(270));
     private final Pose parkPose = new Pose(65, 92, Math.toRadians(270));
 
     private static Path scorePreload,
@@ -85,11 +87,11 @@ public class PP extends OpMode {
     /** Build the paths for the auto (adds, for example, constant/linear headings while doing paths)
      * It is necessary to do this so that all the paths are built before the auto starts. **/
     public void buildPaths() {
-        scorePreload = new Path(new BezierLine(new Point(startPose), new Point(scorePose)));
-        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
+        scorePreload = new Path(new BezierLine(new Point(startPose), new Point(preloadScorePose)));
+        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), preloadScorePose.getHeading());
 
-        grab1 = new Path(new BezierCurve(new Point(scorePose), new Point(pickup1Pose)));
-        grab1.setLinearHeadingInterpolation(scorePose.getHeading(), pickup1Pose.getHeading());
+        grab1 = new Path(new BezierCurve(new Point(preloadScorePose), new Point(pickup1Pose)));
+        grab1.setLinearHeadingInterpolation(preloadScorePose.getHeading(), pickup1Pose.getHeading());
 
         deposit1 = new Path(new BezierCurve(new Point(pickup1Pose), new Point(scorePose)));
         deposit1.setLinearHeadingInterpolation(pickup1Pose.getHeading(), scorePose.getHeading());
@@ -149,9 +151,11 @@ public class PP extends OpMode {
                 return;
             case 1:
                 if(vertical.getSlidePosition() > 2700) {
+                    follower.setMaxPower(0.7);
+
                     lowerArm();
                     follower.followPath(grab1);
-                    updateCommands(0.75);
+                    updateCommands(1);
                     prepIntake(false);
                     pathState += 1;
                 }
@@ -163,6 +167,8 @@ public class PP extends OpMode {
                 pathState += 1;
                 return;
             case 3: //deposit 1
+                follower.setMaxPower(0.8);
+
                 prepArm();
                 follower.followPath(deposit1);
 
@@ -170,9 +176,11 @@ public class PP extends OpMode {
                 return;
             case 4:
                 if(vertical.getSlidePosition() > 2700) {
+                    follower.setMaxPower(0.7);
+
                     lowerArm();
                     follower.followPath(grab2);
-                    updateCommands(0.75);
+                    updateCommands(1);
                     prepIntake(false);
                     pathState += 1;
                 }
@@ -186,11 +194,11 @@ public class PP extends OpMode {
                 return;
             case 7:
                 if(vertical.getSlidePosition() > 2700) {
-                    follower.setMaxPower(0.8);
+                    follower.setMaxPower(0.7);
                     lowerArm();
                     follower.followPath(grab3);
                     rotateIntake();
-                    updateCommands(0.75);
+                    updateCommands(1);
                     prepIntake(false);
                     pathState += 1;
                 }
@@ -220,7 +228,7 @@ public class PP extends OpMode {
                     else
                         claw.setColor(ClawSubsystem.ColorState.RED);
 
-                    if(opmodeTimer.getElapsedTime() > 29) {
+                    if(opmodeTimer.getElapsedTimeSeconds() > 29) {
                         pathState = 15;
                         return;
                     }
@@ -229,22 +237,21 @@ public class PP extends OpMode {
                 pathState += 1;
                 return;
             case 13:
+                if(claw.isBlockInClaw()) {
+                    follower.followPath(deposit4);
+                    updateCommands(0.5);
+                    if (opmodeTimer.getElapsedTimeSeconds() < 27)
+                        prepArm();
+                }
                 pathState += 1;
-                follower.followPath(deposit4);
                 return;
             case 14:
-                updateCommands(1.5);
-                if(opmodeTimer.getElapsedTime() < 26)
-                    prepArm();
-                pathState += 1;
-                return;
-            case 15:
-                if(vertical.getSlidePosition() > 2700) {
+                if(vertical.getSlidePosition() > 2700 || opmodeTimer.getElapsedTimeSeconds() < 29) {
                     lowerArm();
-                    follower.followPath(park);
-                    parkArm();
-                    pathState = -1;
                 }
+                follower.followPath(park);
+                parkArm();
+                pathState = -1;
                 return;
         }
     }
@@ -312,7 +319,6 @@ public class PP extends OpMode {
 
     @Override
     public void start() {
-        opmodeTimer.resetTimer();
         setPathState(0);
 
         Clock.start();
@@ -320,6 +326,8 @@ public class PP extends OpMode {
 
         elapsedTime = new ElapsedTime();
         elapsedTime.reset();
+        opmodeTimer.resetTimer();
+
     }
 
     public void updateCommands(double sec){
@@ -354,15 +362,15 @@ public class PP extends OpMode {
     /** Grabs sample */
     public void finishIntake(){
         pivot.setState(PivotSubsystem.State.INTAKE);
-        updateCommands(0.35);
+        updateCommands(0.4);
         claw.close();
-        updateCommands(0.35); //try to lower
+        updateCommands(0.25); //try to lower
         if(!claw.isBlockInClaw()){
             pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
             claw.open();
             updateCommands(0.35);
             pivot.setState(PivotSubsystem.State.INTAKE);
-            updateCommands(0.25);
+            updateCommands(0.35);
             claw.close();
             updateCommands(0.25);
         }
@@ -404,7 +412,7 @@ public class PP extends OpMode {
         //rotation detection
         positions = detectSample.getPositions();
         if(positions.isEmpty()) {
-            mecanumController.drive(0.1,0, 0); //TODO do something... maybe follow path until something found
+            mecanumController.drive(0.25,0.25, 0); //TODO do something... maybe follow path until something found
             return false;
         }
 
@@ -417,10 +425,7 @@ public class PP extends OpMode {
 
         tracker.update();
 
-        double x, y;
-        x = transPID.update(-lastDetection.getX(), 200*tracker.getRobotVelocity().getX());
-        y = transPID.update(lastDetection.getY(), 200*tracker.getRobotVelocity().getY());
-        mecanumController.drive(y/3, x/3, 0);
+
 
 //        horiz.setAutoPos(lastDetection.getY()-360);
 
@@ -429,14 +434,21 @@ public class PP extends OpMode {
         CommandScheduler.updateCommands();
 
         //rotation movement
+        if(!sampleCentered()){
+            double x, y;
+            x = transPID.update(-lastDetection.getX(), 200*tracker.getRobotVelocity().getX());
+            y = transPID.update(lastDetection.getY(), 200*tracker.getRobotVelocity().getY());
+            mecanumController.drive(y/4, x/4, 0);
+        }
         if (!rotate.aligned) {
             clawAlignment.reset();
             claw.open();
-        } else {
+        }
+        else {
             claw.setColor(ClawSubsystem.ColorState.GREEN);
         }
 
-        return clawAlignment.seconds() > 0.5 && sampleCentered();
+        return clawAlignment.seconds() > 0.2; //&& sampleCentered();
     }
 
     public Pose2D selectPos(ArrayList<Pose2D> positions){
@@ -449,6 +461,10 @@ public class PP extends OpMode {
                 result = position;
             }
         }
+//
+//        if(result != null)
+//            result.add(new Vector2D(25,-50));
+
         return result;
     }
 
@@ -458,9 +474,9 @@ public class PP extends OpMode {
         telemetry.addData("X", lastDetection.getX());
         telemetry.addData("Y", lastDetection.getY());
         telemetry.addData("rotation", rotation);
+        telemetry.update();
 
-
-        return abs(lastDetection.getX()-22) < 50 && abs(lastDetection.getY()-0) < 150;
+        return abs(lastDetection.getX()-75) < 50 && abs(lastDetection.getY()-100) < 50;
     }
 }
 

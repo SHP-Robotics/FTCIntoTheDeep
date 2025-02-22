@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.devices.GamepadInterface;
 import com.shprobotics.pestocore.devices.GamepadKey;
 
 import org.firstinspires.ftc.teamcode.shplib.TestBaseBot;
 
-@Disabled
+
 @TeleOp
 public class ClawTeleOp extends TestBaseBot {
     GamepadInterface gamepadInterface1;
@@ -25,7 +24,7 @@ public class ClawTeleOp extends TestBaseBot {
 
         gamepadInterface1.update();
 
-        if(gamepadInterface1.isKeyDown(GamepadKey.DPAD_LEFT)) claw.open();
-        if(gamepadInterface1.isKeyDown(GamepadKey.DPAD_RIGHT)) claw.close();
+        if(gamepadInterface1.isKeyDown(GamepadKey.DPAD_LEFT)) claw.increment();
+        if(gamepadInterface1.isKeyDown(GamepadKey.DPAD_RIGHT)) claw.decrement();
     }
 }

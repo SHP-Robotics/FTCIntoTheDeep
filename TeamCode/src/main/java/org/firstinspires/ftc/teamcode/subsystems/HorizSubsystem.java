@@ -27,7 +27,7 @@ public class HorizSubsystem extends Subsystem {
         BLOCK_IN_BOT(0,0.5),
         INTAKING_EXTENDED(1,1), // 0.55 rail max out, 0 slide max out
         PREP_AUTO_INTAKE(0.5,0.05),
-        SUB_AUTO_INTAKE(1,0.75),
+        SUB_AUTO_INTAKE(1,1),
         PARK(0.725,0),
         PASSIVE(0,0.6),
         MANUAL(0.7,0);
