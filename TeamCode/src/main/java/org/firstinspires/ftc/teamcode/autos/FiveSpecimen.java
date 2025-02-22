@@ -79,10 +79,10 @@ public class FiveSpecimen extends OpMode {
                 .addPath(new BezierCurve(
                         new Point(pickup2Pose),
                         new Point(new Pose(68, 14)),
-                        new Point(new Pose(58.5, 21)),
-                        new Point(new Pose(64, 10)),
-                        new Point(new Pose(64, 10)),
-                        new Point(new Pose(63, 8)),
+                        new Point(new Pose(59, 20)),
+                        new Point(new Pose(66, 10)),
+                        new Point(new Pose(66, 10)),
+                        new Point(new Pose(62, 7)),
                         new Point(new Pose(44, 11)),
                         new Point(pickup3Pose)))
                 .setLinearHeadingInterpolation(pickup2Pose.getHeading(), pickup3Pose.getHeading())
