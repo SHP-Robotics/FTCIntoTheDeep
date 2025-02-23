@@ -42,9 +42,9 @@ public class FiveSpecimen extends OpMode {
     private final Pose scorePose = new Pose(35, 72);
     private final Pose pickup1Pose = new Pose(30, 24);
     private final Pose pickup2Pose = new Pose(30, 16);
-    private final Pose pickup3Pose = new Pose(11, 10);
+    private final Pose pickup3Pose = new Pose(10, 10);
 
-    private final Pose pickupPose = new Pose(12, 35);
+    private final Pose pickupPose = new Pose(11, 35);
     private final Pose deposit1Pose = new Pose(34, 70);
     private final Pose deposit2Pose = new Pose(34, 69);
     private final Pose deposit3Pose = new Pose(34, 68);
@@ -90,7 +90,7 @@ public class FiveSpecimen extends OpMode {
                 .build();
 
         deposit1 = new Path(new BezierCurve(new Point(pickup3Pose),
-                new Point(new Pose(21, 66)),
+                new Point(new Pose(16, 70)),
                 new Point(deposit1Pose)));
         deposit1.setLinearHeadingInterpolation(pickup3Pose.getHeading(), deposit1Pose.getHeading());
 
@@ -148,7 +148,7 @@ public class FiveSpecimen extends OpMode {
             case 0:
                 //deposits preload
                 vertical.setSlidePower(true);
-                follower.setMaxPower(0.775);
+                follower.setMaxPower(0.75);
                 follower.followPath(scorePreload);
                 prepArm();
                 pathState += 1;
@@ -157,6 +157,7 @@ public class FiveSpecimen extends OpMode {
                 //finishes deposit and pushes to sample 1
                 follower.setMaxPower(1.0);
                 claw.open();
+                updateCommands(0.15);
                 follower.followPath(pushChain, true);
                 lowerArm(false);
                 pathState = 5;
@@ -206,7 +207,7 @@ public class FiveSpecimen extends OpMode {
             case 11:
                 follower.setMaxPower(0.9);
                 finishWallIntake();
-                if(autoTime.seconds() < 27) {
+                if(autoTime.seconds() < 28) {
                     follower.followPath(deposit4);
                     prepArm();
                     pathState += 1;

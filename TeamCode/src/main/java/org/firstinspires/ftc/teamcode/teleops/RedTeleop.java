@@ -26,9 +26,9 @@ public class RedTeleop extends BaseTeleOp {
                 b = 0;
             }
             else{
-                r = 0;
+                r = 255;
                 g = 0;
-                b = 255;
+                b = 0;
             }
         }
     }

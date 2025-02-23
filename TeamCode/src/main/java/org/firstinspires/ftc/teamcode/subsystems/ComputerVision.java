@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static java.lang.Math.abs;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
@@ -82,7 +84,7 @@ public class ComputerVision extends LinearOpMode {
             if(!rotate.aligned) {
                 claw.setColor(ClawSubsystem.ColorState.RED);
                 clawAlignment.reset();
-                pivot.setState(PivotSubsystem.State.PREPARE_INTAKE);
+                pivot.setState(PivotSubsystem.State.PREPARE_INTAKE_AUTO);
                 claw.open();
                 CommandScheduler.updateCommands();
             }
@@ -90,7 +92,6 @@ public class ComputerVision extends LinearOpMode {
                 claw.setColor(ClawSubsystem.ColorState.GREEN);
                 CommandScheduler.updateCommands();
             }
-
 
 //            else if(clawAlignment.seconds() > 2){
 //                pivot.setState(PivotSubsystem.State.INTAKE);
@@ -109,6 +110,7 @@ public class ComputerVision extends LinearOpMode {
             }
             telemetry.addData("System nano ", System.nanoTime());
             telemetry.addData("Alignment Timer", clawAlignment.seconds());
+            telemetry.addData("isCentered", sampleCentered());
             telemetry.update();
         }
     }
@@ -133,5 +135,15 @@ public class ComputerVision extends LinearOpMode {
             }
         }
         return result;
+    }
+
+    public boolean sampleCentered(){
+        double rotation = lastDetection.getHeadingRadians();
+
+        telemetry.addData("X", lastDetection.getX());
+        telemetry.addData("Y", lastDetection.getY());
+        telemetry.addData("rotation", rotation);
+
+        return abs(lastDetection.getX() - (-89)) < (107) && abs(lastDetection.getY() - (123)) < (51);
     }
 }

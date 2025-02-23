@@ -222,7 +222,7 @@ public class PP extends LinearOpMode {
                 }
                 return;
             case 12:
-                while(!autoRotateIntake() && opModeIsActive() && !isStopRequested()) {
+                while(!autoRotateIntake()) {
                     if(rotate.aligned)
                         claw.setColor(ClawSubsystem.ColorState.GREEN);
                     else
@@ -345,6 +345,7 @@ public class PP extends LinearOpMode {
         claw.open();
         if(!sub) {
             horiz.setState(HorizSubsystem.State.INTAKING_EXTENDED);
+            pivot.setState(PivotSubsystem.State.PREPARE_INTAKE_AUTO);
         }
         else{
             horiz.setState(HorizSubsystem.State.SUB_AUTO_INTAKE);
@@ -410,7 +411,7 @@ public class PP extends LinearOpMode {
         //rotation detection
         positions = detectSample.getPositions();
         if(positions.isEmpty()) {
-            mecanumController.drive(0.25,0.25, 0); //TODO do something... maybe follow path until something found
+            mecanumController.drive(0,0, 0); //TODO do something... maybe follow path until something found
             return false;
         }
 
@@ -423,8 +424,6 @@ public class PP extends LinearOpMode {
 
         tracker.update();
 
-
-
 //        horiz.setAutoPos(lastDetection.getY()-360);
 
         rotate.turn(lastDetection.getHeadingRadians());
@@ -436,17 +435,16 @@ public class PP extends LinearOpMode {
             double x, y;
             x = transPID.update(-lastDetection.getX(), 200*tracker.getRobotVelocity().getX());
             y = transPID.update(lastDetection.getY(), 200*tracker.getRobotVelocity().getY());
-            mecanumController.drive(y/4, x/4, 0);
+            mecanumController.drive(y/2, x/2, 0);
         }
         if (!rotate.aligned) {
             clawAlignment.reset();
             claw.open();
-        }
-        else {
+        } else {
             claw.setColor(ClawSubsystem.ColorState.GREEN);
         }
 
-        return clawAlignment.seconds() > 0.2; //&& sampleCentered();
+        return clawAlignment.seconds() > 0.2 && sampleCentered() && elapsedTime.seconds() > 25; //&& sampleCentered();
     }
 
     public Pose2D selectPos(ArrayList<Pose2D> positions){
@@ -459,9 +457,6 @@ public class PP extends LinearOpMode {
                 result = position;
             }
         }
-//
-//        if(result != null)
-//            result.add(new Vector2D(25,-50));
 
         return result;
     }
@@ -474,7 +469,7 @@ public class PP extends LinearOpMode {
         telemetry.addData("rotation", rotation);
         telemetry.update();
 
-        return abs(lastDetection.getX()-75) < 50 && abs(lastDetection.getY()-100) < 50;
+        return abs(lastDetection.getX() - (-89)) < (200) && abs(lastDetection.getY() - (123)) < (150); //107, 51
     }
 }
 
