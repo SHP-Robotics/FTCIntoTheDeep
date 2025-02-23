@@ -13,7 +13,7 @@ import com.pedropathing.pathgen.Point;
 import com.pedropathing.util.Constants;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.shprobotics.pestocore.drivebases.DeterministicTracker;
 import com.shprobotics.pestocore.drivebases.MecanumController;
@@ -35,7 +35,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 import java.util.ArrayList;
 
 @Autonomous(name = "*** 0 + 5 Sample ***")
-public class PP extends OpMode {
+public class PP extends LinearOpMode {
     VerticalSubsystem vertical;
     PivotSubsystem pivot;
     RotateSubsystem rotate;
@@ -222,7 +222,7 @@ public class PP extends OpMode {
                 }
                 return;
             case 12:
-                while(!autoRotateIntake()) {
+                while(!autoRotateIntake() && opModeIsActive() && !isStopRequested()) {
                     if(rotate.aligned)
                         claw.setColor(ClawSubsystem.ColorState.GREEN);
                     else
@@ -262,21 +262,8 @@ public class PP extends OpMode {
     }
 
     @Override
-    public void loop() {
-        follower.update();
-        autonomousPathUpdate();
-
-        CommandScheduler.updateCommands();
-
-        telemetry.addData("path state", pathState);
-        telemetry.addData("x", follower.getPose().getX());
-        telemetry.addData("y", follower.getPose().getY());
-        telemetry.addData("heading", follower.getPose().getHeading());
-        telemetry.update();
-    }
-
-    @Override
-    public void init() {
+    public void runOpMode() {
+        // TODO: INIT
         CommandScheduler.resetInstance();
 
         // Initialize your subsystems and devices
@@ -315,10 +302,7 @@ public class PP extends OpMode {
                 kp, 0, kd
         ));
 
-    }
-
-    @Override
-    public void start() {
+        // TODO: START
         setPathState(0);
 
         Clock.start();
@@ -328,11 +312,25 @@ public class PP extends OpMode {
         elapsedTime.reset();
         opmodeTimer.resetTimer();
 
+        // TODO: LOOP
+
+        while (opModeIsActive() && !isStopRequested()) {
+            follower.update();
+            autonomousPathUpdate();
+
+            CommandScheduler.updateCommands();
+
+            telemetry.addData("path state", pathState);
+            telemetry.addData("x", follower.getPose().getX());
+            telemetry.addData("y", follower.getPose().getY());
+            telemetry.addData("heading", follower.getPose().getHeading());
+            telemetry.update();
+        }
     }
 
     public void updateCommands(double sec){
         elapsedTime.reset();
-        while (elapsedTime.seconds() < sec) {
+        while (elapsedTime.seconds() < sec && opModeIsActive() && !isStopRequested()) {
             follower.update();
             CommandScheduler.updateCommands();
         }
