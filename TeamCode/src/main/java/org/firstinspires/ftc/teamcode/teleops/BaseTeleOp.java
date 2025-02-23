@@ -105,7 +105,7 @@ public class BaseTeleOp extends BaseRobot {
             }
         }));
 
-        gamepad1.setLedColor(r,g,b,10000);
+        gamepad1.setLedColor(r,g,b,Integer.MAX_VALUE);
 
         //abort
         if(gamepad1.dpad_up){

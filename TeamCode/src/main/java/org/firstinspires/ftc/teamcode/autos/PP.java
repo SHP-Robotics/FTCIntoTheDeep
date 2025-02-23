@@ -34,7 +34,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "*** 0 + 5 Sample ***")
+@Autonomous(name = "*** 0 + 5 SAMPLE ***")
 public class PP extends OpMode {
     VerticalSubsystem vertical;
     PivotSubsystem pivot;
@@ -70,7 +70,7 @@ public class PP extends OpMode {
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
     private final Pose startPose = new Pose(7, 103, Math.toRadians(270));
-    private final Pose preloadScorePose = new Pose(11.5, 130, Math.toRadians(315));
+    private final Pose preloadScorePose = new Pose(14, 131, Math.toRadians(315));
 
     private final Pose scorePose = new Pose(14.5, 131, Math.toRadians(315));
     private final Pose pickup1Pose = new Pose(21, 121, Math.toRadians(0));
@@ -347,6 +347,7 @@ public class PP extends OpMode {
         claw.open();
         if(!sub) {
             horiz.setState(HorizSubsystem.State.INTAKING_EXTENDED);
+            pivot.setState(PivotSubsystem.State.PREPARE_INTAKE_AUTO);
         }
         else{
             horiz.setState(HorizSubsystem.State.SUB_AUTO_INTAKE);
@@ -412,7 +413,7 @@ public class PP extends OpMode {
         //rotation detection
         positions = detectSample.getPositions();
         if(positions.isEmpty()) {
-            mecanumController.drive(0.25,0.25, 0); //TODO do something... maybe follow path until something found
+            mecanumController.drive(0,0, 0); //TODO do something... maybe follow path until something found
             return false;
         }
 
@@ -425,8 +426,6 @@ public class PP extends OpMode {
 
         tracker.update();
 
-
-
 //        horiz.setAutoPos(lastDetection.getY()-360);
 
         rotate.turn(lastDetection.getHeadingRadians());
@@ -438,17 +437,16 @@ public class PP extends OpMode {
             double x, y;
             x = transPID.update(-lastDetection.getX(), 200*tracker.getRobotVelocity().getX());
             y = transPID.update(lastDetection.getY(), 200*tracker.getRobotVelocity().getY());
-            mecanumController.drive(y/4, x/4, 0);
+            mecanumController.drive(y/2, x/2, 0);
         }
         if (!rotate.aligned) {
             clawAlignment.reset();
             claw.open();
-        }
-        else {
+        } else {
             claw.setColor(ClawSubsystem.ColorState.GREEN);
         }
 
-        return clawAlignment.seconds() > 0.2; //&& sampleCentered();
+        return clawAlignment.seconds() > 0.2 && sampleCentered() && elapsedTime.seconds() > 25; //&& sampleCentered();
     }
 
     public Pose2D selectPos(ArrayList<Pose2D> positions){
@@ -461,9 +459,6 @@ public class PP extends OpMode {
                 result = position;
             }
         }
-//
-//        if(result != null)
-//            result.add(new Vector2D(25,-50));
 
         return result;
     }
@@ -476,7 +471,7 @@ public class PP extends OpMode {
         telemetry.addData("rotation", rotation);
         telemetry.update();
 
-        return abs(lastDetection.getX()-75) < 50 && abs(lastDetection.getY()-100) < 50;
+        return abs(lastDetection.getX() - (-89)) < (200) && abs(lastDetection.getY() - (123)) < (150); //107, 51
     }
 }
 

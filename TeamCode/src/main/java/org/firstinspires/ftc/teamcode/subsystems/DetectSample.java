@@ -75,6 +75,7 @@ public class DetectSample extends OpenCvPipeline {
     }
 
     ArrayList<Pose2D> positions = new ArrayList<>();
+    ArrayList<Double> areas = new ArrayList<>();
     Telemetry telemetry;
     ColorState colorState = ColorState.YELLOW;
 
@@ -130,6 +131,7 @@ public class DetectSample extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input){
         ArrayList<Pose2D> positions = new ArrayList<>();
+        ArrayList<Double> areas = new ArrayList<>();
 
         Mat transformMatrix = new Mat(3, 3, CvType.CV_32F);
         transformMatrix.put(0, 0,
@@ -181,6 +183,8 @@ public class DetectSample extends OpenCvPipeline {
             position.add(new Vector2D(-640, -360));
             positions.add(position);
 
+            areas.add(area);
+
             contour2f.release();
             contour.release();
 
@@ -191,6 +195,7 @@ public class DetectSample extends OpenCvPipeline {
 
 
         this.positions = positions;
+        this.areas = areas;
 
         //list of frames to reduce inconsistency, not too many so that it is still real-time, change the number from 5 if you want
         if (frameList.size() > 5) {
@@ -217,6 +222,10 @@ public class DetectSample extends OpenCvPipeline {
 
     public ArrayList<Pose2D> getPositions(){
         return positions;
+    }
+
+    public ArrayList<Double> getAreas(){
+        return areas;
     }
 
     static void drawRotatedRect(RotatedRect rect, Mat mat, Scalar color) {
