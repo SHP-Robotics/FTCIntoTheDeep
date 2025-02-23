@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.autos;
 
+import static org.apache.commons.math3.util.MathUtils.normalizeAngle;
 import static java.lang.Math.abs;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -15,6 +16,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.shprobotics.pestocore.algorithms.PID;
 import com.shprobotics.pestocore.drivebases.DeterministicTracker;
 import com.shprobotics.pestocore.drivebases.MecanumController;
 import com.shprobotics.pestocore.geometries.Pose2D;
@@ -48,6 +50,7 @@ public class PP extends LinearOpMode {
     public DetectSample detectSample;
     Pose2D lastDetection;
     PIDFController transPID;
+    PID headingPID = new PID(PestoFTCConfig.headingP, PestoFTCConfig.headingI, PestoFTCConfig.headingD);
     public static double kp = 0.0015;
     public static double kd = 0;
     MecanumController mecanumController;
@@ -435,7 +438,12 @@ public class PP extends LinearOpMode {
             double x, y;
             x = transPID.update(-lastDetection.getX(), 200*tracker.getRobotVelocity().getX());
             y = transPID.update(lastDetection.getY(), 200*tracker.getRobotVelocity().getY());
-            mecanumController.drive(y/2, x/2, 0);
+
+            double heading = follower.getPose().getHeading();
+            // TODO: make sure a: 0 should be 0 and not {0, 1*PI/4, PI/2, 3*PI/4}
+            double rotate = -headingPID.getOutput(heading, normalizeAngle(0, heading));
+
+            mecanumController.drive(y/3, x/3, rotate);
         }
         if (!rotate.aligned) {
             clawAlignment.reset();
