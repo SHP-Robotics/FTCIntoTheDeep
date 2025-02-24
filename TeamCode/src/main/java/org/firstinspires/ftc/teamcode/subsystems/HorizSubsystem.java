@@ -20,7 +20,7 @@ public class HorizSubsystem extends Subsystem {
     private final CachingServo rail;
 
     public enum State {
-        INTAKE_WALL(0.75, 0),
+        INTAKE_WALL(0.5, 0),
         SPECIMEN_DEPOSIT(0.75, 0),
         WALL_PICKUP_AUTO(1,0.2),
         DRIVING(0, 0), //1, 0.725 is all in

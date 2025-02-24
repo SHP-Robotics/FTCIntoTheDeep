@@ -40,11 +40,11 @@ public class FiveSpecimen extends OpMode {
 
     private final Pose startPose = new Pose(7, 61);
     private final Pose scorePose = new Pose(35, 72);
-    private final Pose pickup1Pose = new Pose(30, 24);
+    private final Pose pickup1Pose = new Pose(27, 24);
     private final Pose pickup2Pose = new Pose(30, 16);
     private final Pose pickup3Pose = new Pose(10, 10);
 
-    private final Pose pickupPose = new Pose(11, 35);
+    private final Pose pickupPose = new Pose(11, 32);
     private final Pose deposit1Pose = new Pose(34, 70);
     private final Pose deposit2Pose = new Pose(34, 69);
     private final Pose deposit3Pose = new Pose(34, 68);

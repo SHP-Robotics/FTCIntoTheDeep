@@ -34,7 +34,7 @@ import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
 import java.util.ArrayList;
 
 public class BaseTeleOp extends BaseRobot {
-    private double driveBias;
+    private double driveBias, rotationBias;
     private boolean bucketExtended;
     GamepadInterface gamepadInterface1, gamepadInterface2;
     int r, g, b = 0;
@@ -47,7 +47,7 @@ public class BaseTeleOp extends BaseRobot {
         super.init();
         drive.setDefaultCommand(
                 new RunCommand(
-                        () -> drive.mecanum(-driveBias*gamepad1.left_stick_y, driveBias*gamepad1.left_stick_x, driveBias*gamepad1.right_stick_x)
+                        () -> drive.mecanum(-driveBias*gamepad1.left_stick_y, driveBias*gamepad1.left_stick_x, rotationBias*driveBias*gamepad1.right_stick_x)
                 )
         );
 
@@ -58,6 +58,7 @@ public class BaseTeleOp extends BaseRobot {
 
         bucketExtended = false;
         vertical.setSlidePower(false);
+        rotationBias = 1;
     }
 
     @Override
@@ -79,9 +80,14 @@ public class BaseTeleOp extends BaseRobot {
         //collect from sub
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() != PREPARE_INTAKE,
                 new DriveToSubCommand(rotate, claw, pivot, horiz)
-                        .then(new RunCommand(()-> clawAlignment.reset())));
+                        .then(new RunCommand(()->{
+                            clawAlignment.reset();
+                            rotationBias = 0.5;
+                        })));
         new Trigger(gamepadInterface1.isKeyDown(GamepadKey.RIGHT_BUMPER) && pivot.getState() == PREPARE_INTAKE,
                 new SubToDriveCommand(rotate, claw, pivot, horiz)
+                        .then(new RunCommand(()->
+                            rotationBias = 1))
         );
 
         //extend horizontal slides

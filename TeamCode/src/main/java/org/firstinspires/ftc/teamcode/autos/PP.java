@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autos;
 
 import static org.apache.commons.math3.util.MathUtils.normalizeAngle;
+import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -78,7 +79,7 @@ public class PP extends LinearOpMode {
     private final Pose scorePose = new Pose(14.5, 131, Math.toRadians(315));
     private final Pose pickup1Pose = new Pose(21, 121, Math.toRadians(0));
     private final Pose pickup2Pose = new Pose(21, 131, Math.toRadians(0));
-    private final Pose pickup3Pose = new Pose(23.5, 132, Math.toRadians(22.5));
+    private final Pose pickup3Pose = new Pose(23.5, 132.5, Math.toRadians(22.5));
     private final Pose pickupSubPose = new Pose(60, 100, Math.toRadians(270));
     private final Pose parkPose = new Pose(65, 92, Math.toRadians(270));
 
@@ -221,21 +222,21 @@ public class PP extends LinearOpMode {
                     follower.followPath(grab4);
                     updateCommands(1);
                     prepIntake(true);
-                    pathState += 2;
+                    pathState = 14;
                 }
                 return;
             case 12:
-                while(!autoRotateIntake()) {
-                    if(rotate.aligned)
-                        claw.setColor(ClawSubsystem.ColorState.GREEN);
-                    else
-                        claw.setColor(ClawSubsystem.ColorState.RED);
-
-                    if(opmodeTimer.getElapsedTimeSeconds() > 29) {
-                        pathState = 15;
-                        return;
-                    }
-                }
+//                while(!autoRotateIntake()) {
+//                    if(rotate.aligned)
+//                        claw.setColor(ClawSubsystem.ColorState.GREEN);
+//                    else
+//                        claw.setColor(ClawSubsystem.ColorState.RED);
+//
+//                    if(opmodeTimer.getElapsedTimeSeconds() > 29) {
+//                        pathState += 1;
+//                        return;
+//                    }
+//                }
                 finishIntake();
                 pathState += 1;
                 return;
@@ -306,7 +307,9 @@ public class PP extends LinearOpMode {
         ));
 
         // TODO: START
+
         setPathState(0);
+        waitForStart();
 
         Clock.start();
         CommandScheduler.getInstance().setTelemetry(telemetry);
@@ -441,7 +444,7 @@ public class PP extends LinearOpMode {
 
             double heading = follower.getPose().getHeading();
             // TODO: make sure a: 0 should be 0 and not {0, 1*PI/4, PI/2, 3*PI/4}
-            double rotate = -headingPID.getOutput(heading, normalizeAngle(0, heading));
+            double rotate = -headingPID.getOutput(heading, normalizeAngle(PI, heading));
 
             mecanumController.drive(y/3, x/3, rotate);
         }

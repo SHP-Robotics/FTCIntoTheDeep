@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.teleops;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.shprobotics.pestocore.devices.GamepadKey;
 
-@TeleOp(name = "Red Tele Op")
+@TeleOp(name = "***Red Tele Op***")
 public class RedTeleop extends BaseTeleOp {
     @Override
     public void init() {
