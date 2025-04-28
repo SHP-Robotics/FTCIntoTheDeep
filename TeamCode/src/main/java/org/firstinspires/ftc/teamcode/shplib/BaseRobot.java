@@ -6,30 +6,18 @@ import com.shprobotics.pestocore.geometries.Pose2D;
 
 import org.firstinspires.ftc.teamcode.shplib.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.shplib.utility.Clock;
-import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.DetectSample;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.HorizSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.RotateSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.VerticalSubsystem;
 
 import java.util.ArrayList;
 
 public class BaseRobot extends OpMode {
     // Declare subsystems and devices
     public DriveSubsystem drive;
-    public HorizSubsystem horiz;
-    public VerticalSubsystem vertical;
-    public PivotSubsystem pivot;
-    public RotateSubsystem rotate;
-    public ClawSubsystem claw;
 
     public double previousTime = 0;
     public double andrewWompWomp = 0;
 
     public ArrayList<Pose2D> positions;
-    public DetectSample detectSample;
 
     // Called when you press the init button
     @Override
@@ -40,15 +28,6 @@ public class BaseRobot extends OpMode {
 
         // Initialize your subsystems and devices
         drive = new DriveSubsystem(hardwareMap);
-        vertical = new VerticalSubsystem(hardwareMap);
-        rotate = new RotateSubsystem(hardwareMap);
-        pivot = new PivotSubsystem(hardwareMap);
-        pivot.setState(PivotSubsystem.State.DRIVING);
-        pivot.periodic(telemetry);
-        claw = new ClawSubsystem(hardwareMap);
-        horiz = new HorizSubsystem(hardwareMap);
-
-        detectSample = new DetectSample(hardwareMap, telemetry);
     }
 
     // Called when you press the start button
